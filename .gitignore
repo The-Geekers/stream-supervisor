@@ -1,0 +1,30 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Runtime
+data/
+logs/
+diagnostics/
+exports/
+*.sqlite
+*.sqlite3
+*.db
+
+# Dependencies / builds
+node_modules/
+dist/
+build/
+coverage/
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Temp
+*.log
+*.tmp
+*.swp
