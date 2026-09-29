@@ -17,7 +17,7 @@ try {
 
 const requiredIds = [
   "viewChannels","viewSystem","pageTitle","dockerEngine","dockerRunning",
-  "dockerUnhealthy","dockerAge","dockerContainers","dockerDot"
+  "dockerUnhealthy","dockerAge","dockerContainers","dockerDot","modeBadge","authBadge"
 ];
 
 for (const id of requiredIds) {
@@ -26,6 +26,11 @@ for (const id of requiredIds) {
     console.error(`UI CHECK FAILED: #${id} occurs ${count} times`);
     process.exit(1);
   }
+}
+
+if (!html.includes("/api/restreamer/output-command")) {
+  console.error("UI CHECK FAILED: output command endpoint wiring is missing");
+  process.exit(1);
 }
 
 console.log("UI check: PASS");

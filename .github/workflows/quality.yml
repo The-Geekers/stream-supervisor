@@ -28,6 +28,7 @@ jobs:
         run: |
           npm run check
           sh -n deployment/update.sh
+          sh -n deployment/configure-auth.sh
 
       - name: Docker build
         run: docker build -t stream-supervisor-ci .
@@ -54,10 +55,10 @@ jobs:
           curl -Ns --max-time 3 http://127.0.0.1:8090/api/events > /tmp/sse-events.txt || true
           grep -q "event: status" /tmp/sse-events.txt
 
-      - name: Supervisor auth smoke test
+      - name: Supervisor auth and role smoke test
         run: |
           docker rm -f stream-supervisor-ci
-          docker run -d --name stream-supervisor-ci             -e DEMO_MODE=true             -e SUPERVISOR_USERNAME=ci-operator             -e SUPERVISOR_PASSWORD=ci-not-a-secret             -p 8090:8090 stream-supervisor-ci
+          docker run -d --name stream-supervisor-ci             -e DEMO_MODE=true             -e SUPERVISOR_USERNAME=ci-admin             -e SUPERVISOR_PASSWORD=ci-admin-pass             -e SUPERVISOR_TECH_USERNAME=ci-tech             -e SUPERVISOR_TECH_PASSWORD=ci-tech-pass             -p 8090:8090 stream-supervisor-ci
           for i in $(seq 1 20); do
             if curl -fsS http://127.0.0.1:8090/health >/dev/null; then
               break
@@ -65,7 +66,23 @@ jobs:
             sleep 1
           done
           test "$(curl -sS -o /dev/null -w '%{http_code}' http://127.0.0.1:8090/api/status)" = "401"
-          curl -fsS -u ci-operator:ci-not-a-secret http://127.0.0.1:8090/api/status >/dev/null
+          curl -fsS -u ci-admin:ci-admin-pass http://127.0.0.1:8090/api/session | node -e '
+            let raw="";
+            process.stdin.on("data", c => raw += c);
+            process.stdin.on("end", () => {
+              const data=JSON.parse(raw);
+              if (data.role !== "admin" || !data.actionsEnabled) process.exit(1);
+            });
+          '
+          curl -fsS -u ci-tech:ci-tech-pass http://127.0.0.1:8090/api/session | node -e '
+            let raw="";
+            process.stdin.on("data", c => raw += c);
+            process.stdin.on("end", () => {
+              const data=JSON.parse(raw);
+              if (data.role !== "technician" || !data.actionsEnabled) process.exit(1);
+            });
+          '
+          test "$(curl -sS -u ci-admin:ci-admin-pass -o /dev/null -w '%{http_code}'             -H 'Content-Type: application/json'             -d '{"outputId":"demo-youtube","command":"stop"}'             http://127.0.0.1:8090/api/restreamer/output-command)" = "403"
 
       - name: Host System Adapter smoke test
         run: |

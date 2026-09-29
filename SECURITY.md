@@ -12,41 +12,51 @@ Les processus de streaming peuvent exposer des clés de stream ou URL privées d
 
 Supervisor applique une allow-list backend avant toute exposition au frontend. Les champs bruts tels que `command`, `address`, `last_logline`, URL de stream, credentials et JWT ne doivent jamais quitter l'adapter moteur.
 
+### Actions alpha.9
+
+Les seules écritures Restreamer disponibles sont :
+- `start` d'une destination egress existante ;
+- `stop` d'une destination egress existante.
+
+Le backend :
+- exige une authentification Supervisor ;
+- exige le rôle Admin ou Technician ;
+- exige un en-tête d'action same-origin ;
+- refuse les commandes autres que `start` / `stop` ;
+- refuse les process IDs autres que les IDs egress au format attendu ;
+- refuse les IDs qui ne sont pas présents dans le snapshot sanitizé courant ;
+- ne permet ni restart Core, ni config reload, ni modification de process.
+
 ## Docker
 
 Le backend Web Supervisor ne reçoit pas le socket Docker.
 
-Le composant `docker-observer` est isolé :
-- aucun port ;
-- `network_mode: none` ;
-- filesystem read-only hors volume de sortie ;
-- `no-new-privileges` ;
-- capabilities Linux supprimées.
-
-Le helper lit Docker uniquement pour générer un snapshot limité aux informations d'exploitation nécessaires. Aucun environnement, label, commande, log, fichier ou configuration complète de conteneur n'est conservé ou exposé.
-
-Le Docker Adapter relit ensuite ce snapshot avec une seconde allow-list avant de le transmettre au frontend.
+Le composant `docker-observer` est isolé : aucun port, aucun réseau, filesystem read-only hors volume de sortie, `no-new-privileges`, capabilities supprimées.
 
 ## Accès Supervisor
 
-Les credentials sont fournis uniquement par variables d'environnement locales :
+Les credentials sont uniquement dans le `.env` local :
 
 ```text
 SUPERVISOR_USERNAME=
 SUPERVISOR_PASSWORD=
+SUPERVISOR_TECH_USERNAME=
+SUPERVISOR_TECH_PASSWORD=
 ```
 
-Lorsque ces deux variables sont renseignées, toutes les routes sauf `/health` exigent une authentification.
+`SUPERVISOR_USERNAME` correspond au rôle Admin. Le compte Technician est optionnel.
 
-Tant que l'authentification n'est pas activée, Supervisor reste strictement read-only. Aucune commande Restreamer ou Docker n'est ajoutée à une interface non protégée.
+Sans compte configuré, le monitoring reste accessible mais toutes les écritures sont verrouillées.
+
+## Web UI Restreamer
+
+La UI statique est servie par le même Core que l'API. Aucun bouton « restart UI » serveur n'est exposé car il n'existe pas de service UI séparé.
+
+Le reload de configuration Core n'est pas utilisé comme mécanisme de récupération UI car il redémarre Core.
 
 ## Diagnostics
 
 Tout export de diagnostic devra appliquer une redaction automatique avant partage.
-
-## Privilèges runtime
-
-Supervisor doit fonctionner avec le minimum de privilèges possible. Aucun outil de transfert de fichiers ne doit recevoir accès au socket Docker ou à la racine `/`.
 
 ## Signalement
 
