@@ -1,19 +1,20 @@
 # Project Status
 
-**Version :** 0.1.0-alpha.9  
+**Version :** 0.1.0-alpha.9.1  
 **Phase :** supervision complète + premières actions opérateur sécurisées
 
 | Domaine | État |
 |---|---|
 | Dépôt GitHub / workflow GitHub → VPS | OK |
 | Application Docker | OK |
-| Interface monitoring | Alpha 9 |
+| Interface monitoring | Alpha 9.1 |
 | Restreamer Core 16 | Intégré |
 | Channels / outputs / métriques | Intégrés |
 | Monitoring SSE quasi temps réel | Intégré, 1 s par défaut |
 | VPS CPU / RAM / load / uptime | Intégrés |
 | VPS disque / réseau | Intégrés |
 | Docker Adapter | Intégré read-only |
+| CPU Docker | Affiché en équivalent de cœurs |
 | Page SYSTEM | Intégrée |
 | Rôles Admin / Technician | Intégrés |
 | Monitoring ouvert sans auth | Autorisé, read-only |
