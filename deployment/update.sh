@@ -10,10 +10,10 @@ if [ ! -f .env ]; then
   exit 1
 fi
 
-echo "[1/7] Fetching origin/main"
+echo "[1/8] Fetching origin/main"
 git fetch --prune origin main
 
-echo "[2/7] Verifying local tracked files"
+echo "[2/8] Verifying local tracked files"
 if ! git diff --quiet || ! git diff --cached --quiet; then
   echo "ERROR: tracked local changes detected."
   echo "This VPS is runtime-only. Resolve them before updating."
@@ -21,7 +21,7 @@ if ! git diff --quiet || ! git diff --cached --quiet; then
   exit 1
 fi
 
-echo "[3/7] Fast-forwarding main"
+echo "[3/8] Fast-forwarding main"
 git checkout main
 git merge --ff-only origin/main
 
@@ -31,7 +31,7 @@ if [ "$NEW_REV" != "$CURRENT_REV" ] && [ "${STREAM_SUPERVISOR_UPDATE_REEXEC:-0}"
   STREAM_SUPERVISOR_UPDATE_REEXEC=1 exec sh deployment/update.sh
 fi
 
-echo "[4/7] Detecting host network interface"
+echo "[4/8] Detecting host network interface"
 SYSTEM_NETWORK_INTERFACE="$(ip route show default | awk '/default/ {for (i=1;i<=NF;i++) if ($i=="dev") {print $(i+1); exit}}')"
 if [ -z "$SYSTEM_NETWORK_INTERFACE" ]; then
   echo "ERROR: unable to detect default host network interface."
@@ -44,13 +44,21 @@ fi
 export SYSTEM_NETWORK_INTERFACE
 echo "Host network interface: $SYSTEM_NETWORK_INTERFACE"
 
-echo "[5/7] Preparing safe host metrics mount"
+echo "[5/8] Preparing safe host metrics mount"
 mkdir -p runtime/disk-probe
 
-echo "[6/7] Building and starting Supervisor"
+echo "[6/8] Ensuring shared proxy network"
+if ! docker network inspect web-proxy >/dev/null 2>&1; then
+  docker network create web-proxy >/dev/null
+  echo "Created Docker network: web-proxy"
+else
+  echo "Docker network present: web-proxy"
+fi
+
+echo "[7/8] Building and starting Supervisor"
 docker compose up -d --build --remove-orphans
 
-echo "[7/7] Health check"
+echo "[8/8] Health check"
 attempt=0
 until curl -fsS http://127.0.0.1:8090/health >/dev/null; do
   attempt=$((attempt + 1))
