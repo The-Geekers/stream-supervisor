@@ -1,10 +1,16 @@
 FROM node:24-alpine
 WORKDIR /app
+
 COPY package.json ./
 COPY server.js ./
+COPY lib ./lib
 COPY public ./public
+
 ENV NODE_ENV=production
 ENV HOST=0.0.0.0
 ENV PORT=8090
+
 EXPOSE 8090
-CMD ["npm","start"]
+
+USER node
+CMD ["npm", "start"]
