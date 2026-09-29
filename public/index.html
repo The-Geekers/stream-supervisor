@@ -199,7 +199,7 @@ function applyStatus(x){
     $("outputsSub").textContent=(s.outputsStopped??0)+" stopped";
     $("ingressTotal").textContent=fmtBitrate(s.ingestBitrateKbit??0);
     $("egressTotal").textContent=fmtBitrate(s.egressBitrateKbit??0);
-    $("processCpu").textContent=((s.processCpuUsage??0).toFixed?Number(s.processCpuUsage??0).toFixed(1):"0.0")+"%";
+    $("processCpu").textContent=Number(s.processCpuUsage??0).toFixed(1)+"%";
     $("processMemory").textContent=fmtMem(s.processMemoryBytes??0);
     $("alerts").textContent=s.alerts??0;
     $("alerts").style.color=(s.alerts??0)>0?"var(--amber)":"var(--text)";
@@ -207,12 +207,48 @@ function applyStatus(x){
     $("outputErrors").style.color=(s.outputErrors??0)>0?"var(--red)":"var(--text)";
     $("supervisorVersion").textContent=x.supervisor?.version||"--";
     $("sideVersion").textContent=x.supervisor?.version||"v0.1.0-alpha.6";
+    $("monitorTransport").textContent=(monitoring.transport||"poll").toUpperCase()+" · source "+(monitoring.sourcePollMs||"--")+" ms · core "+(monitoring.pollDurationMs??"--")+" ms";
     latestChannels=r.channels||[];
     renderChannels();
     lastRefresh=Date.now();
   }catch{
+    setService("api","NO DATA","Invalid monitoring snapshot","bad");
+  }
+}
+async function fetchSnapshot(){
+  try{
+    const response=await fetch("/api/status",{cache:"no-store"});
+    if(!response.ok)throw new Error("api");
+    applyStatus(await response.json());
+  }catch{
     setService("api","NO DATA","Supervisor API unreachable","bad");
   }
+}
+function connectRealtime(){
+  if(!("EventSource" in window)){
+    $("monitorTransport").textContent="POLL FALLBACK · 5s";
+    fetchSnapshot();
+    setInterval(fetchSnapshot,5000);
+    return;
+  }
+
+  eventStream=new EventSource("/api/events");
+  eventStream.addEventListener("status",(event)=>{
+    try{
+      applyStatus(JSON.parse(event.data));
+    }catch{
+      setService("api","NO DATA","Invalid realtime event","bad");
+    }
+  });
+  eventStream.onopen=()=>{
+    $("apiDot").className="dot ok";
+  };
+  eventStream.onerror=()=>{
+    $("apiDot").className="dot warn";
+    $("monitorTransport").textContent="SSE RECONNECTING";
+  };
+
+  fetchSnapshot();
 }
 document.querySelectorAll(".filter").forEach(btn=>btn.addEventListener("click",()=>{
   document.querySelectorAll(".filter").forEach(x=>x.classList.remove("active"));
