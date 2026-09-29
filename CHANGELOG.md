@@ -21,9 +21,20 @@
 - Indication IN/OUT explicite dans l'interface.
 
 ### Changed
-- Passage à `0.1.0-alpha.5`.
+- Passage à `0.1.0-alpha.6`.
 - Interface encore plus dense et orientée régie/control-room.
 - Modèle Restreamer enrichi tout en conservant l'allow-list anti-secrets.
+
+### Fixed
+- Correction de la lecture du nom de channel Restreamer : ingest = `metadata.meta.name`, destination = `metadata.name`.
+- Tri déterministe par nom + ID afin d'empêcher les lignes de changer de place lorsque plusieurs noms sont identiques.
+- Libellés de filtres clarifiés : `INGEST LIVE` et `INGEST STOPPED`.
+
+### Added
+- Flux temps réel SSE `/api/events`.
+- Polling Core partagé côté backend, 1000 ms par défaut, au lieu d'un polling indépendant par navigateur.
+- Cache 5 s pour les probes de service Core/About et Web UI.
+- Affichage du transport, de l'intervalle source et de la durée du poll dans le footer.
 
 ### Security
 - `/health` reste public et ne contient aucune donnée sensible.

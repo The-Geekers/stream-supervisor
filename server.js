@@ -12,8 +12,10 @@ const __dirname = dirname(__filename);
 
 const HOST = process.env.HOST || "0.0.0.0";
 const PORT = Number(process.env.PORT || 8090);
-const VERSION = "0.1.0-alpha.5";
+const VERSION = "0.1.0-alpha.6";
 const DEMO_MODE = process.env.DEMO_MODE === "true";
+const requestedMonitorInterval = Number(process.env.MONITOR_INTERVAL_MS || 1000);
+const MONITOR_INTERVAL_MS = Math.min(10000, Math.max(500, Number.isFinite(requestedMonitorInterval) ? requestedMonitorInterval : 1000));
 const startedAt = Date.now();
 
 const auth = createBasicAuth({
@@ -27,6 +29,11 @@ const restreamer = new RestreamerAdapter({
   username: process.env.RESTREAMER_USERNAME,
   password: process.env.RESTREAMER_PASSWORD
 });
+
+const sseClients = new Set();
+let latestStatus = null;
+let refreshPromise = null;
+let monitorTimer = null;
 
 function securityHeaders(extra = {}) {
   return {
@@ -68,7 +75,7 @@ function systemStatus() {
   };
 }
 
-function supervisorInfo() {
+function supervisorInfo(pollDurationMs = null) {
   return {
     status: "online",
     mode: "read-only",
@@ -76,8 +83,112 @@ function supervisorInfo() {
     uptimeSeconds: Math.floor((Date.now() - startedAt) / 1000),
     security: {
       authEnabled: auth.enabled
+    },
+    monitoring: {
+      transport: "sse",
+      sourcePollMs: MONITOR_INTERVAL_MS,
+      pollDurationMs
     }
   };
+}
+
+async function collectStatus() {
+  const started = performance.now();
+
+  if (DEMO_MODE) {
+    const status = buildDemoStatus({
+      version: VERSION,
+      uptimeSeconds: Math.floor((Date.now() - startedAt) / 1000),
+      authEnabled: auth.enabled
+    });
+    const pollDurationMs = Math.max(0, Math.round(performance.now() - started));
+    status.supervisor.monitoring = {
+      transport: "sse",
+      sourcePollMs: MONITOR_INTERVAL_MS,
+      pollDurationMs
+    };
+    status.generatedAt = new Date().toISOString();
+    return status;
+  }
+
+  const restreamerStatus = await restreamer.overview();
+  const pollDurationMs = Math.max(0, Math.round(performance.now() - started));
+
+  return {
+    supervisor: supervisorInfo(pollDurationMs),
+    system: systemStatus(),
+    restreamer: restreamerStatus,
+    docker: {
+      connected: false
+    },
+    generatedAt: new Date().toISOString()
+  };
+}
+
+function sendSse(res, status) {
+  res.write(`event: status\ndata: ${JSON.stringify(status)}\n\n`);
+}
+
+function broadcast(status) {
+  for (const res of sseClients) {
+    try {
+      sendSse(res, status);
+    } catch {
+      sseClients.delete(res);
+    }
+  }
+}
+
+async function refreshStatus() {
+  if (refreshPromise) return refreshPromise;
+
+  refreshPromise = collectStatus()
+    .then((status) => {
+      latestStatus = status;
+      broadcast(status);
+      return status;
+    })
+    .finally(() => {
+      refreshPromise = null;
+    });
+
+  return refreshPromise;
+}
+
+async function monitorLoop() {
+  try {
+    await refreshStatus();
+  } catch {
+    // Keep the monitor alive. No raw Restreamer error/payload is logged.
+  } finally {
+    monitorTimer = setTimeout(monitorLoop, MONITOR_INTERVAL_MS);
+  }
+}
+
+function openEventStream(req, res) {
+  res.writeHead(200, securityHeaders({
+    "Content-Type": "text/event-stream; charset=utf-8",
+    "Connection": "keep-alive",
+    "X-Accel-Buffering": "no"
+  }));
+  res.write("retry: 2000\n\n");
+
+  sseClients.add(res);
+  if (latestStatus) sendSse(res, latestStatus);
+
+  const keepalive = setInterval(() => {
+    try {
+      res.write(": keepalive\n\n");
+    } catch {
+      clearInterval(keepalive);
+      sseClients.delete(res);
+    }
+  }, 15000);
+
+  req.on("close", () => {
+    clearInterval(keepalive);
+    sseClients.delete(res);
+  });
 }
 
 const server = http.createServer(async (req, res) => {
@@ -96,26 +207,21 @@ const server = http.createServer(async (req, res) => {
     return unauthorized(res);
   }
 
+  if (req.method === "GET" && url.pathname === "/api/events") {
+    openEventStream(req, res);
+    return;
+  }
+
   if (req.method === "GET" && url.pathname === "/api/status") {
-    if (DEMO_MODE) {
-      return sendJson(res, 200, buildDemoStatus({
-        version: VERSION,
-        uptimeSeconds: Math.floor((Date.now() - startedAt) / 1000),
-        authEnabled: auth.enabled
-      }));
+    try {
+      const status = latestStatus || await refreshStatus();
+      return sendJson(res, 200, status);
+    } catch {
+      return sendJson(res, 503, {
+        status: "unavailable",
+        message: "monitoring snapshot unavailable"
+      });
     }
-
-    const restreamerStatus = await restreamer.overview();
-
-    return sendJson(res, 200, {
-      supervisor: supervisorInfo(),
-      system: systemStatus(),
-      restreamer: restreamerStatus,
-      docker: {
-        connected: false
-      },
-      generatedAt: new Date().toISOString()
-    });
   }
 
   if (req.method === "GET" && (url.pathname === "/" || url.pathname === "/index.html")) {
@@ -135,7 +241,14 @@ const server = http.createServer(async (req, res) => {
 });
 
 server.listen(PORT, HOST, () => {
-  // Fixed application metadata only. Never log requests, credentials, tokens,
-  // Restreamer payloads, command lines or stream URLs.
   console.log(`[stream-supervisor] ${VERSION} listening on ${HOST}:${PORT}`);
+  monitorLoop();
+});
+
+process.on("SIGTERM", () => {
+  if (monitorTimer) clearTimeout(monitorTimer);
+  for (const res of sseClients) {
+    try { res.end(); } catch {}
+  }
+  server.close(() => process.exit(0));
 });

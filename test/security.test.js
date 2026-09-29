@@ -10,7 +10,7 @@ test("sanitizer never exposes Restreamer commands, addresses or credentials", ()
   const raw = {
     id: `restreamer-ui:ingest:${UUID}`,
     reference: UUID,
-    metadata: {"restreamer-ui": {name: "Site test - Journée", internal: {stream_key: FAKE_STREAM_KEY}}},
+    metadata: {"restreamer-ui": {meta: {name: "Site test - Journée"}, internal: {stream_key: FAKE_STREAM_KEY}}},
     state: {
       order: "start",
       exec: "running",
@@ -54,7 +54,7 @@ test("channel model groups egresses by Restreamer reference", () => {
   const ingest = sanitizeProcess({
     id: `restreamer-ui:ingest:${UUID}`,
     reference: UUID,
-    metadata: {"restreamer-ui": {name: "Plateau A"}},
+    metadata: {"restreamer-ui": {meta: {name: "Plateau A"}}},
     state: {
       order: "start",
       exec: "running",
@@ -109,7 +109,7 @@ test("a missing source and failed destination create one channel alert", () => {
   const ingest = sanitizeProcess({
     id: `restreamer-ui:ingest:${UUID}`,
     reference: UUID,
-    metadata: {"restreamer-ui": {name: "Site B"}},
+    metadata: {"restreamer-ui": {meta: {name: "Site B"}}},
     state: {order: "start", exec: "failed", reconnect_seconds: 15, progress: {}}
   });
 
@@ -131,7 +131,7 @@ test("channels are returned alphabetically by their Restreamer names", () => {
   const make = (id, name) => sanitizeProcess({
     id: `restreamer-ui:ingest:${id}`,
     reference: id,
-    metadata: {"restreamer-ui": {name}},
+    metadata: {"restreamer-ui": {meta: {name}}},
     state: {order:"stop", exec:"finished", progress:{}}
   });
 
@@ -143,4 +143,23 @@ test("channels are returned alphabetically by their Restreamer names", () => {
   ]);
 
   assert.deepEqual(channels.map((c) => c.name), ["Agora", "Site 2", "Site 10", "Sommet"]);
+});
+
+
+test("ingest and egress names follow the Restreamer UI metadata layout", () => {
+  const ingest = sanitizeProcess({
+    id: `restreamer-ui:ingest:${UUID}`,
+    reference: UUID,
+    metadata: {"restreamer-ui": {meta: {name: "CHANNEL 1 - COMPTOIR"}}},
+    state: {order:"stop",exec:"finished",progress:{}}
+  });
+  const egress = sanitizeProcess({
+    id: "restreamer-ui:egress:youtube:55555555-5555-4555-8555-555555555555",
+    reference: UUID,
+    metadata: {"restreamer-ui": {name: "Sommet TV - main"}},
+    state: {order:"stop",exec:"finished",progress:{}}
+  });
+
+  assert.equal(ingest.name, "CHANNEL 1 - COMPTOIR");
+  assert.equal(egress.name, "Sommet TV - main");
 });

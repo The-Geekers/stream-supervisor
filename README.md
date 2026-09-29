@@ -15,20 +15,21 @@ Le premier moteur ciblé est **Restreamer**. L'architecture reste volontairement
 
 ## État actuel
 
-`0.1.0-alpha.5`
+`0.1.0-alpha.6`
 
 - application Docker fonctionnelle ;
 - adapter Restreamer Core 16 en lecture seule ;
 - Core/API et Web UI Restreamer supervisés séparément ;
 - channels et destinations regroupés à partir des processus Restreamer ;
-- noms récupérés depuis les metadata `restreamer-ui` ;
+- noms de channels récupérés depuis `metadata.meta.name` et noms de destinations depuis `metadata.name`, conformément au modèle Restreamer UI ;
 - métriques opérationnelles : état, runtime, FPS, bitrate, codecs, vidéo, audio, drop/dup, CPU/mémoire process ;
-- filtres All / Live / Issues / Stopped ;
+- filtres All / Ingest Live / Issues / Ingest Stopped ;
 - tri des channels par nom ou par état ;
 - total débit entrant et sortant Restreamer ;
 - total CPU et RAM des processus ingest/egress supervisés ;
 - authentification HTTP Basic optionnelle pour Supervisor ;
 - CI qualité et tests anti-fuite de secrets ;
+- monitoring quasi temps réel par SSE avec un seul polling Core partagé côté backend ;
 - CI visuelle avec capture automatique de l'interface sur données fictives sûres.
 
 Aucune commande start/stop n'est encore exposée. L'alpha 5 reste strictement read-only.
