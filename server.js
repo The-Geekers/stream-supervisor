@@ -13,7 +13,7 @@ const __dirname = dirname(__filename);
 
 const HOST = process.env.HOST || "0.0.0.0";
 const PORT = Number(process.env.PORT || 8090);
-const VERSION = "0.1.0-alpha.8";
+const VERSION = "0.1.0-alpha.9";
 const DEMO_MODE = process.env.DEMO_MODE === "true";
 const requestedMonitorInterval = Number(process.env.MONITOR_INTERVAL_MS || 1000);
 const MONITOR_INTERVAL_MS = Math.min(
@@ -24,7 +24,9 @@ const startedAt = Date.now();
 
 const auth = createBasicAuth({
   username: process.env.SUPERVISOR_USERNAME,
-  password: process.env.SUPERVISOR_PASSWORD
+  password: process.env.SUPERVISOR_PASSWORD,
+  technicianUsername: process.env.SUPERVISOR_TECH_USERNAME,
+  technicianPassword: process.env.SUPERVISOR_TECH_PASSWORD
 });
 
 const restreamer = new RestreamerAdapter({
@@ -77,6 +79,46 @@ function unauthorized(res) {
   );
 }
 
+function forbidden(res, code = "forbidden") {
+  return sendJson(res, 403, { status:"forbidden", code });
+}
+
+async function readJsonBody(req, maxBytes = 2048) {
+  return new Promise((resolve, reject) => {
+    let raw = "";
+    req.setEncoding("utf8");
+    req.on("data", (chunk) => {
+      raw += chunk;
+      if (Buffer.byteLength(raw, "utf8") > maxBytes) {
+        reject(new Error("body_too_large"));
+        req.destroy();
+      }
+    });
+    req.on("end", () => {
+      try {
+        resolve(raw ? JSON.parse(raw) : {});
+      } catch {
+        reject(new Error("invalid_json"));
+      }
+    });
+    req.on("error", reject);
+  });
+}
+
+function findOutput(status, outputId) {
+  for (const channel of status?.restreamer?.channels || []) {
+    for (const output of channel.outputs || []) {
+      if (output.id === outputId) {
+        return {
+          channel: { id:channel.id, name:channel.name },
+          output
+        };
+      }
+    }
+  }
+  return null;
+}
+
 function supervisorInfo(pollDurationMs = null) {
   return {
     status: "online",
@@ -84,7 +126,8 @@ function supervisorInfo(pollDurationMs = null) {
     version: VERSION,
     uptimeSeconds: Math.floor((Date.now() - startedAt) / 1000),
     security: {
-      authEnabled: auth.enabled
+      authEnabled: auth.enabled,
+      actionsAvailable: auth.enabled
     },
     monitoring: {
       transport: "sse",
@@ -209,6 +252,67 @@ const server = http.createServer(async (req, res) => {
 
   if (!auth.isAuthorized(req.headers.authorization)) {
     return unauthorized(res);
+  }
+
+  const session = auth.authenticate(req.headers.authorization);
+
+  if (req.method === "GET" && url.pathname === "/api/session") {
+    return sendJson(res, 200, {
+      authenticated: session.authenticated,
+      role: session.role,
+      username: session.username,
+      actionsEnabled: auth.enabled && session.actionsEnabled
+    });
+  }
+
+  if (req.method === "POST" && url.pathname === "/api/restreamer/output-command") {
+    if (!auth.enabled) return forbidden(res, "actions_locked");
+    if (!session.actionsEnabled) return forbidden(res, "insufficient_role");
+
+    let body;
+    try {
+      body = await readJsonBody(req);
+    } catch {
+      return sendJson(res, 400, { status:"bad_request" });
+    }
+
+    const outputId = typeof body?.outputId === "string" ? body.outputId : "";
+    const command = typeof body?.command === "string" ? body.command.toLowerCase() : "";
+
+    if (!["start","stop"].includes(command)) {
+      return sendJson(res, 400, { status:"bad_request", code:"invalid_command" });
+    }
+
+    let status = latestStatus;
+    if (!status) {
+      try { status = await refreshStatus(); } catch {}
+    }
+
+    const match = findOutput(status, outputId);
+    if (!match) {
+      return sendJson(res, 404, { status:"not_found", code:"unknown_output" });
+    }
+
+    try {
+      await restreamer.commandOutput(outputId, command);
+      setTimeout(() => refreshStatus().catch(() => {}), 250);
+      return sendJson(res, 200, {
+        status:"accepted",
+        command,
+        output: {
+          name: match.output.name,
+          provider: match.output.provider
+        },
+        channel: {
+          name: match.channel.name
+        }
+      });
+    } catch {
+      return sendJson(res, 502, {
+        status:"error",
+        code:"restreamer_command_failed"
+      });
+    }
   }
 
   if (req.method === "GET" && url.pathname === "/api/events") {
