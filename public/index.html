@@ -9,7 +9,7 @@
 *{box-sizing:border-box}html{overflow-y:scroll;scrollbar-gutter:stable}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text)}body{font-size:13px}button{font:inherit}
 .shell{min-height:100vh;display:grid;grid-template-columns:190px minmax(0,1fr)}.sidebar{background:var(--side);border-right:1px solid var(--line);padding:18px 12px;display:flex;flex-direction:column}
 .brand{padding:3px 8px 18px;font-size:14px;font-weight:800;letter-spacing:.12em;border-bottom:1px solid var(--line)}.brand small{display:block;margin-top:6px;color:var(--muted);font:10px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.08em}
-.nav{padding-top:14px}.nav-item{height:36px;display:flex;align-items:center;gap:10px;padding:0 9px;color:#89959f;border-left:2px solid transparent;font-size:11px;font-weight:800;letter-spacing:.08em}.nav-item.active{color:#fff;background:#0c1115;border-left-color:var(--cyan)}.nav-item.disabled{opacity:.32}.nav-dot{width:5px;height:5px;background:currentColor}
+.nav{padding-top:14px}.nav-item{height:36px;display:flex;align-items:center;gap:10px;padding:0 9px;color:#89959f;border-left:2px solid transparent;font-size:11px;font-weight:800;letter-spacing:.08em;cursor:pointer;user-select:none}.nav-item.active{color:#fff;background:#0c1115;border-left-color:var(--cyan)}.nav-item.disabled{opacity:.32;cursor:default}.nav-dot{width:5px;height:5px;background:currentColor}.view{display:none}.view.active{display:block}
 .side-foot{margin-top:auto;padding:13px 8px 0;border-top:1px solid var(--line);color:var(--muted);font:10px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace}.main{min-width:0}
 .topbar{height:58px;padding:0 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);background:#080b0d}.title-wrap{display:flex;align-items:baseline;gap:12px}.title{font-size:15px;font-weight:800;letter-spacing:.09em}.subtitle{color:var(--muted);font:10px ui-monospace,SFMono-Regular,Consolas,monospace}.top-right{display:flex;align-items:center;gap:10px}.clock{color:#aeb8c0;font:11px ui-monospace,SFMono-Regular,Consolas,monospace}
 .badge{padding:6px 8px;border:1px solid var(--line);font:10px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.04em}.badge.readonly{border-color:#5b4923;color:var(--amber);background:#151107}.badge.secure{border-color:#235a34;color:var(--green);background:#09150d}.badge.open{border-color:#6b5021;color:var(--amber);background:#171208}
@@ -22,7 +22,7 @@
 .state{font:800 10px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.05em}.state.live{color:var(--green)}.state.connecting{color:var(--cyan)}.state.waiting{color:var(--amber)}.state.error{color:var(--red)}.state.stopped,.state.idle{color:var(--off)}.spec{font:11px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}.spec small{display:block;color:var(--muted);font-size:9px}
 .outputs{display:flex;flex-direction:column;gap:5px;width:100%}.output{display:grid;grid-template-columns:minmax(0,1fr) 74px;gap:8px;padding-bottom:4px;border-bottom:1px dotted #222a31}.output:last-child{border:0;padding-bottom:0}.output-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:11px}.output-meta{margin-top:2px;color:var(--muted);font:9px ui-monospace,SFMono-Regular,Consolas,monospace}.output-state{text-align:right}
 .empty{padding:30px 12px;color:var(--muted);font:11px ui-monospace,SFMono-Regular,Consolas,monospace}.footerline{display:flex;gap:18px;flex-wrap:wrap;margin-top:9px;color:var(--muted);font:10px ui-monospace,SFMono-Regular,Consolas,monospace}.dot{display:inline-block;width:6px;height:6px;margin-right:6px;background:var(--off)}.dot.ok{background:var(--green)}.dot.warn{background:var(--amber)}.dot.bad{background:var(--red)}
-.alert-note{display:none;margin-bottom:12px;border:1px solid #614a20;background:#151106;color:#e8c16f;padding:9px 11px;font:10px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace}.alert-note.show{display:block}
+.alert-note{display:none;margin-bottom:12px;border:1px solid #614a20;background:#151106;color:#e8c16f;padding:9px 11px;font:10px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace}.alert-note.show{display:block}.docker-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--line);background:var(--panel);margin-bottom:12px}.docker-summary .metric:nth-child(4){border-right:0}.docker-table{border:1px solid var(--line);background:var(--panel)}.docker-head,.docker-row{display:grid;grid-template-columns:minmax(170px,1.5fr) minmax(220px,2fr) 100px 100px 110px 120px 110px}.docker-head{background:#0c1014;color:var(--muted);font-size:9px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;border-bottom:1px solid var(--line)}.docker-head>div,.docker-cell{padding:9px 10px;border-right:1px solid var(--line-soft)}.docker-head>div:last-child,.docker-cell:last-child{border-right:0}.docker-row{min-height:54px;border-bottom:1px solid var(--line-soft)}.docker-row:last-child{border-bottom:0}.docker-name{font-weight:800}.docker-image{color:var(--muted);font:10px ui-monospace,SFMono-Regular,Consolas,monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.docker-note{margin-top:9px;color:var(--muted);font:9px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}
 @media(max-width:1280px){.table-head,.channel{grid-template-columns:minmax(210px,2fr) 95px 150px 120px 105px minmax(240px,2fr)}.table-head>.sort-head:nth-child(6),.channel>.cell:nth-child(6){display:none}}
 @media(max-width:1200px){.host-strip{grid-template-columns:repeat(4,1fr)}.host-metric:nth-child(4n){border-right:0}.telemetry{grid-template-columns:repeat(4,1fr)}.metric:nth-child(4n){border-right:0}}@media(max-width:1050px){.shell{grid-template-columns:58px minmax(0,1fr)}.brand{font-size:0}.brand:before{content:"SS";font-size:14px}.brand small,.nav-item span{display:none}.nav-item{justify-content:center}.telemetry{grid-template-columns:repeat(4,1fr)}.metric:nth-child(4n){border-right:0}.service-strip{grid-template-columns:1fr}.service{border-right:0;border-bottom:1px solid var(--line)}.service:last-child{border-bottom:0}.table-head{display:none}.channel{grid-template-columns:minmax(200px,1.8fr) 90px 140px 110px minmax(220px,1.6fr)}.channel>.cell:nth-child(4),.channel>.cell:nth-child(6){display:none}}
 @media(max-width:760px){.host-strip{grid-template-columns:repeat(2,1fr)}.host-metric:nth-child(even){border-right:0}.shell{display:block}.sidebar{display:none}.topbar{padding:0 10px}.subtitle,.clock{display:none}.content{padding:10px}.telemetry{grid-template-columns:repeat(2,1fr)}.metric:nth-child(odd){border-right:1px solid var(--line)}.metric:nth-child(even){border-right:0}.channel{display:block;padding:9px}.cell{border:0;padding:5px 0}.identity{min-height:50px}.toolbar{height:auto;padding:8px;gap:10px;align-items:flex-start;flex-direction:column}}
@@ -34,17 +34,17 @@
   <aside class="sidebar">
     <div class="brand">STREAM SUPERVISOR<small>OPERATIONS CONSOLE</small></div>
     <nav class="nav">
-      <div class="nav-item active"><i class="nav-dot"></i><span>CHANNELS</span></div>
-      <div class="nav-item disabled"><i class="nav-dot"></i><span>SYSTEM</span></div>
+      <div class="nav-item active" data-view="channels"><i class="nav-dot"></i><span>CHANNELS</span></div>
+      <div class="nav-item" data-view="system"><i class="nav-dot"></i><span>SYSTEM</span></div>
       <div class="nav-item disabled"><i class="nav-dot"></i><span>INCIDENTS</span></div>
       <div class="nav-item disabled"><i class="nav-dot"></i><span>SETTINGS</span></div>
     </nav>
-    <div class="side-foot">RESTREAMER / READ ONLY<br><span id="sideVersion">v0.1.0-alpha.7.1</span></div>
+    <div class="side-foot">RESTREAMER / READ ONLY<br><span id="sideVersion">v0.1.0-alpha.8</span></div>
   </aside>
 
   <main class="main">
     <header class="topbar">
-      <div class="title-wrap"><div class="title">CHANNEL MONITOR</div><div class="subtitle">LIVE OPERATIONS</div></div>
+      <div class="title-wrap"><div id="pageTitle" class="title">CHANNEL MONITOR</div><div id="pageSubtitle" class="subtitle">LIVE OPERATIONS</div></div>
       <div class="top-right"><div id="clock" class="clock">--:--:--</div><div class="badge readonly">READ ONLY</div><div id="authBadge" class="badge open">ACCESS OPEN</div></div>
     </header>
 
@@ -67,6 +67,7 @@
         <div class="host-metric"><div class="host-label">VPS uptime</div><div id="hostUptime" class="host-value">--</div><div class="host-sub">host uptime</div></div>
       </section>
 
+      <div id="viewChannels" class="view active">
       <section class="telemetry">
         <div class="metric"><div class="metric-label">Channels live</div><div id="channelsLive" class="metric-value">--</div><div id="channelsSub" class="metric-sub">--</div></div>
         <div class="metric"><div class="metric-label">Outputs live</div><div id="outputsLive" class="metric-value">--</div><div id="outputsSub" class="metric-sub">--</div></div>
@@ -104,10 +105,28 @@
         <div id="channels"><div class="empty">Waiting for Supervisor API…</div></div>
       </section>
 
+      </div>
+
+      <div id="viewSystem" class="view">
+        <section class="docker-summary">
+          <div class="metric"><div class="metric-label">Docker engine</div><div id="dockerEngine" class="metric-value">--</div><div id="dockerVersion" class="metric-sub">--</div></div>
+          <div class="metric"><div class="metric-label">Services running</div><div id="dockerRunning" class="metric-value">--</div><div id="dockerConfigured" class="metric-sub">--</div></div>
+          <div class="metric"><div class="metric-label">Unhealthy</div><div id="dockerUnhealthy" class="metric-value">--</div><div class="metric-sub">monitored containers</div></div>
+          <div class="metric"><div class="metric-label">Observer age</div><div id="dockerAge" class="metric-value">--</div><div class="metric-sub">isolated read-only collector</div></div>
+        </section>
+
+        <section class="docker-table">
+          <div class="docker-head"><div>Service</div><div>Image</div><div>State</div><div>Health</div><div>CPU</div><div>RAM</div><div>Uptime</div></div>
+          <div id="dockerContainers"><div class="empty">Waiting for Docker observer…</div></div>
+        </section>
+        <div class="docker-note">Docker socket access is isolated inside a network-disabled observer. Supervisor only reads a sanitized snapshot file.</div>
+      </div>
+
       <div class="footerline">
         <span><i id="apiDot" class="dot"></i>Supervisor</span>
         <span><i id="coreDot" class="dot"></i>Core</span>
         <span><i id="uiDot" class="dot"></i>Web UI</span>
+        <span><i id="dockerDot" class="dot"></i>Docker</span>
         <span>backend allow-list active</span>
         <span id="monitorTransport">monitor --</span>
         <span>refresh <span id="refreshAge">--</span></span>
@@ -127,7 +146,44 @@ const fmtMem=b=>{b=Number(b)||0;return b>=1073741824?(b/1073741824).toFixed(1)+"
 const fmtRate=bps=>{bps=Number(bps)||0;const bits=bps*8;return bits>=1000000000?(bits/1000000000).toFixed(2)+" Gb/s":bits>=1000000?(bits/1000000).toFixed(1)+" Mb/s":bits>=1000?(bits/1000).toFixed(0)+" kb/s":"0 kb/s"};
 const stateLabel=s=>({live:"LIVE",connecting:"CONNECTING",waiting:"NO SOURCE",error:"ERROR",stopped:"STOPPED",idle:"IDLE"}[s]||String(s||"UNKNOWN").toUpperCase());
 const statusClass=s=>["live","connecting","waiting","error","stopped","idle"].includes(s)?s:"idle";
-let lastRefresh=0,currentFilter="all",currentSort="name",currentDirection="asc",latestChannels=[],eventStream=null;
+let lastRefresh=0,currentFilter="all",currentSort="name",currentDirection="asc",latestChannels=[],eventStream=null,currentView="channels";
+
+function renderDocker(docker){
+  const containers=Array.isArray(docker?.containers)?docker.containers:[];
+  $("dockerEngine").textContent=docker?.connected?"ONLINE":"OFFLINE";
+  $("dockerEngine").style.color=docker?.connected?"var(--green)":"var(--red)";
+  $("dockerVersion").textContent=docker?.engineVersion?("Docker "+docker.engineVersion):"version --";
+  $("dockerRunning").textContent=(docker?.summary?.running??0)+" / "+(docker?.summary?.configured??0);
+  $("dockerConfigured").textContent=(docker?.summary?.stopped??0)+" stopped";
+  $("dockerUnhealthy").textContent=docker?.summary?.unhealthy??0;
+  $("dockerUnhealthy").style.color=(docker?.summary?.unhealthy??0)>0?"var(--red)":"var(--text)";
+  $("dockerAge").textContent=docker?.ageMs!=null?Math.max(0,Math.round(docker.ageMs/1000))+"s":"--";
+  $("dockerDot").className="dot "+(docker?.connected?"ok":docker?.observerFresh?"warn":"bad");
+
+  $("dockerContainers").innerHTML=containers.length?containers.map(item=>{
+    const state=item.state==="running"?"live":"stopped";
+    const health=item.health||"--";
+    const healthClass=item.health==="unhealthy"?"error":item.health==="healthy"?"live":item.health==="starting"?"connecting":"idle";
+    return '<div class="docker-row">'+
+      '<div class="docker-cell"><div class="docker-name">'+esc(item.name||"--")+'</div><div class="docker-image">'+esc(item.id||"")+'</div></div>'+
+      '<div class="docker-cell docker-image">'+esc(item.image||"--")+'</div>'+
+      '<div class="docker-cell"><span class="state '+state+'">'+esc(String(item.state||"unknown").toUpperCase())+'</span></div>'+
+      '<div class="docker-cell"><span class="state '+healthClass+'">'+esc(String(health).toUpperCase())+'</span></div>'+
+      '<div class="docker-cell spec">'+esc(Number(item.cpuPercent||0).toFixed(1))+'%</div>'+
+      '<div class="docker-cell spec">'+esc(fmtMem(item.memory?.usageBytes||0))+'</div>'+
+      '<div class="docker-cell spec">'+esc(fmtTime(item.uptimeSeconds||0))+'</div>'+
+    '</div>';
+  }).join(""):'<div class="empty">No monitored Docker services discovered.</div>';
+}
+
+function switchView(view){
+  currentView=view==="system"?"system":"channels";
+  document.querySelectorAll(".nav-item[data-view]").forEach(item=>item.classList.toggle("active",item.dataset.view===currentView));
+  $("viewChannels").classList.toggle("active",currentView==="channels");
+  $("viewSystem").classList.toggle("active",currentView==="system");
+  $("pageTitle").textContent=currentView==="system"?"SYSTEM MONITOR":"CHANNEL MONITOR";
+  $("pageSubtitle").textContent=currentView==="system"?"HOST + DOCKER SERVICES":"LIVE OPERATIONS";
+}
 
 function renderVideo(v){
   if(!v)return '<span class="dim">NO SIGNAL</span>';
@@ -231,7 +287,7 @@ function updateClock(){
 }
 function applyStatus(x){
   try{
-    const r=x.restreamer||{},core=r.core||{},ui=r.ui||{},s=r.summary||{},security=x.supervisor?.security||{},monitoring=x.supervisor?.monitoring||{},host=x.system||{};
+    const r=x.restreamer||{},core=r.core||{},ui=r.ui||{},s=r.summary||{},security=x.supervisor?.security||{},monitoring=x.supervisor?.monitoring||{},host=x.system||{},docker=x.docker||{};
     setService("api","ONLINE",(x.supervisor?.version||"--")+" · READ ONLY","ok");
     setService("core",core.authenticated?"ONLINE":core.online?"AUTH ERROR":"OFFLINE",[core.version?("Core "+core.version):"version --",core.latencyMs!=null?(core.latencyMs+" ms"):""].filter(Boolean).join(" · "),core.authenticated?"ok":core.online?"warn":"bad");
     const uiText=ui.online?"ONLINE":ui.reachable?("HTTP "+(ui.httpStatus||"ERR")):"OFFLINE";
@@ -249,6 +305,7 @@ function applyStatus(x){
     $("hostNetIf").textContent=host.available?(host.network?.interface||"interface --"):"host metrics unavailable";
     $("hostLoad").textContent=host.available?[host.load?.one,host.load?.five,host.load?.fifteen].map(v=>Number(v||0).toFixed(2)).join(" / "):"--";
     $("hostUptime").textContent=host.available?fmtTime(host.uptimeSeconds||0):"--";
+    renderDocker(docker);
     $("channelsLive").textContent=(s.live??0)+" / "+(s.channels??0);
     $("channelsSub").textContent=(s.waiting??0)+" no source · "+(s.stopped??0)+" stopped";
     $("outputsLive").textContent=(s.outputsLive??0)+" / "+(s.outputs??0);
@@ -262,7 +319,7 @@ function applyStatus(x){
     $("outputErrors").textContent=s.outputErrors??0;
     $("outputErrors").style.color=(s.outputErrors??0)>0?"var(--red)":"var(--text)";
     $("supervisorVersion").textContent=x.supervisor?.version||"--";
-    $("sideVersion").textContent=x.supervisor?.version||"v0.1.0-alpha.7.1";
+    $("sideVersion").textContent=x.supervisor?.version||"v0.1.0-alpha.8";
     $("monitorTransport").textContent=(monitoring.transport||"poll").toUpperCase()+" · source "+(monitoring.sourcePollMs||"--")+" ms · core "+(monitoring.pollDurationMs??"--")+" ms";
     latestChannels=r.channels||[];
     renderChannels();
@@ -306,6 +363,7 @@ function connectRealtime(){
 
   fetchSnapshot();
 }
+document.querySelectorAll(".nav-item[data-view]").forEach(item=>item.addEventListener("click",()=>switchView(item.dataset.view)));
 document.querySelectorAll(".filter").forEach(btn=>btn.addEventListener("click",()=>{
   document.querySelectorAll(".filter").forEach(x=>x.classList.remove("active"));
   btn.classList.add("active");
