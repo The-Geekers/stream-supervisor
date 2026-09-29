@@ -15,44 +15,52 @@ Le premier moteur ciblé est **Restreamer**. L'architecture reste volontairement
 
 ## État actuel
 
-`0.1.0-alpha.8`
+`0.1.0-alpha.9`
 
-- adapter Restreamer Core 16 en lecture seule ;
+- adapter Restreamer Core 16 avec monitoring et contrôle limité des destinations ;
 - channels, destinations et métriques de streaming en pseudo temps réel SSE ;
 - monitoring VPS : CPU, RAM, disque, réseau, load et uptime ;
-- tri des channels depuis les en-têtes du tableau ;
-- page **SYSTEM** dédiée ;
-- Docker Adapter read-only pour les services explicitement surveillés ;
-- état, image, health, uptime, CPU et RAM des conteneurs surveillés ;
-- collecte Docker isolée dans un helper sans réseau ;
-- le conteneur Web Supervisor ne reçoit jamais le socket Docker ;
-- tests anti-fuite de secrets, smoke tests Docker et captures visuelles CI ;
-- authentification HTTP Basic optionnelle.
+- page **SYSTEM** avec Docker Adapter read-only ;
+- rôles Supervisor **Admin** et **Technician** ;
+- interface ouverte = monitoring uniquement, aucune action d'écriture ;
+- une fois authentifié, Admin et Technician peuvent démarrer/arrêter une destination Restreamer existante ;
+- aucune modification de clé, URL, configuration de process ou channel n'est exposée ;
+- confirmation avant action opérateur ;
+- anti-CSRF par en-tête d'action same-origin ;
+- validation serveur stricte : seules les IDs egress déjà découvertes et les commandes `start` / `stop` sont acceptées ;
+- tests anti-fuite de secrets, smoke tests Docker/auth et captures visuelles CI.
 
-Aucune commande start/stop n'est encore exposée. L'alpha 8 reste strictement read-only.
+## Authentification
 
-## Docker Adapter
+`SUPERVISOR_USERNAME` / `SUPERVISOR_PASSWORD` définissent le compte Admin.
 
-Le socket Docker est volontairement **absent du conteneur Supervisor**.
+Un compte Technician optionnel peut être configuré avec :
 
-Un petit conteneur `stream-supervisor-docker-observer` :
+```text
+SUPERVISOR_TECH_USERNAME=
+SUPERVISOR_TECH_PASSWORD=
+```
 
-- n'expose aucun port ;
-- fonctionne avec `network_mode: none` ;
-- lit le socket Docker ;
-- extrait uniquement une allow-list de données : nom, image, état, health, uptime, CPU et RAM ;
-- écrit un snapshot JSON sanitizé dans un volume Docker partagé ;
-- n'expose ni environnement, labels, commande, logs, fichiers ni configuration complète des conteneurs.
+Un assistant interactif est fourni :
 
-Supervisor monte uniquement ce volume en lecture seule.
+```bash
+sh deployment/configure-auth.sh
+```
 
-Par défaut, seuls `restreamer` et `stream-supervisor` sont observés. La liste peut être changée localement avec `DOCKER_MONITOR_CONTAINERS`.
+Il demande les mots de passe sans les afficher et met à jour uniquement le `.env` local du VPS.
 
-## Monitoring système VPS
+## Restreamer Web UI
 
-Supervisor ne monte pas tout le système de fichiers du VPS.
+La Web UI Restreamer n'est pas un service indépendant : datarhei Core sert les fichiers UI statiques sur `/ui/` dans le même serveur HTTP que l'API.
 
-Le conteneur reçoit uniquement les fichiers nécessaires de `/proc`, les compteurs sysfs RX/TX de l'interface par défaut et un répertoire vide de probe disque.
+Conséquence : il n'existe pas de « restart UI » serveur isolé qui garantisse de ne pas toucher Core.
+
+Supervisor adopte donc la stratégie suivante :
+- probe séparé de `/ui/` ;
+- si l'UI est dégradée mais l'API Core reste disponible, aucune relance Core n'est faite ;
+- l'exploitation peut continuer via Supervisor et l'API ;
+- le reload de configuration Core n'est pas utilisé comme récupération UI, car il redémarre Core ;
+- un éventuel restart complet du conteneur restera un dernier recours futur du watchdog.
 
 ## Workflow
 
