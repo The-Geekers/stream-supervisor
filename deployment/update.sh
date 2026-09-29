@@ -3,6 +3,8 @@ set -eu
 
 cd "$(dirname "$0")/.."
 
+CURRENT_REV="$(git rev-parse HEAD)"
+
 if [ ! -f .env ]; then
   echo "ERROR: .env is missing. Runtime secrets must remain local on the VPS."
   exit 1
@@ -23,6 +25,12 @@ echo "[3/7] Fast-forwarding main"
 git checkout main
 git merge --ff-only origin/main
 
+NEW_REV="$(git rev-parse HEAD)"
+if [ "$NEW_REV" != "$CURRENT_REV" ] && [ "${STREAM_SUPERVISOR_UPDATE_REEXEC:-0}" != "1" ]; then
+  echo "Updater changed with the new release. Restarting the updated script..."
+  STREAM_SUPERVISOR_UPDATE_REEXEC=1 exec sh deployment/update.sh
+fi
+
 echo "[4/7] Detecting host network interface"
 SYSTEM_NETWORK_INTERFACE="$(ip route show default | awk '/default/ {for (i=1;i<=NF;i++) if ($i=="dev") {print $(i+1); exit}}')"
 if [ -z "$SYSTEM_NETWORK_INTERFACE" ]; then
@@ -38,7 +46,6 @@ echo "Host network interface: $SYSTEM_NETWORK_INTERFACE"
 
 echo "[5/7] Preparing safe host metrics mount"
 mkdir -p runtime/disk-probe
-chmod 755 runtime runtime/disk-probe
 
 echo "[6/7] Building and starting Supervisor"
 docker compose up -d --build --remove-orphans
