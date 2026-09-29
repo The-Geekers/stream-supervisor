@@ -123,7 +123,7 @@ function findOutput(status, outputId) {
 function supervisorInfo(pollDurationMs = null) {
   return {
     status: "online",
-    mode: "read-only",
+    mode: auth.enabled ? "output-control" : "read-only",
     version: VERSION,
     uptimeSeconds: Math.floor((Date.now() - startedAt) / 1000),
     security: {
