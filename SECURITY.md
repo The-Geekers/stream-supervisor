@@ -64,7 +64,17 @@ Les clés de stream, URL de diffusion, JWT, credentials, commandes FFmpeg, varia
 
 ## Diagnostics
 
-Tout export de diagnostic devra appliquer une redaction automatique avant partage.
+La page DIAGNOSTICS et l'export JSON sont construits uniquement depuis des modèles déjà sanitizés et repassent par une allow-list dédiée.
+
+L'export exclut explicitement :
+- payloads moteur bruts ;
+- adresses et clés de stream ;
+- credentials et JWT ;
+- commandes FFmpeg ;
+- variables d'environnement ;
+- logs bruts.
+
+Les diagnostics sont read-only et n'exécutent aucune action corrective.
 
 ## Signalement
 

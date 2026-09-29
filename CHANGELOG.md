@@ -3,6 +3,9 @@
 ## [Unreleased]
 
 ### Added
+- Page **DIAGNOSTICS** avec checks opérateur Core, Web UI, Docker, host, journal et incidents.
+- Endpoint `GET /api/diagnostics` et export JSON allow-listé via `?download=1`.
+- Recommandations opérateur intégrées, sans action corrective automatique.
 - Page **INCIDENTS** avec incidents actifs et journal d'événements.
 - Détection des incidents Restreamer Core/Web UI, Docker, ingest et egress.
 - Temporisation des états transitoires pour limiter le bruit d'incidents.
@@ -23,7 +26,7 @@
 - Le CPU des conteneurs Docker n'est plus affiché en pourcentage multi-cœur (`175%`). Il est affiché en équivalent de cœurs (`1.75`).
 
 ### Changed
-- Passage à `0.1.0-alpha.10`.
+- Passage à `0.1.0-alpha.11`.
 - Mode ouvert : monitoring uniquement.
 - Mode authentifié : `OUTPUT CONTROL` pour Admin/Technician.
 - Le statut de la Web UI est désormais basé sur la vraie route statique `/ui/`.
@@ -35,6 +38,8 @@
 - Ajout de `docs/ADMIN_VPS.md` avec les commandes d'administration validées.
 
 ### Security
+- Les diagnostics sont reconstruits depuis les modèles déjà sanitizés et passent par une allow-list dédiée.
+- L'export diagnostics exclut explicitement payloads moteur bruts, adresses de stream, clés, credentials, JWT, commandes FFmpeg, environnement et logs bruts.
 - Le journal incidents/actions n'accepte qu'un schéma allow-listé ; aucun payload Restreamer brut n'est persisté.
 - Les clés de stream, URLs, JWT et commandes FFmpeg restent exclus du stockage incidents.
 - Aucun contrôle n'est possible sans authentification Supervisor.

@@ -5,6 +5,7 @@ import { dirname, join } from "node:path";
 import { createBasicAuth } from "./lib/auth.js";
 import { buildDemoStatus } from "./lib/demo.js";
 import { DockerAdapter } from "./lib/docker.js";
+import { buildDiagnostics } from "./lib/diagnostics.js";
 import { EventJournal, IncidentTracker } from "./lib/incidents.js";
 import { RestreamerAdapter } from "./lib/restreamer.js";
 import { SystemAdapter } from "./lib/system.js";
@@ -14,7 +15,7 @@ const __dirname = dirname(__filename);
 
 const HOST = process.env.HOST || "0.0.0.0";
 const PORT = Number(process.env.PORT || 8090);
-const VERSION = "0.1.0-alpha.10";
+const VERSION = "0.1.0-alpha.11";
 const DEMO_MODE = process.env.DEMO_MODE === "true";
 const requestedMonitorInterval = Number(process.env.MONITOR_INTERVAL_MS || 1000);
 const MONITOR_INTERVAL_MS = Math.min(
@@ -289,6 +290,28 @@ const server = http.createServer(async (req, res) => {
         persistent: journal.persistent
       }
     });
+  }
+
+  if (req.method === "GET" && url.pathname === "/api/diagnostics") {
+    let status = latestStatus;
+    if (!status) {
+      try { status = await refreshStatus(); } catch {}
+    }
+    if (!status) {
+      return sendJson(res, 503, { status:"unavailable", code:"diagnostics_status_unavailable" });
+    }
+
+    const report = buildDiagnostics(status, {
+      events: journal.list(50),
+      journalPersistent: journal.persistent
+    });
+    const download = url.searchParams.get("download") === "1";
+    return sendJson(
+      res,
+      200,
+      report,
+      download ? { "Content-Disposition": 'attachment; filename="stream-supervisor-diagnostics.json"' } : {}
+    );
   }
 
   if (req.method === "POST" && url.pathname === "/api/restreamer/output-command") {

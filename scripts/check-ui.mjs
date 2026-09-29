@@ -19,7 +19,11 @@ const requiredIds = [
   "viewChannels","viewSystem","pageTitle","dockerEngine","dockerRunning",
   "dockerUnhealthy","dockerAge","dockerContainers","dockerDot","modeBadge","authBadge",
   "viewIncidents","incidentActiveCount","incidentCriticalCount","incidentWarningCount",
-  "journalStorage","incidentActive","incidentEvents"
+  "journalStorage","incidentActive","incidentEvents",
+  "viewDiagnostics","diagOverall","diagCheckCount","diagStreaming","diagGenerated",
+  "diagnosticChecks","downloadDiagnostics",
+  "viewDiagnostics","diagOverall","diagCheckCount","diagStreaming","diagGenerated",
+  "diagnosticChecks","downloadDiagnostics"
 ];
 
 for (const id of requiredIds) {
@@ -42,6 +46,14 @@ if (!html.includes('data-view="incidents"')) {
   console.error("UI CHECK FAILED: incidents navigation is missing");
   process.exit(1);
 }
+if (!html.includes("/api/diagnostics")) {
+  console.error("UI CHECK FAILED: diagnostics endpoint wiring is missing");
+  process.exit(1);
+}
+if (!html.includes('data-view="diagnostics"')) {
+  console.error("UI CHECK FAILED: diagnostics navigation is missing");
+  process.exit(1);
+}
 
 if (html.includes("item.cpuPercent")) {
   console.error("UI CHECK FAILED: Docker CPU percent leaked into operator UI");
@@ -53,3 +65,6 @@ if (!html.includes("item.cpuCores")) {
 }
 
 console.log("UI check: PASS");
+
+if (!html.includes("/api/diagnostics")) throw new Error("diagnostics API wiring missing");
+if (!html.includes('data-view="diagnostics"')) throw new Error("diagnostics navigation missing");

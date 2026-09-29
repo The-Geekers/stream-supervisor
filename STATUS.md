@@ -1,13 +1,13 @@
 # Project Status
 
-**Version :** 0.1.0-alpha.10  
+**Version :** 0.1.0-alpha.11  
 **Phase :** supervision complète + premières actions opérateur sécurisées
 
 | Domaine | État |
 |---|---|
 | Dépôt GitHub / workflow GitHub → VPS | OK |
 | Application Docker | OK |
-| Interface monitoring | Alpha 10 |
+| Interface monitoring | Alpha 11 |
 | Restreamer Core 16 | Intégré |
 | Channels / outputs / métriques | Intégrés |
 | Monitoring SSE quasi temps réel | Intégré, 1 s par défaut |
@@ -28,7 +28,7 @@
 | Config reload Core comme recovery UI | Interdit : redémarre Core |
 | Tests anti-fuite secrets | Intégrés |
 | CI GitHub qualité | Intégrée |
-| Diagnostics | À faire |
+| Diagnostics | Intégrés, safe export JSON |
 | Incidents actifs | Intégrés |
 | Journal événements | Intégré, persistant |
 | Actions opérateur dans le journal | Intégrées |
@@ -56,4 +56,4 @@ Avec authentification :
 
 ## Prochaine étape
 
-Valider alpha.10 sur le VPS réel, puis construire les diagnostics opérateur avant le watchdog automatique.
+Valider alpha.11 sur le VPS réel, puis définir la première politique de watchdog gradué à partir des diagnostics et incidents déjà observés.
