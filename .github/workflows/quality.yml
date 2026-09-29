@@ -34,6 +34,8 @@ jobs:
         run: |
           cp .env.example .env
           mkdir -p runtime/disk-probe
+          export SYSTEM_NETWORK_INTERFACE="$(ip route show default | awk '/default/ {for (i=1;i<=NF;i++) if ($i=="dev") {print $(i+1); exit}}')"
+          test -n "$SYSTEM_NETWORK_INTERFACE"
           docker compose config -q
 
       - name: Container health smoke test
@@ -68,6 +70,9 @@ jobs:
           docker rm -f stream-supervisor-ci
           sed -i 's#^RESTREAMER_BASE_URL=.*#RESTREAMER_BASE_URL=http://127.0.0.1:1#' .env
           sed -i 's#^RESTREAMER_UI_URL=.*#RESTREAMER_UI_URL=http://127.0.0.1:1#' .env
+          export SYSTEM_NETWORK_INTERFACE="$(ip route show default | awk '/default/ {for (i=1;i<=NF;i++) if ($i=="dev") {print $(i+1); exit}}')"
+          test -r "/sys/class/net/$SYSTEM_NETWORK_INTERFACE/statistics/rx_bytes"
+          test -r "/sys/class/net/$SYSTEM_NETWORK_INTERFACE/statistics/tx_bytes"
           docker compose up -d --build --remove-orphans
           for i in $(seq 1 20); do
             if curl -fsS http://127.0.0.1:8090/health >/dev/null; then
@@ -84,6 +89,7 @@ jobs:
               if (data.system?.scope !== "host") process.exit(1);
               if (!(data.system?.memory?.totalBytes > 0)) process.exit(1);
               if (!(data.system?.disk?.totalBytes > 0)) process.exit(1);
+              if (!data.system?.network?.interface) process.exit(1);
             });
           '
           docker compose down
