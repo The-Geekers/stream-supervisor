@@ -17,6 +17,7 @@ services:
       SYSTEM_DISK_PATH: /host/disk
       SYSTEM_NETWORK_ROOT: /host/net
       SYSTEM_NETWORK_INTERFACE: ${SYSTEM_NETWORK_INTERFACE:-ens3}
+      DOCKER_STATUS_FILE: /runtime/docker-status/status.json
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
@@ -27,7 +28,32 @@ services:
       - /sys/class/net/${SYSTEM_NETWORK_INTERFACE:-ens3}/statistics/rx_bytes:/host/net/rx_bytes:ro
       - /sys/class/net/${SYSTEM_NETWORK_INTERFACE:-ens3}/statistics/tx_bytes:/host/net/tx_bytes:ro
       - ./runtime/disk-probe:/host/disk:ro
+      - docker_status:/runtime/docker-status:ro
     security_opt:
       - no-new-privileges:true
     cap_drop:
       - ALL
+
+  docker-observer:
+    build:
+      context: ./docker-observer
+      dockerfile: Dockerfile
+    container_name: stream-supervisor-docker-observer
+    restart: unless-stopped
+    network_mode: none
+    environment:
+      DOCKER_SOCKET: /var/run/docker.sock
+      OUTPUT_FILE: /output/status.json
+      OBSERVER_INTERVAL_MS: 2000
+      DOCKER_MONITOR_CONTAINERS: ${DOCKER_MONITOR_CONTAINERS:-restreamer,stream-supervisor}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - docker_status:/output
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+volumes:
+  docker_status:
