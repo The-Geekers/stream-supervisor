@@ -5,8 +5,7 @@ import {
   parseMeminfo,
   parseLoadavg,
   parseUptime,
-  parseDefaultRouteInterface,
-  parseNetDev
+  parseCounter
 } from "../lib/system.js";
 
 test("system adapter parses host CPU counters", () => {
@@ -24,16 +23,11 @@ test("system adapter parses memory in bytes", () => {
   assert.equal(mem.usedPercent, 62.5);
 });
 
-test("system adapter parses load, uptime and default route", () => {
+test("system adapter parses load and uptime", () => {
   assert.deepEqual(parseLoadavg("0.25 0.50 0.75 1/123 999"), { one:0.25, five:0.5, fifteen:0.75 });
   assert.equal(parseUptime("12345.67 500.00"), 12345);
-  assert.equal(
-    parseDefaultRouteInterface("Iface Destination Gateway Flags RefCnt Use Metric Mask\neth0 00000000 01010101 0003 0 0 100 00000000\n"),
-    "eth0"
-  );
 });
 
-test("system adapter parses network counters", () => {
-  const data = parseNetDev("Inter-| Receive | Transmit\n eth0: 1000 1 2 3 4 5 6 7 2000 9 10 11 12 13 14 15\n");
-  assert.deepEqual(data.eth0, { rxBytes:1000, txBytes:2000 });
+test("system adapter parses sysfs network counters", () => {
+  assert.equal(parseCounter("123456789\n"), 123456789);
 });
