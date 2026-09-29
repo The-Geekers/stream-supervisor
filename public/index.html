@@ -332,7 +332,7 @@ function updateClock(){
 function applyStatus(x){
   try{
     const r=x.restreamer||{},core=r.core||{},ui=r.ui||{},s=r.summary||{},security=x.supervisor?.security||{},monitoring=x.supervisor?.monitoring||{},host=x.system||{},docker=x.docker||{};
-    setService("api","ONLINE",(x.supervisor?.version||"--")+" · READ ONLY","ok");
+    setService("api","ONLINE",(x.supervisor?.version||"--")+" · "+String(x.supervisor?.mode||"read-only").toUpperCase(),"ok");
     setService("core",core.authenticated?"ONLINE":core.online?"AUTH ERROR":"OFFLINE",[core.version?("Core "+core.version):"version --",core.latencyMs!=null?(core.latencyMs+" ms"):""].filter(Boolean).join(" · "),core.authenticated?"ok":core.online?"warn":"bad");
     const uiText=ui.online?"ONLINE":ui.reachable?"REACHABLE":"OFFLINE";
     setService("ui",uiText,[ui.httpStatus?("HTTP "+ui.httpStatus):"no response",ui.latencyMs!=null?(ui.latencyMs+" ms"):""].filter(Boolean).join(" · "),ui.online?"ok":ui.reachable?"warn":"bad");
