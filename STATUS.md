@@ -1,49 +1,54 @@
 # Project Status
 
-**Version :** 0.1.0-alpha.8  
-**Phase :** supervision Restreamer + VPS + Docker en lecture seule
+**Version :** 0.1.0-alpha.9  
+**Phase :** supervision complète + premières actions opérateur sécurisées
 
 | Domaine | État |
 |---|---|
 | Dépôt GitHub / workflow GitHub → VPS | OK |
 | Application Docker | OK |
-| Interface monitoring | Alpha 8 |
+| Interface monitoring | Alpha 9 |
 | Restreamer Core 16 | Intégré |
 | Channels / outputs / métriques | Intégrés |
-| Tri / filtres opérateur | Intégrés |
 | Monitoring SSE quasi temps réel | Intégré, 1 s par défaut |
 | VPS CPU / RAM / load / uptime | Intégrés |
-| VPS disque racine | Intégré |
-| VPS réseau IN / OUT | Interface hôte via sysfs |
+| VPS disque / réseau | Intégrés |
 | Docker Adapter | Intégré read-only |
 | Page SYSTEM | Intégrée |
-| Docker états / health / CPU / RAM | Intégrés |
-| Isolation socket Docker | Observer sans réseau + snapshot sanitizé |
+| Rôles Admin / Technician | Intégrés |
+| Monitoring ouvert sans auth | Autorisé, read-only |
+| Start/stop destinations Restreamer | Intégré, auth obligatoire |
+| Contrôle ingest | Non exposé |
+| Modification clés / URL / config | Non exposée |
+| Probe Web UI Restreamer /ui/ | Intégré |
+| Restart UI isolé | Impossible dans l'architecture Restreamer actuelle |
+| Config reload Core comme recovery UI | Interdit : redémarre Core |
 | Tests anti-fuite secrets | Intégrés |
 | CI GitHub qualité | Intégrée |
-| CI visuelle Channels + System | Intégrée |
-| Auth Supervisor | Basic Auth optionnelle |
-| Start/stop sorties | À faire après activation auth |
 | Diagnostics | À faire |
-| Watchdog | À faire |
+| Incidents / historique | À faire |
+| Watchdog gradué | À faire |
 
-## Docker Adapter
+## Politique de récupération Web UI
 
-Le backend Web n'a pas accès au socket Docker.
+La Web UI est servie directement par datarhei Core depuis `/ui/`. Elle n'a pas de processus séparé.
 
-Le helper Docker Observer est volontairement séparé du backend :
-- aucun port exposé ;
-- aucun réseau ;
-- aucune donnée brute Docker transmise au navigateur ;
-- snapshot allow-listé uniquement ;
-- statut considéré hors ligne si le snapshot devient trop ancien.
+Si la Web UI est indisponible mais que `GET /api` et l'API process répondent :
+- Supervisor considère Core opérationnel ;
+- les flux ne sont pas touchés ;
+- les commandes opérateur via API restent disponibles ;
+- aucun restart Core n'est déclenché automatiquement.
+
+Le endpoint Core de reload de configuration n'est pas une relance de la seule UI : il redémarre Core et ne doit pas servir de raccourci.
 
 ## Sécurité d'accès
 
-L'interface reste utilisable sans authentification pendant la phase read-only, mais affiche explicitement `ACCESS OPEN`.
+Sans compte Supervisor configuré, l'interface reste accessible en monitoring mais les actions sont verrouillées.
 
-Avant toute commande d'écriture, `SUPERVISOR_USERNAME` et `SUPERVISOR_PASSWORD` devront être définis dans le `.env` local du VPS.
+Avec authentification :
+- **Technician** : start/stop des destinations existantes ;
+- **Admin** : mêmes actions dans alpha.9, rôle réservé aux futures opérations plus sensibles.
 
 ## Prochaine étape
 
-Valider alpha.8 sur le VPS réel. Ensuite : activation de l'auth Supervisor et préparation des premières commandes opérateur limitées aux destinations Restreamer.
+Valider alpha.9 sur le VPS réel, puis construire la vue INCIDENTS et le journal d'événements avant le watchdog automatique.
