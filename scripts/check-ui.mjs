@@ -65,3 +65,6 @@ if (!html.includes("item.cpuCores")) {
 }
 
 console.log("UI check: PASS");
+
+if (!html.includes("/api/diagnostics")) throw new Error("diagnostics API wiring missing");
+if (!html.includes('data-view="diagnostics"')) throw new Error("diagnostics navigation missing");
