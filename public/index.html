@@ -23,6 +23,8 @@
 .outputs{display:flex;flex-direction:column;gap:5px;width:100%}.output{display:grid;grid-template-columns:minmax(0,1fr) 74px 52px;gap:8px;padding-bottom:4px;border-bottom:1px dotted #222a31;align-items:center}.output:last-child{border:0;padding-bottom:0}.output-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:11px}.output-meta{margin-top:2px;color:var(--muted);font:9px ui-monospace,SFMono-Regular,Consolas,monospace}.output-state{text-align:right}.output-action{border:1px solid var(--line);background:#090d10;color:var(--muted);padding:4px 5px;font:800 9px ui-monospace,SFMono-Regular,Consolas,monospace;cursor:pointer}.output-action:hover{color:var(--text);border-color:#4d5a64}.output-action.start{color:var(--green)}.output-action.stop{color:var(--amber)}.output-action:disabled{opacity:.35;cursor:not-allowed}
 .empty{padding:30px 12px;color:var(--muted);font:11px ui-monospace,SFMono-Regular,Consolas,monospace}.footerline{display:flex;gap:18px;flex-wrap:wrap;margin-top:9px;color:var(--muted);font:10px ui-monospace,SFMono-Regular,Consolas,monospace}.dot{display:inline-block;width:6px;height:6px;margin-right:6px;background:var(--off)}.dot.ok{background:var(--green)}.dot.warn{background:var(--amber)}.dot.bad{background:var(--red)}
 .alert-note{display:none;margin-bottom:12px;border:1px solid #614a20;background:#151106;color:#e8c16f;padding:9px 11px;font:10px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace}.alert-note.show{display:block}.docker-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--line);background:var(--panel);margin-bottom:12px}.docker-summary .metric:nth-child(4){border-right:0}.docker-table{border:1px solid var(--line);background:var(--panel)}.docker-head,.docker-row{display:grid;grid-template-columns:minmax(170px,1.5fr) minmax(220px,2fr) 100px 100px 110px 120px 110px}.docker-head{background:#0c1014;color:var(--muted);font-size:9px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;border-bottom:1px solid var(--line)}.docker-head>div,.docker-cell{padding:9px 10px;border-right:1px solid var(--line-soft)}.docker-head>div:last-child,.docker-cell:last-child{border-right:0}.docker-row{min-height:54px;border-bottom:1px solid var(--line-soft)}.docker-row:last-child{border-bottom:0}.docker-name{font-weight:800}.docker-image{color:var(--muted);font:10px ui-monospace,SFMono-Regular,Consolas,monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.docker-note{margin-top:9px;color:var(--muted);font:9px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}
+.incident-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--line);background:var(--panel);margin-bottom:12px}.incident-summary .metric:nth-child(4){border-right:0}
+.incident-table{border:1px solid var(--line);background:var(--panel);margin-bottom:12px}.incident-head,.incident-row{display:grid;grid-template-columns:105px 150px minmax(220px,1.2fr) minmax(280px,2fr) 135px}.event-head,.event-row{display:grid;grid-template-columns:150px 135px 145px minmax(220px,1.2fr) minmax(280px,2fr) 120px}.incident-head,.event-head{background:#0c1014;color:var(--muted);font-size:9px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;border-bottom:1px solid var(--line)}.incident-head>div,.event-head>div,.incident-row>div,.event-row>div{padding:9px 10px;border-right:1px solid var(--line-soft);min-width:0}.incident-head>div:last-child,.event-head>div:last-child,.incident-row>div:last-child,.event-row>div:last-child{border-right:0}.incident-row,.event-row{min-height:50px;border-bottom:1px solid var(--line-soft)}.incident-row:last-child,.event-row:last-child{border-bottom:0}.severity{display:inline-block;padding:3px 6px;border:1px solid var(--line);font:800 9px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.05em}.severity.critical{color:var(--red);border-color:#6b3030}.severity.warning{color:var(--amber);border-color:#655126}.severity.info{color:var(--cyan);border-color:#245368}.incident-title{font-weight:800}.incident-detail{color:var(--muted);font:10px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace;overflow:hidden;text-overflow:ellipsis}.incident-meta{color:var(--muted);font:10px ui-monospace,SFMono-Regular,Consolas,monospace}
 @media(max-width:1280px){.table-head,.channel{grid-template-columns:minmax(210px,2fr) 95px 150px 120px 105px minmax(240px,2fr)}.table-head>.sort-head:nth-child(6),.channel>.cell:nth-child(6){display:none}}
 @media(max-width:1200px){.host-strip{grid-template-columns:repeat(4,1fr)}.host-metric:nth-child(4n){border-right:0}.telemetry{grid-template-columns:repeat(4,1fr)}.metric:nth-child(4n){border-right:0}}@media(max-width:1050px){.shell{grid-template-columns:58px minmax(0,1fr)}.brand{font-size:0}.brand:before{content:"SS";font-size:14px}.brand small,.nav-item span{display:none}.nav-item{justify-content:center}.telemetry{grid-template-columns:repeat(4,1fr)}.metric:nth-child(4n){border-right:0}.service-strip{grid-template-columns:1fr}.service{border-right:0;border-bottom:1px solid var(--line)}.service:last-child{border-bottom:0}.table-head{display:none}.channel{grid-template-columns:minmax(200px,1.8fr) 90px 140px 110px minmax(220px,1.6fr)}.channel>.cell:nth-child(4),.channel>.cell:nth-child(6){display:none}}
 @media(max-width:760px){.host-strip{grid-template-columns:repeat(2,1fr)}.host-metric:nth-child(even){border-right:0}.shell{display:block}.sidebar{display:none}.topbar{padding:0 10px}.subtitle,.clock{display:none}.content{padding:10px}.telemetry{grid-template-columns:repeat(2,1fr)}.metric:nth-child(odd){border-right:1px solid var(--line)}.metric:nth-child(even){border-right:0}.channel{display:block;padding:9px}.cell{border:0;padding:5px 0}.identity{min-height:50px}.toolbar{height:auto;padding:8px;gap:10px;align-items:flex-start;flex-direction:column}}
@@ -36,7 +38,7 @@
     <nav class="nav">
       <div class="nav-item active" data-view="channels"><i class="nav-dot"></i><span>CHANNELS</span></div>
       <div class="nav-item" data-view="system"><i class="nav-dot"></i><span>SYSTEM</span></div>
-      <div class="nav-item disabled"><i class="nav-dot"></i><span>INCIDENTS</span></div>
+      <div class="nav-item" data-view="incidents"><i class="nav-dot"></i><span>INCIDENTS</span></div>
       <div class="nav-item disabled"><i class="nav-dot"></i><span>SETTINGS</span></div>
     </nav>
     <div class="side-foot">RESTREAMER / READ ONLY<br><span id="sideVersion">v0.1.0-alpha.9.2</span></div>
@@ -122,6 +124,27 @@
         <div class="docker-note">Docker socket access is isolated inside a network-disabled observer. CPU is shown as core equivalents (1.00 = one fully used CPU core). Supervisor only reads a sanitized snapshot file.</div>
       </div>
 
+      <div id="viewIncidents" class="view">
+        <section class="incident-summary">
+          <div class="metric"><div class="metric-label">Active incidents</div><div id="incidentActiveCount" class="metric-value">--</div><div class="metric-sub">current operational state</div></div>
+          <div class="metric"><div class="metric-label">Critical</div><div id="incidentCriticalCount" class="metric-value">--</div><div class="metric-sub">requires attention</div></div>
+          <div class="metric"><div class="metric-label">Warnings</div><div id="incidentWarningCount" class="metric-value">--</div><div class="metric-sub">degraded conditions</div></div>
+          <div class="metric"><div class="metric-label">Journal</div><div id="journalStorage" class="metric-value">--</div><div id="journalCount" class="metric-sub">--</div></div>
+        </section>
+
+        <div class="toolbar"><div class="toolbar-title">ACTIVE INCIDENTS</div></div>
+        <section class="incident-table">
+          <div class="incident-head"><div>Severity</div><div>Source</div><div>Incident</div><div>Detail</div><div>Since</div></div>
+          <div id="incidentActive"><div class="empty">Waiting for incident state…</div></div>
+        </section>
+
+        <div class="toolbar"><div class="toolbar-title">EVENT JOURNAL</div></div>
+        <section class="incident-table">
+          <div class="event-head"><div>Time</div><div>Type</div><div>Source</div><div>Event</div><div>Detail</div><div>Actor</div></div>
+          <div id="incidentEvents"><div class="empty">Waiting for event journal…</div></div>
+        </section>
+      </div>
+
       <div class="footerline">
         <span><i id="apiDot" class="dot"></i>Supervisor</span>
         <span><i id="coreDot" class="dot"></i>Core</span>
@@ -145,8 +168,9 @@ const fmtBitrate=k=>{k=Number(k)||0;return k>=1000?(k/1000).toFixed(2)+" Mb/s":M
 const fmtMem=b=>{b=Number(b)||0;return b>=1073741824?(b/1073741824).toFixed(1)+" GiB":b>=1048576?(b/1048576).toFixed(0)+" MiB":Math.round(b/1024)+" KiB"};
 const fmtRate=bps=>{bps=Number(bps)||0;const bits=bps*8;return bits>=1000000000?(bits/1000000000).toFixed(2)+" Gb/s":bits>=1000000?(bits/1000000).toFixed(1)+" Mb/s":bits>=1000?(bits/1000).toFixed(0)+" kb/s":"0 kb/s"};
 const stateLabel=s=>({live:"LIVE",connecting:"CONNECTING",waiting:"NO SOURCE",error:"ERROR",stopped:"STOPPED",idle:"IDLE"}[s]||String(s||"UNKNOWN").toUpperCase());
+const fmtDateTime=v=>{const d=new Date(v);return Number.isNaN(d.getTime())?"--":d.toLocaleString("fr-FR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false})};
 const statusClass=s=>["live","connecting","waiting","error","stopped","idle"].includes(s)?s:"idle";
-let lastRefresh=0,currentFilter="all",currentSort="name",currentDirection="asc",latestChannels=[],eventStream=null,currentView="channels",session={authenticated:false,role:"viewer",username:null,actionsEnabled:false},actionBusy=false;
+let lastRefresh=0,currentFilter="all",currentSort="name",currentDirection="asc",latestChannels=[],latestIncidentState={active:[],summary:{}},latestJournal=[],journalPersistent=null,eventStream=null,currentView="channels",session={authenticated:false,role:"viewer",username:null,actionsEnabled:false},actionBusy=false;
 
 function renderDocker(docker){
   const containers=Array.isArray(docker?.containers)?docker.containers:[];
@@ -177,12 +201,74 @@ function renderDocker(docker){
 }
 
 function switchView(view){
-  currentView=view==="system"?"system":"channels";
+  currentView=["channels","system","incidents"].includes(view)?view:"channels";
   document.querySelectorAll(".nav-item[data-view]").forEach(item=>item.classList.toggle("active",item.dataset.view===currentView));
   $("viewChannels").classList.toggle("active",currentView==="channels");
   $("viewSystem").classList.toggle("active",currentView==="system");
-  $("pageTitle").textContent=currentView==="system"?"SYSTEM MONITOR":"CHANNEL MONITOR";
-  $("pageSubtitle").textContent=currentView==="system"?"HOST + DOCKER SERVICES":"LIVE OPERATIONS";
+  $("viewIncidents").classList.toggle("active",currentView==="incidents");
+  const titles={
+    channels:["CHANNEL MONITOR","LIVE OPERATIONS"],
+    system:["SYSTEM MONITOR","HOST + DOCKER SERVICES"],
+    incidents:["INCIDENTS","ACTIVE STATE + EVENT JOURNAL"]
+  };
+  $("pageTitle").textContent=titles[currentView][0];
+  $("pageSubtitle").textContent=titles[currentView][1];
+  if(currentView==="incidents")fetchIncidents();
+}
+
+function renderIncidents(){
+  const active=Array.isArray(latestIncidentState?.active)?latestIncidentState.active:[];
+  const summary=latestIncidentState?.summary||{};
+  $("incidentActiveCount").textContent=summary.active??active.length;
+  $("incidentCriticalCount").textContent=summary.critical??0;
+  $("incidentWarningCount").textContent=summary.warning??0;
+  $("incidentCriticalCount").style.color=(summary.critical??0)>0?"var(--red)":"var(--text)";
+  $("incidentWarningCount").style.color=(summary.warning??0)>0?"var(--amber)":"var(--text)";
+  $("journalStorage").textContent=journalPersistent===null?"--":journalPersistent?"PERSISTENT":"MEMORY";
+  $("journalStorage").style.color=journalPersistent===false?"var(--amber)":"var(--text)";
+  $("journalCount").textContent=latestJournal.length+" recent events";
+
+  $("incidentActive").innerHTML=active.length?active.map(item=>{
+    const subject=[item.channel,item.output].filter(Boolean).join(" · ");
+    const detail=subject?(subject+" — "+(item.detail||"")):(item.detail||"");
+    return '<div class="incident-row">'+
+      '<div><span class="severity '+esc(item.severity||"info")+'">'+esc(String(item.severity||"info").toUpperCase())+'</span></div>'+
+      '<div class="incident-meta">'+esc(item.source||"--")+'</div>'+
+      '<div><div class="incident-title">'+esc(item.title||"Incident")+'</div></div>'+
+      '<div class="incident-detail">'+esc(detail||"--")+'</div>'+
+      '<div class="incident-meta">'+esc(fmtDateTime(item.openedAt))+'</div>'+
+    '</div>';
+  }).join(""):'<div class="empty">No active incidents.</div>';
+
+  $("incidentEvents").innerHTML=latestJournal.length?latestJournal.map(item=>{
+    const subject=[item.channel,item.output].filter(Boolean).join(" · ");
+    const detail=[subject,item.detail].filter(Boolean).join(" — ");
+    const actor=item.actor||"--";
+    return '<div class="event-row">'+
+      '<div class="incident-meta">'+esc(fmtDateTime(item.timestamp))+'</div>'+
+      '<div><span class="severity '+esc(item.severity||"info")+'">'+esc(String(item.kind||"event").replaceAll("_"," ").toUpperCase())+'</span></div>'+
+      '<div class="incident-meta">'+esc(item.source||"--")+'</div>'+
+      '<div><div class="incident-title">'+esc(item.title||"Event")+'</div></div>'+
+      '<div class="incident-detail">'+esc(detail||"--")+'</div>'+
+      '<div class="incident-meta">'+esc(actor)+'</div>'+
+    '</div>';
+  }).join(""):'<div class="empty">No journal events yet.</div>';
+}
+
+async function fetchIncidents(){
+  try{
+    const response=await fetch("/api/incidents?limit=100",{cache:"no-store"});
+    if(!response.ok)throw new Error("incidents");
+    const data=await response.json();
+    latestIncidentState={active:Array.isArray(data.active)?data.active:[],summary:data.summary||{}};
+    latestJournal=Array.isArray(data.events)?data.events:[];
+    journalPersistent=data.storage?.persistent??null;
+    renderIncidents();
+  }catch{
+    if(currentView==="incidents"){
+      $("incidentEvents").innerHTML='<div class="empty">Incident journal unavailable.</div>';
+    }
+  }
 }
 
 async function loadSession(){
@@ -364,7 +450,9 @@ function applyStatus(x){
     $("sideVersion").textContent=x.supervisor?.version||"v0.1.0-alpha.9.2";
     $("monitorTransport").textContent=(monitoring.transport||"poll").toUpperCase()+" · source "+(monitoring.sourcePollMs||"--")+" ms · core "+(monitoring.pollDurationMs??"--")+" ms";
     latestChannels=r.channels||[];
+    latestIncidentState=x.incidents||{active:[],summary:{}};
     renderChannels();
+    renderIncidents();
     lastRefresh=Date.now();
   }catch{
     setService("api","NO DATA","Invalid monitoring snapshot","bad");
@@ -437,10 +525,11 @@ document.querySelectorAll(".sort-head").forEach(head=>{
   });
 });
 setInterval(()=>{$("refreshAge").textContent=lastRefresh?Math.max(0,Math.floor((Date.now()-lastRefresh)/1000))+"s":"--"},1000);
+setInterval(()=>{if(currentView==="incidents")fetchIncidents()},5000);
 setInterval(updateClock,1000);
 updateClock();
 const initialView=new URLSearchParams(window.location.search).get("view");
-if(initialView==="system") switchView("system");
+if(["system","incidents"].includes(initialView)) switchView(initialView);
 loadSession();
 connectRealtime();
 </script>
