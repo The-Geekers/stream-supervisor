@@ -1,61 +1,49 @@
 # Project Status
 
-**Version :** 0.1.0-alpha.7.1  
-**Phase :** supervision Restreamer + VPS en lecture seule
+**Version :** 0.1.0-alpha.8  
+**Phase :** supervision Restreamer + VPS + Docker en lecture seule
 
 | Domaine | État |
 |---|---|
 | Dépôt GitHub / workflow GitHub → VPS | OK |
 | Application Docker | OK |
-| Interface monitoring | Alpha 7.1 |
-| Audit Core Restreamer | Core 16.0.0 identifié |
-| Auth API Restreamer | OK |
-| État Web UI Restreamer séparé | Intégré |
-| Noms de channels | Intégrés |
-| Ingest / outputs / métriques | Lecture seule intégrée |
-| Filtres opérateur | Intégrés |
-| Tri par en-tête de colonne | Intégré |
-| Tri ascendant / descendant | Intégré |
-| Débit total entrant / sortant Restreamer | Intégré |
-| CPU / RAM cumulés processus Restreamer | Intégrés |
+| Interface monitoring | Alpha 8 |
+| Restreamer Core 16 | Intégré |
+| Channels / outputs / métriques | Intégrés |
+| Tri / filtres opérateur | Intégrés |
+| Monitoring SSE quasi temps réel | Intégré, 1 s par défaut |
 | VPS CPU / RAM / load / uptime | Intégrés |
 | VPS disque racine | Intégré |
-| VPS réseau IN / OUT | Corrigé : interface hôte détectée + compteurs sysfs |
-| Stabilité scrollbar / layout | Intégrée |
+| VPS réseau IN / OUT | Interface hôte via sysfs |
+| Docker Adapter | Intégré read-only |
+| Page SYSTEM | Intégrée |
+| Docker états / health / CPU / RAM | Intégrés |
+| Isolation socket Docker | Observer sans réseau + snapshot sanitizé |
 | Tests anti-fuite secrets | Intégrés |
-| Auth Supervisor | Basic Auth optionnelle |
 | CI GitHub qualité | Intégrée |
-| Monitoring SSE quasi temps réel | Intégré, 1 s par défaut |
-| CI visuelle / capture UI | Intégrée |
-| Docker Adapter | À faire |
-| Start/stop sorties | À faire après sécurisation accès |
+| CI visuelle Channels + System | Intégrée |
+| Auth Supervisor | Basic Auth optionnelle |
+| Start/stop sorties | À faire après activation auth |
 | Diagnostics | À faire |
 | Watchdog | À faire |
 
-## Sécurité du System Adapter
+## Docker Adapter
 
-Le System Adapter ne reçoit ni socket Docker, ni mount complet de `/`, ni mode privileged.
+Le backend Web n'a pas accès au socket Docker.
 
-Seuls quelques fichiers `/proc` nécessaires aux métriques sont montés en lecture seule. Le disque est mesuré via un répertoire vide de probe sur le filesystem du VPS.
-
-Le conteneur conserve `no-new-privileges` et toutes les capabilities Linux sont supprimées.
+Le helper Docker Observer est volontairement séparé du backend :
+- aucun port exposé ;
+- aucun réseau ;
+- aucune donnée brute Docker transmise au navigateur ;
+- snapshot allow-listé uniquement ;
+- statut considéré hors ligne si le snapshot devient trop ancien.
 
 ## Sécurité d'accès
 
 L'interface reste utilisable sans authentification pendant la phase read-only, mais affiche explicitement `ACCESS OPEN`.
 
-Avant l'introduction de commandes d'écriture, `SUPERVISOR_USERNAME` et `SUPERVISOR_PASSWORD` devront être définis dans le `.env` local du VPS.
-
-## Déploiement
-
-GitHub `main` est la source de vérité. Le VPS ne sert plus au développement du code.
-
-```bash
-sh deployment/update.sh
-```
-
-Le script prépare automatiquement le répertoire de probe disque avant le rebuild.
+Avant toute commande d'écriture, `SUPERVISOR_USERNAME` et `SUPERVISOR_PASSWORD` devront être définis dans le `.env` local du VPS.
 
 ## Prochaine étape
 
-Valider alpha.7.1 sur le VPS réel, puis préparer le Docker Adapter read-only.
+Valider alpha.8 sur le VPS réel. Ensuite : activation de l'auth Supervisor et préparation des premières commandes opérateur limitées aux destinations Restreamer.
