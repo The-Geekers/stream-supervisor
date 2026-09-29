@@ -214,7 +214,7 @@ async function commandOutput(outputId, outputName, command){
   try{
     const response=await fetch("/api/restreamer/output-command",{
       method:"POST",
-      headers:{"Content-Type":"application/json"},
+      headers:{"Content-Type":"application/json","X-Supervisor-Action":"1"},
       body:JSON.stringify({outputId,command})
     });
     if(!response.ok)throw new Error("command");
