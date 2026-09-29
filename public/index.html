@@ -28,14 +28,70 @@
 @media(max-width:760px){.shell{display:block}.sidebar{display:none}.topbar{padding:0 10px}.subtitle,.clock{display:none}.content{padding:10px}.telemetry{grid-template-columns:repeat(2,1fr)}.metric:nth-child(odd){border-right:1px solid var(--line)}.metric:nth-child(even){border-right:0}.channel{display:block;padding:9px}.cell{border:0;padding:5px 0}.identity{min-height:50px}.toolbar{height:auto;padding:8px;gap:10px;align-items:flex-start;flex-direction:column}}
 </style>
 </head>
+
 <body>
 <div class="shell">
-<aside class="sidebar"><div class="brand">STREAM SUPERVISOR<small>CONTROL ROOM / READ ONLY</small></div><nav class="nav"><div class="nav-item active"><i class="nav-dot"></i><span>CHANNELS</span></div><div class="nav-item disabled"><i class="nav-dot"></i><span>SYSTEM</span></div><div class="nav-item disabled"><i class="nav-dot"></i><span>INCIDENTS</span></div><div class="nav-item disabled"><i class="nav-dot"></i><span>SETTINGS</span></div></nav><div class="side-foot">v0.1.0-alpha.3<br>RESTREAMER ADAPTER</div></aside>
-<main class="main"><header class="topbar"><div class="title">CHANNEL MONITOR</div><div class="mode">READ ONLY · NO STREAM CONTROL</div></header><div class="content">
-<section class="telemetry"><div class="metric"><div class="metric-label">Core</div><div id="coreState" class="metric-value">--</div></div><div class="metric"><div class="metric-label">Core version</div><div id="coreVersion" class="metric-value small">--</div></div><div class="metric"><div class="metric-label">Channels live</div><div id="channelsLive" class="metric-value">--</div></div><div class="metric"><div class="metric-label">Outputs live</div><div id="outputsLive" class="metric-value">--</div></div><div class="metric"><div class="metric-label">Output errors</div><div id="outputErrors" class="metric-value">--</div></div><div class="metric"><div class="metric-label">Refresh</div><div id="refreshAge" class="metric-value small">--</div></div></section>
-<section class="section"><div class="section-head"><div class="section-title">Restreamer channels</div><div id="channelCount" class="refresh">--</div></div><div class="channel-head"><div>Channel / signal</div><div>State</div><div>Format</div><div>Bitrate</div><div>Uptime</div><div>Destinations</div></div><div id="channels"><div class="empty">Waiting for Supervisor API…</div></div></section>
-<div class="statusline"><span><i id="apiDot" class="dot"></i>Supervisor API</span><span><i id="restreamerDot" class="dot"></i>Restreamer Core</span><span>Secrets: backend allow-list only</span><span id="supervisorVersion">--</span></div>
-</div></main></div>
+  <aside class="sidebar">
+    <div class="brand">STREAM SUPERVISOR<small>OPERATIONS CONSOLE</small></div>
+    <nav class="nav">
+      <div class="nav-item active"><i class="nav-dot"></i><span>CHANNELS</span></div>
+      <div class="nav-item disabled"><i class="nav-dot"></i><span>SYSTEM</span></div>
+      <div class="nav-item disabled"><i class="nav-dot"></i><span>INCIDENTS</span></div>
+      <div class="nav-item disabled"><i class="nav-dot"></i><span>SETTINGS</span></div>
+    </nav>
+    <div class="side-foot">RESTREAMER / READ ONLY<br><span id="sideVersion">v0.1.0-alpha.4</span></div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="title-wrap"><div class="title">CHANNEL MONITOR</div><div class="subtitle">LIVE OPERATIONS</div></div>
+      <div class="top-right"><div id="clock" class="clock">--:--:--</div><div class="badge readonly">READ ONLY</div><div id="authBadge" class="badge open">ACCESS OPEN</div></div>
+    </header>
+
+    <div class="content">
+      <div id="accessWarning" class="alert-note">SUPERVISOR ACCESS IS NOT AUTHENTICATED. READ-ONLY MODE ONLY — enable SUPERVISOR_USERNAME / SUPERVISOR_PASSWORD before control actions are introduced.</div>
+
+      <section class="service-strip">
+        <div class="service"><div><div class="service-label">Restreamer Core</div><div id="coreDetail" class="service-detail">Waiting…</div></div><div id="coreState" class="service-state dim">--</div></div>
+        <div class="service"><div><div class="service-label">Restreamer Web UI</div><div id="uiDetail" class="service-detail">Waiting…</div></div><div id="uiState" class="service-state dim">--</div></div>
+        <div class="service"><div><div class="service-label">Supervisor API</div><div id="apiDetail" class="service-detail">Waiting…</div></div><div id="apiState" class="service-state dim">--</div></div>
+      </section>
+
+      <section class="telemetry">
+        <div class="metric"><div class="metric-label">Channels live</div><div id="channelsLive" class="metric-value">--</div><div id="channelsSub" class="metric-sub">--</div></div>
+        <div class="metric"><div class="metric-label">Outputs live</div><div id="outputsLive" class="metric-value">--</div><div id="outputsSub" class="metric-sub">--</div></div>
+        <div class="metric"><div class="metric-label">Alerts</div><div id="alerts" class="metric-value">--</div><div class="metric-sub">channels needing attention</div></div>
+        <div class="metric"><div class="metric-label">Output errors</div><div id="outputErrors" class="metric-value">--</div><div class="metric-sub">active start failures</div></div>
+        <div class="metric"><div class="metric-label">Core latency</div><div id="coreLatency" class="metric-value">--</div><div class="metric-sub">API /api</div></div>
+        <div class="metric"><div class="metric-label">Refresh</div><div id="refreshAge" class="metric-value">--</div><div class="metric-sub">automatic · 5 sec</div></div>
+      </section>
+
+      <div class="toolbar">
+        <div class="toolbar-title">RESTREAMER CHANNELS <span id="channelCount" style="color:var(--muted);margin-left:8px">--</span></div>
+        <div class="filters">
+          <button class="filter active" data-filter="all">ALL</button>
+          <button class="filter" data-filter="live">LIVE</button>
+          <button class="filter" data-filter="issues">ISSUES</button>
+          <button class="filter" data-filter="stopped">STOPPED</button>
+        </div>
+      </div>
+
+      <section class="table">
+        <div class="table-head"><div>Channel / signal</div><div>Ingest</div><div>Video</div><div>Audio</div><div>Traffic</div><div>Uptime</div><div>Destinations</div></div>
+        <div id="channels"><div class="empty">Waiting for Supervisor API…</div></div>
+      </section>
+
+      <div class="footerline">
+        <span><i id="apiDot" class="dot"></i>Supervisor</span>
+        <span><i id="coreDot" class="dot"></i>Core</span>
+        <span><i id="uiDot" class="dot"></i>Web UI</span>
+        <span>backend allow-list active</span>
+        <span id="supervisorVersion">--</span>
+      </div>
+    </div>
+  </main>
+</div>
+
 <script>
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
