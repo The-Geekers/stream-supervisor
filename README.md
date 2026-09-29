@@ -11,26 +11,32 @@ Le premier moteur ciblé est **Restreamer**. L'architecture reste volontairement
 - Une panne de l'interface Web d'un moteur ne doit jamais déclencher seule un redémarrage global.
 - Observer d'abord, diagnostiquer ensuite, agir en dernier.
 - Aucun secret, clé de stream, token ou mot de passe ne doit être versionné.
-- Les diagnostics exportables devront masquer automatiquement les données sensibles.
+- Les payloads moteurs sont transformés par allow-list avant exposition au frontend.
 
-## Périmètre initial — v0.1
+## État actuel
 
-- Authentification locale.
-- Rôles Admin et Technicien.
-- État du VPS : CPU, RAM, disque, réseau, uptime.
-- État Docker.
-- État Restreamer séparé entre Core/API, interface Web et processus média.
-- Découverte des channels, entrées et sorties.
-- Start/stop d'une sortie existante sans redémarrage global.
-- Capture de diagnostic nettoyée des secrets.
-- Base d'un watchdog prudent.
+`0.1.0-alpha.3`
 
-Voir `STATUS.md`, `ROADMAP.md`, `docs/REQUIREMENTS.md` et `docs/ARCHITECTURE.md`.
+- application Docker fonctionnelle ;
+- adapter Restreamer Core 16 en lecture seule ;
+- channels et destinations regroupés à partir des processus Restreamer ;
+- noms récupérés depuis les metadata `restreamer-ui` ;
+- métriques essentielles : état, runtime, FPS, bitrate, codecs et format ;
+- CI et tests anti-fuite de secrets ;
+- interface orientée régie plutôt que dashboard SaaS.
 
-## État du projet
+Aucune commande start/stop n'est encore exposée.
 
-Phase de documentation et d'audit technique. Aucun code applicatif de production n'est encore commencé.
+## Workflow
 
-## Organisation
+`main` est la source de vérité.
 
-Projet public maintenu sous **The-Geekers**.
+Le VPS est un runtime. Une fois initialisé, la mise à jour se fait avec :
+
+```bash
+./deployment/update.sh
+```
+
+Les secrets restent dans `.env` sur le VPS et ne sont jamais versionnés.
+
+Voir `STATUS.md`, `ROADMAP.md`, `SECURITY.md` et `docs/`.
