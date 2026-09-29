@@ -28,7 +28,7 @@ GitHub `main` est la source de vérité. Le VPS ne sert plus au développement d
 Après le premier alignement du VPS, les mises à jour se font avec :
 
 ```bash
-./deployment/update.sh
+sh deployment/update.sh
 ```
 
 Le fichier `.env` contenant les secrets reste uniquement sur le VPS.
