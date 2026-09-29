@@ -19,7 +19,9 @@ const requiredIds = [
   "viewChannels","viewSystem","pageTitle","dockerEngine","dockerRunning",
   "dockerUnhealthy","dockerAge","dockerContainers","dockerDot","modeBadge","authBadge",
   "viewIncidents","incidentActiveCount","incidentCriticalCount","incidentWarningCount",
-  "journalStorage","incidentActive","incidentEvents"
+  "journalStorage","incidentActive","incidentEvents",
+  "viewDiagnostics","diagOverall","diagCheckCount","diagStreaming","diagGenerated",
+  "diagnosticChecks","downloadDiagnostics"
 ];
 
 for (const id of requiredIds) {
@@ -40,6 +42,14 @@ if (!html.includes("/api/incidents?limit=100")) {
 }
 if (!html.includes('data-view="incidents"')) {
   console.error("UI CHECK FAILED: incidents navigation is missing");
+  process.exit(1);
+}
+if (!html.includes("/api/diagnostics")) {
+  console.error("UI CHECK FAILED: diagnostics endpoint wiring is missing");
+  process.exit(1);
+}
+if (!html.includes('data-view="diagnostics"')) {
+  console.error("UI CHECK FAILED: diagnostics navigation is missing");
   process.exit(1);
 }
 
