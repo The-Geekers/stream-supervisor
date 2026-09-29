@@ -169,7 +169,7 @@ function renderDocker(docker){
       '<div class="docker-cell docker-image">'+esc(item.image||"--")+'</div>'+
       '<div class="docker-cell"><span class="state '+state+'">'+esc(String(item.state||"unknown").toUpperCase())+'</span></div>'+
       '<div class="docker-cell"><span class="state '+healthClass+'">'+esc(String(health).toUpperCase())+'</span></div>'+
-      '<div class="docker-cell spec">'+esc(Number(item.cpuPercent||0).toFixed(1))+'%</div>'+
+      '<div class="docker-cell spec">'+esc(Number(item.cpuCores||0).toFixed(2))+'</div>'+
       '<div class="docker-cell spec">'+esc(fmtMem(item.memory?.usageBytes||0))+'</div>'+
       '<div class="docker-cell spec">'+esc(fmtTime(item.uptimeSeconds||0))+'</div>'+
     '</div>';
