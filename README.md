@@ -15,12 +15,13 @@ Le premier moteur ciblé est **Restreamer**. L'architecture reste volontairement
 
 ## État actuel
 
-`0.1.0-alpha.9`
+`0.1.0-alpha.9.1`
 
 - adapter Restreamer Core 16 avec monitoring et contrôle limité des destinations ;
 - channels, destinations et métriques de streaming en pseudo temps réel SSE ;
 - monitoring VPS : CPU, RAM, disque, réseau, load et uptime ;
 - page **SYSTEM** avec Docker Adapter read-only ;
+- CPU Docker affiché en équivalent de cœurs (`1.00` = un cœur pleinement utilisé), jamais en pourcentage multi-cœur ambigu ;
 - rôles Supervisor **Admin** et **Technician** ;
 - interface ouverte = monitoring uniquement, aucune action d'écriture ;
 - une fois authentifié, Admin et Technician peuvent démarrer/arrêter une destination Restreamer existante ;

@@ -39,7 +39,7 @@
       <div class="nav-item disabled"><i class="nav-dot"></i><span>INCIDENTS</span></div>
       <div class="nav-item disabled"><i class="nav-dot"></i><span>SETTINGS</span></div>
     </nav>
-    <div class="side-foot">RESTREAMER / READ ONLY<br><span id="sideVersion">v0.1.0-alpha.9</span></div>
+    <div class="side-foot">RESTREAMER / READ ONLY<br><span id="sideVersion">v0.1.0-alpha.9.1</span></div>
   </aside>
 
   <main class="main">
@@ -116,10 +116,10 @@
         </section>
 
         <section class="docker-table">
-          <div class="docker-head"><div>Service</div><div>Image</div><div>State</div><div>Health</div><div>CPU</div><div>RAM</div><div>Uptime</div></div>
+          <div class="docker-head"><div>Service</div><div>Image</div><div>State</div><div>Health</div><div>CPU CORES</div><div>RAM</div><div>Uptime</div></div>
           <div id="dockerContainers"><div class="empty">Waiting for Docker observer…</div></div>
         </section>
-        <div class="docker-note">Docker socket access is isolated inside a network-disabled observer. Supervisor only reads a sanitized snapshot file.</div>
+        <div class="docker-note">Docker socket access is isolated inside a network-disabled observer. CPU is shown as core equivalents (1.00 = one fully used CPU core). Supervisor only reads a sanitized snapshot file.</div>
       </div>
 
       <div class="footerline">
@@ -169,7 +169,7 @@ function renderDocker(docker){
       '<div class="docker-cell docker-image">'+esc(item.image||"--")+'</div>'+
       '<div class="docker-cell"><span class="state '+state+'">'+esc(String(item.state||"unknown").toUpperCase())+'</span></div>'+
       '<div class="docker-cell"><span class="state '+healthClass+'">'+esc(String(health).toUpperCase())+'</span></div>'+
-      '<div class="docker-cell spec">'+esc(Number(item.cpuPercent||0).toFixed(1))+'%</div>'+
+      '<div class="docker-cell spec">'+esc(Number(item.cpuCores||0).toFixed(2))+'</div>'+
       '<div class="docker-cell spec">'+esc(fmtMem(item.memory?.usageBytes||0))+'</div>'+
       '<div class="docker-cell spec">'+esc(fmtTime(item.uptimeSeconds||0))+'</div>'+
     '</div>';
@@ -361,7 +361,7 @@ function applyStatus(x){
     $("outputErrors").textContent=s.outputErrors??0;
     $("outputErrors").style.color=(s.outputErrors??0)>0?"var(--red)":"var(--text)";
     $("supervisorVersion").textContent=x.supervisor?.version||"--";
-    $("sideVersion").textContent=x.supervisor?.version||"v0.1.0-alpha.9";
+    $("sideVersion").textContent=x.supervisor?.version||"v0.1.0-alpha.9.1";
     $("monitorTransport").textContent=(monitoring.transport||"poll").toUpperCase()+" · source "+(monitoring.sourcePollMs||"--")+" ms · core "+(monitoring.pollDurationMs??"--")+" ms";
     latestChannels=r.channels||[];
     renderChannels();

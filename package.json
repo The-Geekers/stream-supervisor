@@ -1,6 +1,6 @@
 {
   "name": "stream-supervisor",
-  "version": "0.1.0-alpha.9",
+  "version": "0.1.0-alpha.9.1",
   "private": true,
   "type": "module",
   "scripts": {

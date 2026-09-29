@@ -14,8 +14,11 @@
 - Probe Web UI Restreamer corrigé sur `/ui/`.
 - Test unitaire réel de la commande Restreamer avec login JWT et endpoint process command.
 
+### Fixed
+- Le CPU des conteneurs Docker n'est plus affiché en pourcentage multi-cœur (`175%`). Il est affiché en équivalent de cœurs (`1.75`).
+
 ### Changed
-- Passage à `0.1.0-alpha.9`.
+- Passage à `0.1.0-alpha.9.1`.
 - Mode ouvert : monitoring uniquement.
 - Mode authentifié : `OUTPUT CONTROL` pour Admin/Technician.
 - Le statut de la Web UI est désormais basé sur la vraie route statique `/ui/`.
