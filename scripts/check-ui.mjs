@@ -17,7 +17,9 @@ try {
 
 const requiredIds = [
   "viewChannels","viewSystem","pageTitle","dockerEngine","dockerRunning",
-  "dockerUnhealthy","dockerAge","dockerContainers","dockerDot","modeBadge","authBadge"
+  "dockerUnhealthy","dockerAge","dockerContainers","dockerDot","modeBadge","authBadge",
+  "viewIncidents","incidentActiveCount","incidentCriticalCount","incidentWarningCount",
+  "journalStorage","incidentActive","incidentEvents"
 ];
 
 for (const id of requiredIds) {
@@ -30,6 +32,14 @@ for (const id of requiredIds) {
 
 if (!html.includes("/api/restreamer/output-command")) {
   console.error("UI CHECK FAILED: output command endpoint wiring is missing");
+  process.exit(1);
+}
+if (!html.includes("/api/incidents?limit=100")) {
+  console.error("UI CHECK FAILED: incidents endpoint wiring is missing");
+  process.exit(1);
+}
+if (!html.includes('data-view="incidents"')) {
+  console.error("UI CHECK FAILED: incidents navigation is missing");
   process.exit(1);
 }
 
