@@ -21,6 +21,8 @@ const requiredIds = [
   "viewIncidents","incidentActiveCount","incidentCriticalCount","incidentWarningCount",
   "journalStorage","incidentActive","incidentEvents",
   "viewDiagnostics","diagOverall","diagCheckCount","diagStreaming","diagGenerated",
+  "diagnosticChecks","downloadDiagnostics",
+  "viewDiagnostics","diagOverall","diagCheckCount","diagStreaming","diagGenerated",
   "diagnosticChecks","downloadDiagnostics"
 ];
 
