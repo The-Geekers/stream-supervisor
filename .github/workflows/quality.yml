@@ -1,0 +1,40 @@
+name: quality
+
+on:
+  push:
+    branches:
+      - main
+      - "dev/**"
+      - "feature/**"
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Unit and security tests
+        run: npm run check
+      - name: Docker build
+        run: docker build -t stream-supervisor-ci .
+      - name: Container health smoke test
+        run: |
+          cp .env.example .env
+          docker run -d --name stream-supervisor-ci --env-file .env -p 8090:8090 stream-supervisor-ci
+          for i in $(seq 1 20); do
+            if curl -fsS http://127.0.0.1:8090/health; then
+              exit 0
+            fi
+            sleep 1
+          done
+          docker logs stream-supervisor-ci
+          exit 1
