@@ -15,7 +15,7 @@ Le premier moteur ciblé est **Restreamer**. L'architecture reste volontairement
 
 ## État actuel
 
-`0.1.0-alpha.7`
+`0.1.0-alpha.7.1`
 
 - application Docker fonctionnelle ;
 - adapter Restreamer Core 16 en lecture seule ;
@@ -46,8 +46,8 @@ Le conteneur reçoit uniquement en lecture seule des fichiers précis et non sec
 - `/proc/meminfo`
 - `/proc/loadavg`
 - `/proc/uptime`
-- `/proc/net/dev`
-- `/proc/net/route`
+
+Pour le réseau, l'interface de route par défaut est détectée par le script de déploiement et seuls ses compteurs sysfs `rx_bytes` / `tx_bytes` sont montés en lecture seule. Cela évite les compteurs du namespace réseau Docker.
 
 Pour l'espace disque, un répertoire vide `runtime/disk-probe` situé sur le filesystem du projet est bind-mounté et mesuré avec `statfs`. Aucun accès général au filesystem hôte n'est nécessaire.
 
