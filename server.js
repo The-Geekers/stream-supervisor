@@ -12,7 +12,7 @@ const __dirname = dirname(__filename);
 
 const HOST = process.env.HOST || "0.0.0.0";
 const PORT = Number(process.env.PORT || 8090);
-const VERSION = "0.1.0-alpha.7";
+const VERSION = "0.1.0-alpha.7.1";
 const DEMO_MODE = process.env.DEMO_MODE === "true";
 const requestedMonitorInterval = Number(process.env.MONITOR_INTERVAL_MS || 1000);
 const MONITOR_INTERVAL_MS = Math.min(
@@ -35,7 +35,9 @@ const restreamer = new RestreamerAdapter({
 
 const system = new SystemAdapter({
   procRoot: process.env.SYSTEM_PROC_ROOT || "/host/proc",
-  diskPath: process.env.SYSTEM_DISK_PATH || "/host/disk"
+  diskPath: process.env.SYSTEM_DISK_PATH || "/host/disk",
+  networkRoot: process.env.SYSTEM_NETWORK_ROOT || "/host/net",
+  networkInterface: process.env.SYSTEM_NETWORK_INTERFACE || ""
 });
 
 const sseClients = new Set();
