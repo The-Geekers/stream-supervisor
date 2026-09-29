@@ -13,5 +13,19 @@ services:
       NODE_ENV: production
       HOST: 0.0.0.0
       PORT: 8090
+      SYSTEM_PROC_ROOT: /host/proc
+      SYSTEM_DISK_PATH: /host/disk
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    volumes:
+      - /proc/stat:/host/proc/stat:ro
+      - /proc/meminfo:/host/proc/meminfo:ro
+      - /proc/loadavg:/host/proc/loadavg:ro
+      - /proc/uptime:/host/proc/uptime:ro
+      - /proc/net/dev:/host/proc/net/dev:ro
+      - /proc/net/route:/host/proc/net/route:ro
+      - ./runtime/disk-probe:/host/disk:ro
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
