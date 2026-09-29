@@ -14,7 +14,7 @@ Moteur de streaming ------------------> destinations
  Supervisor backend
       |
       +-- System Adapter
-      +-- Docker Adapter
+      +-- Docker Adapter <----- sanitized snapshot ----- Docker Observer ----- docker.sock
       +-- Streaming Engine Adapters
             +-- Restreamer
             +-- MediaMTX
@@ -25,25 +25,31 @@ Si Supervisor s'arrête, les flux existants continuent.
 
 ## Séparation frontend / backend
 
-Le navigateur communique uniquement avec le backend Supervisor. Toutes les opérations privilégiées système, Docker ou moteurs restent côté backend.
+Le navigateur communique uniquement avec le backend Supervisor.
 
 Le backend produit un snapshot sanitizé et le diffuse aux navigateurs par Server-Sent Events. Le nombre de navigateurs ouverts ne multiplie donc pas les appels Restreamer.
 
 ## System Adapter
 
-Le System Adapter lit uniquement les métriques hôte nécessaires :
-
+Le System Adapter lit uniquement :
 - CPU depuis `/proc/stat` ;
 - mémoire depuis `/proc/meminfo` ;
 - load depuis `/proc/loadavg` ;
 - uptime depuis `/proc/uptime` ;
-- interface réseau par défaut depuis `/proc/net/route` ;
-- compteurs réseau depuis `/proc/net/dev` ;
+- compteurs réseau RX/TX via `/sys/class/net/<interface>/statistics/` ;
 - usage du filesystem via `statfs` sur un répertoire vide bind-mounté.
 
-Aucun mount complet de `/` n'est nécessaire. Le System Adapter ne lit aucun environnement de processus, aucune ligne de commande et aucun fichier de configuration du VPS.
+Aucun mount complet de `/` n'est nécessaire.
 
-## Adaptateurs
+## Docker Adapter
+
+Le socket Docker n'est pas monté dans Supervisor.
+
+Un helper séparé, sans réseau, lit Docker et produit un fichier JSON sanitizé. Le backend monte uniquement le volume de snapshot en lecture seule.
+
+Cette séparation réduit fortement l'exposition du socket Docker à une surface Web. Le snapshot ne contient qu'une allow-list opérationnelle.
+
+## Adaptateurs moteurs
 
 Chaque moteur doit exposer autant que possible un modèle commun : health, channels/inputs, outputs, state, metrics et actions sûres.
 
