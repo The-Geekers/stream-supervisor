@@ -15,7 +15,7 @@ const __dirname = dirname(__filename);
 
 const HOST = process.env.HOST || "0.0.0.0";
 const PORT = Number(process.env.PORT || 8090);
-const VERSION = "0.1.0-alpha.10";
+const VERSION = "0.1.0-alpha.11";
 const DEMO_MODE = process.env.DEMO_MODE === "true";
 const requestedMonitorInterval = Number(process.env.MONITOR_INTERVAL_MS || 1000);
 const MONITOR_INTERVAL_MS = Math.min(
