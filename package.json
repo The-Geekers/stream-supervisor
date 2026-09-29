@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "node server.js",
-    "syntax": "node --check server.js && node --check lib/restreamer.js && node --check lib/model.js && node --check lib/auth.js && node --check lib/demo.js && node --check lib/system.js && node --check lib/docker.js && node --check docker-observer/observer.js && node scripts/check-ui.mjs",
+    "syntax": "node --check server.js && node --check lib/restreamer.js && node --check lib/model.js && node --check lib/auth.js && node --check lib/demo.js && node --check lib/system.js && node --check lib/docker.js && node --check lib/incidents.js && node --check docker-observer/observer.js && node scripts/check-ui.mjs",
     "test": "node --test",
     "security:repo": "node scripts/check-repo-secrets.mjs",
     "check": "npm run syntax && npm test && npm run security:repo"
