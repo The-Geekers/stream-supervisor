@@ -12,7 +12,7 @@ const __dirname = dirname(__filename);
 
 const HOST = process.env.HOST || "0.0.0.0";
 const PORT = Number(process.env.PORT || 8090);
-const VERSION = "0.1.0-alpha.4";
+const VERSION = "0.1.0-alpha.5";
 const DEMO_MODE = process.env.DEMO_MODE === "true";
 const startedAt = Date.now();
 
