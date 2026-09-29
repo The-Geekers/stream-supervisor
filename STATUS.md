@@ -1,19 +1,22 @@
 # Project Status
 
-**Version :** 0.1.0-alpha.4  
+**Version :** 0.1.0-alpha.5  
 **Phase :** supervision Restreamer read-only avancée
 
 | Domaine | État |
 |---|---|
 | Dépôt GitHub / workflow GitHub → VPS | OK |
 | Application Docker | OK |
-| Interface monitoring | Alpha 4 |
+| Interface monitoring | Alpha 5 |
 | Audit Core Restreamer | Core 16.0.0 identifié |
 | Auth API Restreamer | OK |
 | État Web UI Restreamer séparé | Intégré |
 | Noms de channels via metadata | Intégré |
 | Ingest / outputs / métriques | Lecture seule intégrée |
 | Filtres opérateur | Intégrés |
+| Tri channels par nom / état | Intégré |
+| Débit total entrant / sortant | Intégré |
+| CPU / RAM cumulés des processus Restreamer | Intégrés |
 | Tests anti-fuite secrets | Intégrés |
 | Auth Supervisor | Basic Auth optionnelle |
 | CI GitHub qualité | Intégrée |
@@ -42,4 +45,4 @@ Le fichier `.env` contenant les secrets reste uniquement sur le VPS.
 
 ## Prochaine étape
 
-Valider alpha.4 sur les flux réels, puis sécuriser l'accès Supervisor et préparer les commandes start/stop de destinations avec confirmation et journal d'action.
+Valider alpha.5 sur les flux réels, puis ajouter le monitoring système VPS et préparer les commandes opérateur.
