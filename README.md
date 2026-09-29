@@ -34,7 +34,7 @@ Aucune commande start/stop n'est encore exposée.
 Le VPS est un runtime. Une fois initialisé, la mise à jour se fait avec :
 
 ```bash
-./deployment/update.sh
+sh deployment/update.sh
 ```
 
 Les secrets restent dans `.env` sur le VPS et ne sont jamais versionnés.
