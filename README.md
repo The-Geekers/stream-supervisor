@@ -15,7 +15,7 @@ Le premier moteur ciblé est **Restreamer**. L'architecture reste volontairement
 
 ## État actuel
 
-`0.1.0-alpha.9.2`
+`0.1.0-alpha.10`
 
 - adapter Restreamer Core 16 avec monitoring et contrôle limité des destinations ;
 - channels, destinations et métriques de streaming en pseudo temps réel SSE ;
@@ -31,7 +31,11 @@ Le premier moteur ciblé est **Restreamer**. L'architecture reste volontairement
 - confirmation avant action opérateur ;
 - anti-CSRF par en-tête d'action same-origin ;
 - validation serveur stricte : seules les IDs egress déjà découvertes et les commandes `start` / `stop` sont acceptées ;
-- tests anti-fuite de secrets, smoke tests Docker/auth et captures visuelles CI.
+- page **INCIDENTS** avec état actif et journal d'événements persistant ;
+- détection d'incidents Core, Web UI, Docker, ingest et egress avec temporisation anti-bruit ;
+- journal des ouvertures/résolutions d'incidents et des actions opérateur start/stop ;
+- persistance dédiée dans un volume Docker Supervisor, sans payload Restreamer brut ;
+- tests anti-fuite de secrets, smoke tests Docker/auth/incidents et captures visuelles CI.
 
 ## Authentification
 

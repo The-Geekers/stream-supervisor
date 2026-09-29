@@ -12,7 +12,7 @@ Les processus de streaming peuvent exposer des clés de stream ou URL privées d
 
 Supervisor applique une allow-list backend avant toute exposition au frontend. Les champs bruts tels que `command`, `address`, `last_logline`, URL de stream, credentials et JWT ne doivent jamais quitter l'adapter moteur.
 
-### Actions alpha.9
+### Actions opérateur
 
 Les seules écritures Restreamer disponibles sont :
 - `start` d'une destination egress existante ;
@@ -53,6 +53,14 @@ Sans compte configuré, le monitoring reste accessible mais toutes les écriture
 La UI statique est servie par le même Core que l'API. Aucun bouton « restart UI » serveur n'est exposé car il n'existe pas de service UI séparé.
 
 Le reload de configuration Core n'est pas utilisé comme mécanisme de récupération UI car il redémarre Core.
+
+## Incidents et journal d'événements
+
+Le journal persistant n'enregistre jamais de payload moteur brut.
+
+Les événements sont reconstruits uniquement à partir des modèles déjà sanitizés et passent par une seconde allow-list avant écriture. Les champs persistés sont limités aux identifiants d'événement/incident, horodatage, type, sévérité, source, titre, détail court, noms de channel/destination, acteur et résultat d'action.
+
+Les clés de stream, URL de diffusion, JWT, credentials, commandes FFmpeg, variables d'environnement et logs Restreamer bruts ne doivent jamais être persistés dans le journal.
 
 ## Diagnostics
 

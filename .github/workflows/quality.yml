@@ -53,6 +53,15 @@ jobs:
           done
           curl -fsS http://127.0.0.1:8090/health
           curl -fsS http://127.0.0.1:8090/api/status >/dev/null
+          curl -fsS http://127.0.0.1:8090/api/incidents | node -e '
+            let raw="";
+            process.stdin.on("data", c => raw += c);
+            process.stdin.on("end", () => {
+              const data=JSON.parse(raw);
+              if (!Array.isArray(data.active) || !Array.isArray(data.events)) process.exit(1);
+              if (typeof data.summary?.active !== "number") process.exit(1);
+            });
+          '
           curl -Ns --max-time 3 http://127.0.0.1:8090/api/events > /tmp/sse-events.txt || true
           grep -q "event: status" /tmp/sse-events.txt
 

@@ -112,19 +112,20 @@ Docker utilise actuellement le backend iptables.
 
 Les règles opérateur destinées à filtrer des ports Docker publiés sont placées dans la chaîne `DOCKER-USER`.
 
-Ports Web directs actuellement filtrés depuis l'interface publique `ens3` :
+État validé après durcissement :
 
-```text
-8080  Restreamer HTTP/API
-8181  Restreamer listener secondaire
-8090  Stream Supervisor
-8900  FileBrowser
-9443  Portainer
-```
+- NPM public sur `80/443` ; administration NPM sur `127.0.0.1:81` via tunnel SSH.
+- Supervisor sur `127.0.0.1:8090`.
+- FileBrowser sur `127.0.0.1:8900`.
+- Portainer sur `127.0.0.1:9443`.
+- Restreamer ne publie plus `8080/8181` sur l'hôte ; NPM et Supervisor le joignent via `web-proxy`.
+- Ports média Restreamer conservés : `1935/1936 TCP` et `6000 UDP`.
+- Muxshed a été supprimé du VPS.
+- LLMNR/5355 a été désactivé.
 
-Ces ports doivent rester accessibles via NPM ou en local, pas directement depuis Internet.
+Le firewall persistant couvre IPv4 et IPv6, avec politique entrante restrictive. Les règles Docker publiques passent par `DOCKER-USER`.
 
-Les ports média Restreamer nécessaires à l'exploitation ne doivent pas être bloqués avec ces règles.
+Le journal INCIDENTS de Supervisor est stocké dans le volume Docker `supervisor_data` et ne doit contenir que des données allow-listées.
 
 ## Rappel sécurité
 

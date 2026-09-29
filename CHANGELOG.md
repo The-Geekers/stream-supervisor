@@ -3,6 +3,11 @@
 ## [Unreleased]
 
 ### Added
+- Page **INCIDENTS** avec incidents actifs et journal d'événements.
+- Détection des incidents Restreamer Core/Web UI, Docker, ingest et egress.
+- Temporisation des états transitoires pour limiter le bruit d'incidents.
+- Journal persistant des ouvertures/résolutions et des actions opérateur.
+- Endpoint `GET /api/incidents` avec allow-list stricte.
 - Rôles Supervisor `Admin` et `Technician`.
 - Endpoint `/api/session` pour exposer uniquement le rôle/capacité courant.
 - Première action opérateur : start/stop d'une destination Restreamer existante.
@@ -18,7 +23,7 @@
 - Le CPU des conteneurs Docker n'est plus affiché en pourcentage multi-cœur (`175%`). Il est affiché en équivalent de cœurs (`1.75`).
 
 ### Changed
-- Passage à `0.1.0-alpha.9.2`.
+- Passage à `0.1.0-alpha.10`.
 - Mode ouvert : monitoring uniquement.
 - Mode authentifié : `OUTPUT CONTROL` pour Admin/Technician.
 - Le statut de la Web UI est désormais basé sur la vraie route statique `/ui/`.
@@ -30,6 +35,8 @@
 - Ajout de `docs/ADMIN_VPS.md` avec les commandes d'administration validées.
 
 ### Security
+- Le journal incidents/actions n'accepte qu'un schéma allow-listé ; aucun payload Restreamer brut n'est persisté.
+- Les clés de stream, URLs, JWT et commandes FFmpeg restent exclus du stockage incidents.
 - Aucun contrôle n'est possible sans authentification Supervisor.
 - Les actions acceptent uniquement `start` et `stop`.
 - Aucune ID de process arbitraire ne peut être commandée : l'output doit exister dans le snapshot sanitizé courant.

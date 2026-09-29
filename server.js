@@ -5,6 +5,7 @@ import { dirname, join } from "node:path";
 import { createBasicAuth } from "./lib/auth.js";
 import { buildDemoStatus } from "./lib/demo.js";
 import { DockerAdapter } from "./lib/docker.js";
+import { EventJournal, IncidentTracker } from "./lib/incidents.js";
 import { RestreamerAdapter } from "./lib/restreamer.js";
 import { SystemAdapter } from "./lib/system.js";
 
@@ -13,7 +14,7 @@ const __dirname = dirname(__filename);
 
 const HOST = process.env.HOST || "0.0.0.0";
 const PORT = Number(process.env.PORT || 8090);
-const VERSION = "0.1.0-alpha.9.2";
+const VERSION = "0.1.0-alpha.10";
 const DEMO_MODE = process.env.DEMO_MODE === "true";
 const requestedMonitorInterval = Number(process.env.MONITOR_INTERVAL_MS || 1000);
 const MONITOR_INTERVAL_MS = Math.min(
@@ -46,6 +47,16 @@ const system = new SystemAdapter({
 const docker = new DockerAdapter({
   snapshotPath: process.env.DOCKER_STATUS_FILE || "/runtime/docker-status/status.json"
 });
+
+const journal = new EventJournal({
+  filePath: process.env.EVENTS_FILE || "/data/events.jsonl"
+});
+const incidentTracker = new IncidentTracker({
+  journal,
+  stateFile: process.env.INCIDENT_STATE_FILE || "/data/incidents-state.json"
+});
+await journal.init();
+await incidentTracker.init();
 
 const sseClients = new Set();
 let latestStatus = null;
@@ -154,6 +165,7 @@ async function collectStatus() {
       pollDurationMs
     };
     status.generatedAt = new Date().toISOString();
+    status.incidents = await incidentTracker.update(status);
     return status;
   }
 
@@ -164,13 +176,15 @@ async function collectStatus() {
   ]);
   const pollDurationMs = Math.max(0, Math.round(performance.now() - started));
 
-  return {
+  const status = {
     supervisor: supervisorInfo(pollDurationMs),
     system: systemStatus,
     restreamer: restreamerStatus,
     docker: dockerStatus,
     generatedAt: new Date().toISOString()
   };
+  status.incidents = await incidentTracker.update(status);
+  return status;
 }
 
 function sendSse(res, status) {
@@ -266,6 +280,17 @@ const server = http.createServer(async (req, res) => {
     });
   }
 
+  if (req.method === "GET" && url.pathname === "/api/incidents") {
+    const limit = Number(url.searchParams.get("limit") || 100);
+    return sendJson(res, 200, {
+      ...incidentTracker.snapshot(),
+      events: journal.list(limit),
+      storage: {
+        persistent: journal.persistent
+      }
+    });
+  }
+
   if (req.method === "POST" && url.pathname === "/api/restreamer/output-command") {
     if (!auth.enabled) return forbidden(res, "actions_locked");
     if (!session.actionsEnabled) return forbidden(res, "insufficient_role");
@@ -305,6 +330,18 @@ const server = http.createServer(async (req, res) => {
     outputActionsInFlight.add(outputId);
     try {
       await restreamer.commandOutput(outputId, command);
+      await journal.append({
+        kind: "operator_action",
+        severity: "info",
+        source: "restreamer-egress",
+        title: command === "start" ? "Destination démarrée" : "Destination arrêtée",
+        detail: `${match.channel.name} · ${match.output.name}`,
+        channel: match.channel.name,
+        output: match.output.name,
+        actor: session.username || session.role,
+        action: command,
+        status: "accepted"
+      });
       setTimeout(() => refreshStatus().catch(() => {}), 250);
       return sendJson(res, 200, {
         status:"accepted",
@@ -318,6 +355,18 @@ const server = http.createServer(async (req, res) => {
         }
       });
     } catch {
+      await journal.append({
+        kind: "operator_action",
+        severity: "warning",
+        source: "restreamer-egress",
+        title: "Commande destination échouée",
+        detail: `${match.channel.name} · ${match.output.name}`,
+        channel: match.channel.name,
+        output: match.output.name,
+        actor: session.username || session.role,
+        action: command,
+        status: "failed"
+      });
       return sendJson(res, 502, {
         status:"error",
         code:"restreamer_command_failed"

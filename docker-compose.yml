@@ -18,8 +18,8 @@ services:
       SYSTEM_NETWORK_ROOT: /host/net
       SYSTEM_NETWORK_INTERFACE: ${SYSTEM_NETWORK_INTERFACE:-ens3}
       DOCKER_STATUS_FILE: /runtime/docker-status/status.json
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+      EVENTS_FILE: /data/events.jsonl
+      INCIDENT_STATE_FILE: /data/incidents-state.json
     volumes:
       - /proc/stat:/host/proc/stat:ro
       - /proc/meminfo:/host/proc/meminfo:ro
@@ -29,6 +29,7 @@ services:
       - /sys/class/net/${SYSTEM_NETWORK_INTERFACE:-ens3}/statistics/tx_bytes:/host/net/tx_bytes:ro
       - ./runtime/disk-probe:/host/disk:ro
       - docker_status:/runtime/docker-status:ro
+      - supervisor_data:/data
     security_opt:
       - no-new-privileges:true
     cap_drop:
@@ -60,6 +61,7 @@ services:
 
 volumes:
   docker_status:
+  supervisor_data:
 
 networks:
   web-proxy:
