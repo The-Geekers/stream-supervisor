@@ -25,6 +25,8 @@
 .alert-note{display:none;margin-bottom:12px;border:1px solid #614a20;background:#151106;color:#e8c16f;padding:9px 11px;font:10px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace}.alert-note.show{display:block}.docker-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--line);background:var(--panel);margin-bottom:12px}.docker-summary .metric:nth-child(4){border-right:0}.docker-table{border:1px solid var(--line);background:var(--panel)}.docker-head,.docker-row{display:grid;grid-template-columns:minmax(170px,1.5fr) minmax(220px,2fr) 100px 100px 110px 120px 110px}.docker-head{background:#0c1014;color:var(--muted);font-size:9px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;border-bottom:1px solid var(--line)}.docker-head>div,.docker-cell{padding:9px 10px;border-right:1px solid var(--line-soft)}.docker-head>div:last-child,.docker-cell:last-child{border-right:0}.docker-row{min-height:54px;border-bottom:1px solid var(--line-soft)}.docker-row:last-child{border-bottom:0}.docker-name{font-weight:800}.docker-image{color:var(--muted);font:10px ui-monospace,SFMono-Regular,Consolas,monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.docker-note{margin-top:9px;color:var(--muted);font:9px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}
 .incident-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--line);background:var(--panel);margin-bottom:12px}.incident-summary .metric:nth-child(4){border-right:0}
 .incident-table{border:1px solid var(--line);background:var(--panel);margin-bottom:12px}.incident-head,.incident-row{display:grid;grid-template-columns:105px 150px minmax(220px,1.2fr) minmax(280px,2fr) 135px}.event-head,.event-row{display:grid;grid-template-columns:150px 135px 145px minmax(220px,1.2fr) minmax(280px,2fr) 120px}.incident-head,.event-head{background:#0c1014;color:var(--muted);font-size:9px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;border-bottom:1px solid var(--line)}.incident-head>div,.event-head>div,.incident-row>div,.event-row>div{padding:9px 10px;border-right:1px solid var(--line-soft);min-width:0}.incident-head>div:last-child,.event-head>div:last-child,.incident-row>div:last-child,.event-row>div:last-child{border-right:0}.incident-row,.event-row{min-height:50px;border-bottom:1px solid var(--line-soft)}.incident-row:last-child,.event-row:last-child{border-bottom:0}.severity{display:inline-block;padding:3px 6px;border:1px solid var(--line);font:800 9px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.05em}.severity.critical{color:var(--red);border-color:#6b3030}.severity.warning{color:var(--amber);border-color:#655126}.severity.info{color:var(--cyan);border-color:#245368}.incident-title{font-weight:800}.incident-detail{color:var(--muted);font:10px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace;overflow:hidden;text-overflow:ellipsis}.incident-meta{color:var(--muted);font:10px ui-monospace,SFMono-Regular,Consolas,monospace}
+.diag-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--line);background:var(--panel);margin-bottom:12px}.diag-summary .metric:nth-child(4){border-right:0}
+.diag-table{border:1px solid var(--line);background:var(--panel);margin-bottom:12px}.diag-head,.diag-row{display:grid;grid-template-columns:110px 190px minmax(260px,1.2fr) minmax(340px,1.8fr)}.diag-head{background:#0c1014;color:var(--muted);font-size:9px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;border-bottom:1px solid var(--line)}.diag-head>div,.diag-row>div{padding:10px;border-right:1px solid var(--line-soft);min-width:0}.diag-head>div:last-child,.diag-row>div:last-child{border-right:0}.diag-row{min-height:56px;border-bottom:1px solid var(--line-soft)}.diag-row:last-child{border-bottom:0}.diag-label{font-weight:800}.diag-text{color:var(--muted);font:10px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}.diag-actions{display:flex;align-items:center;justify-content:space-between;gap:16px;border:1px solid var(--line);background:var(--panel);padding:14px}.diag-actions-copy{max-width:900px}.diag-actions-title{font-weight:800;margin-bottom:5px}.diag-actions-note{color:var(--muted);font:10px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}.diag-button{appearance:none;border:1px solid #31566c;background:#0b1820;color:var(--cyan);padding:8px 12px;font:800 9px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.06em;cursor:pointer;white-space:nowrap}.diag-button:hover{border-color:var(--cyan)}
 @media(max-width:1280px){.table-head,.channel{grid-template-columns:minmax(210px,2fr) 95px 150px 120px 105px minmax(240px,2fr)}.table-head>.sort-head:nth-child(6),.channel>.cell:nth-child(6){display:none}}
 @media(max-width:1200px){.host-strip{grid-template-columns:repeat(4,1fr)}.host-metric:nth-child(4n){border-right:0}.telemetry{grid-template-columns:repeat(4,1fr)}.metric:nth-child(4n){border-right:0}}@media(max-width:1050px){.shell{grid-template-columns:58px minmax(0,1fr)}.brand{font-size:0}.brand:before{content:"SS";font-size:14px}.brand small,.nav-item span{display:none}.nav-item{justify-content:center}.telemetry{grid-template-columns:repeat(4,1fr)}.metric:nth-child(4n){border-right:0}.service-strip{grid-template-columns:1fr}.service{border-right:0;border-bottom:1px solid var(--line)}.service:last-child{border-bottom:0}.table-head{display:none}.channel{grid-template-columns:minmax(200px,1.8fr) 90px 140px 110px minmax(220px,1.6fr)}.channel>.cell:nth-child(4),.channel>.cell:nth-child(6){display:none}}
 @media(max-width:760px){.host-strip{grid-template-columns:repeat(2,1fr)}.host-metric:nth-child(even){border-right:0}.shell{display:block}.sidebar{display:none}.topbar{padding:0 10px}.subtitle,.clock{display:none}.content{padding:10px}.telemetry{grid-template-columns:repeat(2,1fr)}.metric:nth-child(odd){border-right:1px solid var(--line)}.metric:nth-child(even){border-right:0}.channel{display:block;padding:9px}.cell{border:0;padding:5px 0}.identity{min-height:50px}.toolbar{height:auto;padding:8px;gap:10px;align-items:flex-start;flex-direction:column}}
@@ -39,6 +41,7 @@
       <div class="nav-item active" data-view="channels"><i class="nav-dot"></i><span>CHANNELS</span></div>
       <div class="nav-item" data-view="system"><i class="nav-dot"></i><span>SYSTEM</span></div>
       <div class="nav-item" data-view="incidents"><i class="nav-dot"></i><span>INCIDENTS</span></div>
+      <div class="nav-item" data-view="diagnostics"><i class="nav-dot"></i><span>DIAGNOSTICS</span></div>
       <div class="nav-item disabled"><i class="nav-dot"></i><span>SETTINGS</span></div>
     </nav>
     <div class="side-foot">RESTREAMER / READ ONLY<br><span id="sideVersion">v0.1.0-alpha.10</span></div>
@@ -145,6 +148,29 @@
         </section>
       </div>
 
+      <div id="viewDiagnostics" class="view">
+        <section class="diag-summary">
+          <div class="metric"><div class="metric-label">Overall</div><div id="diagOverall" class="metric-value">--</div><div class="metric-sub">derived safe checks</div></div>
+          <div class="metric"><div class="metric-label">Checks</div><div id="diagCheckCount" class="metric-value">--</div><div id="diagCheckSub" class="metric-sub">--</div></div>
+          <div class="metric"><div class="metric-label">Streaming</div><div id="diagStreaming" class="metric-value">--</div><div id="diagStreamingSub" class="metric-sub">--</div></div>
+          <div class="metric"><div class="metric-label">Report</div><div id="diagGenerated" class="metric-value">--</div><div class="metric-sub">safe allow-listed snapshot</div></div>
+        </section>
+
+        <div class="toolbar"><div class="toolbar-title">OPERATOR CHECKS</div></div>
+        <section class="diag-table">
+          <div class="diag-head"><div>Status</div><div>Subsystem</div><div>Observation</div><div>Operator guidance</div></div>
+          <div id="diagnosticChecks"><div class="empty">Waiting for diagnostics…</div></div>
+        </section>
+
+        <section class="diag-actions">
+          <div class="diag-actions-copy">
+            <div class="diag-actions-title">SAFE DIAGNOSTIC REPORT</div>
+            <div class="diag-actions-note">Export contains only allow-listed Supervisor data. Raw engine payloads, stream addresses, stream keys, credentials, JWT, FFmpeg commands, environment variables and raw logs are excluded.</div>
+          </div>
+          <button id="downloadDiagnostics" class="diag-button" type="button">DOWNLOAD SAFE JSON</button>
+        </section>
+      </div>
+
       <div class="footerline">
         <span><i id="apiDot" class="dot"></i>Supervisor</span>
         <span><i id="coreDot" class="dot"></i>Core</span>
@@ -170,7 +196,7 @@ const fmtRate=bps=>{bps=Number(bps)||0;const bits=bps*8;return bits>=1000000000?
 const stateLabel=s=>({live:"LIVE",connecting:"CONNECTING",waiting:"NO SOURCE",error:"ERROR",stopped:"STOPPED",idle:"IDLE"}[s]||String(s||"UNKNOWN").toUpperCase());
 const fmtDateTime=v=>{const d=new Date(v);return Number.isNaN(d.getTime())?"--":d.toLocaleString("fr-FR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false})};
 const statusClass=s=>["live","connecting","waiting","error","stopped","idle"].includes(s)?s:"idle";
-let lastRefresh=0,currentFilter="all",currentSort="name",currentDirection="asc",latestChannels=[],latestIncidentState={active:[],summary:{}},latestJournal=[],journalPersistent=null,eventStream=null,currentView="channels",session={authenticated:false,role:"viewer",username:null,actionsEnabled:false},actionBusy=false;
+let lastRefresh=0,currentFilter="all",currentSort="name",currentDirection="asc",latestChannels=[],latestIncidentState={active:[],summary:{}},latestJournal=[],journalPersistent=null,latestDiagnostics=null,eventStream=null,currentView="channels",session={authenticated:false,role:"viewer",username:null,actionsEnabled:false},actionBusy=false;
 
 function renderDocker(docker){
   const containers=Array.isArray(docker?.containers)?docker.containers:[];
@@ -201,19 +227,22 @@ function renderDocker(docker){
 }
 
 function switchView(view){
-  currentView=["channels","system","incidents"].includes(view)?view:"channels";
+  currentView=["channels","system","incidents","diagnostics"].includes(view)?view:"channels";
   document.querySelectorAll(".nav-item[data-view]").forEach(item=>item.classList.toggle("active",item.dataset.view===currentView));
   $("viewChannels").classList.toggle("active",currentView==="channels");
   $("viewSystem").classList.toggle("active",currentView==="system");
   $("viewIncidents").classList.toggle("active",currentView==="incidents");
+  $("viewDiagnostics").classList.toggle("active",currentView==="diagnostics");
   const titles={
     channels:["CHANNEL MONITOR","LIVE OPERATIONS"],
     system:["SYSTEM MONITOR","HOST + DOCKER SERVICES"],
-    incidents:["INCIDENTS","ACTIVE STATE + EVENT JOURNAL"]
+    incidents:["INCIDENTS","ACTIVE STATE + EVENT JOURNAL"],
+    diagnostics:["DIAGNOSTICS","SAFE OPERATOR CHECKS"]
   };
   $("pageTitle").textContent=titles[currentView][0];
   $("pageSubtitle").textContent=titles[currentView][1];
   if(currentView==="incidents")fetchIncidents();
+  if(currentView==="diagnostics")fetchDiagnostics();
 }
 
 function renderIncidents(){
@@ -267,6 +296,45 @@ async function fetchIncidents(){
   }catch{
     if(currentView==="incidents"){
       $("incidentEvents").innerHTML='<div class="empty">Incident journal unavailable.</div>';
+    }
+  }
+}
+
+function renderDiagnostics(){
+  const data=latestDiagnostics;
+  if(!data)return;
+  const checks=Array.isArray(data.checks)?data.checks:[];
+  const overall=String(data.overall||"unknown").toUpperCase();
+  const critical=checks.filter(item=>item.status==="critical").length;
+  const warnings=checks.filter(item=>item.status==="warning").length;
+  $("diagOverall").textContent=overall;
+  $("diagOverall").style.color=data.overall==="critical"?"var(--red)":data.overall==="warning"?"var(--amber)":"var(--green)";
+  $("diagCheckCount").textContent=checks.length;
+  $("diagCheckSub").textContent=critical+" critical · "+warnings+" warning";
+  $("diagStreaming").textContent=(data.streaming?.channelsLive??0)+" / "+(data.streaming?.channels??0);
+  $("diagStreamingSub").textContent=(data.streaming?.outputsLive??0)+" / "+(data.streaming?.outputs??0)+" outputs live";
+  $("diagGenerated").textContent=fmtDateTime(data.generatedAt);
+
+  $("diagnosticChecks").innerHTML=checks.length?checks.map(item=>{
+    const severity=item.status==="critical"?"critical":item.status==="warning"?"warning":"info";
+    return '<div class="diag-row">'+
+      '<div><span class="severity '+severity+'">'+esc(String(item.status||"unknown").toUpperCase())+'</span></div>'+
+      '<div class="diag-label">'+esc(item.label||item.id||"--")+'</div>'+
+      '<div class="diag-text">'+esc(item.detail||"--")+'</div>'+
+      '<div class="diag-text">'+esc(item.advice||"--")+'</div>'+
+    '</div>';
+  }).join(""):'<div class="empty">No diagnostic checks available.</div>';
+}
+
+async function fetchDiagnostics(){
+  try{
+    const response=await fetch("/api/diagnostics",{cache:"no-store"});
+    if(!response.ok)throw new Error("diagnostics");
+    latestDiagnostics=await response.json();
+    renderDiagnostics();
+  }catch{
+    if(currentView==="diagnostics"){
+      $("diagnosticChecks").innerHTML='<div class="empty">Diagnostics unavailable.</div>';
     }
   }
 }
@@ -494,6 +562,7 @@ function connectRealtime(){
   fetchSnapshot();
 }
 document.querySelectorAll(".nav-item[data-view]").forEach(item=>item.addEventListener("click",()=>switchView(item.dataset.view)));
+$("downloadDiagnostics").addEventListener("click",()=>{window.location.href="/api/diagnostics?download=1"});
 $("channels").addEventListener("click",(event)=>{
   const button=event.target.closest(".output-action");
   if(!button)return;
@@ -525,11 +594,11 @@ document.querySelectorAll(".sort-head").forEach(head=>{
   });
 });
 setInterval(()=>{$("refreshAge").textContent=lastRefresh?Math.max(0,Math.floor((Date.now()-lastRefresh)/1000))+"s":"--"},1000);
-setInterval(()=>{if(currentView==="incidents")fetchIncidents()},5000);
+setInterval(()=>{if(currentView==="incidents")fetchIncidents();if(currentView==="diagnostics")fetchDiagnostics()},5000);
 setInterval(updateClock,1000);
 updateClock();
 const initialView=new URLSearchParams(window.location.search).get("view");
-if(["system","incidents"].includes(initialView)) switchView(initialView);
+if(["system","incidents","diagnostics"].includes(initialView)) switchView(initialView);
 loadSession();
 connectRealtime();
 </script>
