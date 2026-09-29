@@ -42,6 +42,8 @@ jobs:
           done
           curl -fsS http://127.0.0.1:8090/health
           curl -fsS http://127.0.0.1:8090/api/status >/dev/null
+          curl -Ns --max-time 3 http://127.0.0.1:8090/api/events > /tmp/sse-events.txt || true
+          grep -q "event: status" /tmp/sse-events.txt
 
       - name: Supervisor auth smoke test
         run: |
