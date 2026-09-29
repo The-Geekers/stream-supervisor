@@ -1,6 +1,6 @@
 # Restreamer Adapter
 
-**État : lecture seule active dans `0.1.0-alpha.3`.**
+**État : lecture seule avancée dans `0.1.0-alpha.4`.**
 
 ## Instance actuellement auditée
 
@@ -12,6 +12,17 @@
 
 Supervisor demande uniquement les aspects `state,metadata`.
 
+## Séparation Core / UI
+
+Supervisor surveille désormais deux composants indépendants :
+
+- **Core/API** : disponibilité, authentification, version et latence ;
+- **Web UI Restreamer** : disponibilité HTTP, code de réponse et latence.
+
+Le défaut de la Web UI ne transforme pas automatiquement l'état du Core en erreur et ne déclenche aucune action de récupération.
+
+Par défaut, si aucune URL UI n'est fournie, Supervisor dérive le port `8181` depuis une URL Core sur `8080`. `RESTREAMER_UI_URL` permet de surcharger cette valeur.
+
 ## Sécurité des données
 
 Le `state` Restreamer contient des champs sensibles, notamment la commande FFmpeg et les adresses des flux. Le backend applique donc une **allow-list stricte** immédiatement après réception du payload.
@@ -19,8 +30,6 @@ Le `state` Restreamer contient des champs sensibles, notamment la commande FFmpe
 Aucun de ces champs ne peut quitter l'adapter : `command`, `address`, `last_logline`, URLs/query strings, credentials, stream keys, JWT ou metadata arbitraire.
 
 Les seules métadonnées Restreamer UI actuellement retenues sont le champ `name`.
-
-Un test automatisé injecte de faux credentials et une fausse clé de stream dans un payload brut et vérifie qu'ils sont absents du modèle exposé par Supervisor.
 
 ## Modèle channels
 

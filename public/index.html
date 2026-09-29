@@ -5,45 +5,203 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Stream Supervisor</title>
 <style>
-:root{color-scheme:dark;--bg:#090b0d;--panel:#0d1013;--line:#273039;--line2:#1b2229;--text:#e7edf2;--muted:#87939d;--cyan:#40c8ff;--green:#54e07a;--amber:#f2b84b;--red:#ff6464;--off:#66717b;font-family:Arial,Helvetica,sans-serif}
-*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--text);min-height:100%}body{font-size:14px}
-.shell{min-height:100vh;display:grid;grid-template-columns:210px minmax(0,1fr)}.sidebar{border-right:1px solid var(--line);background:#07090b;padding:18px 14px;display:flex;flex-direction:column}
-.brand{font-weight:800;letter-spacing:.09em;font-size:15px;padding:7px 8px 18px;border-bottom:1px solid var(--line)}.brand small{display:block;color:var(--muted);font:11px/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.04em;margin-top:5px}
-.nav{padding-top:14px}.nav-item{display:flex;align-items:center;gap:10px;padding:10px 8px;border-left:2px solid transparent;color:#96a2ac;font-size:12px;font-weight:700;letter-spacing:.08em}.nav-item.active{color:var(--text);border-left-color:var(--cyan);background:#0d1115}.nav-item.disabled{opacity:.38}.nav-dot{width:6px;height:6px;background:currentColor}
-.side-foot{margin-top:auto;border-top:1px solid var(--line);padding:14px 8px 0;color:var(--muted);font:11px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace}
-.main{min-width:0}.topbar{height:62px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 22px;background:#0b0e11}.title{font-size:17px;font-weight:800;letter-spacing:.06em}.mode{font:11px ui-monospace,SFMono-Regular,Consolas,monospace;color:var(--amber);border:1px solid #634c20;padding:7px 9px;background:#181409}
-.content{padding:18px 22px 34px}.telemetry{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));border:1px solid var(--line);background:var(--panel);margin-bottom:16px}.metric{min-height:70px;padding:12px 14px;border-right:1px solid var(--line)}.metric:last-child{border-right:0}.metric-label{color:var(--muted);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}.metric-value{margin-top:8px;font:700 18px ui-monospace,SFMono-Regular,Consolas,monospace}.metric-value.small{font-size:14px;margin-top:10px}
-.section{border:1px solid var(--line);background:var(--panel)}.section-head{height:42px;padding:0 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);background:#0a0d10}.section-title{font-size:11px;font-weight:800;letter-spacing:.11em;text-transform:uppercase}.refresh{color:var(--muted);font:11px ui-monospace,SFMono-Regular,Consolas,monospace}
-.channel-head,.channel-row{display:grid;grid-template-columns:minmax(240px,2.4fr) 105px 210px 115px 100px minmax(220px,1.6fr);align-items:stretch}.channel-head{color:var(--muted);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid var(--line);background:#0d1115}.channel-head>div{padding:9px 10px;border-right:1px solid var(--line2)}
-.channel-row{min-height:76px;border-bottom:1px solid var(--line2);background:#0c0f12}.channel-row:last-child{border-bottom:0}.channel-row:hover{background:#10151a}.cell{padding:10px;border-right:1px solid var(--line2);min-width:0;display:flex;align-items:center}
-.identity{display:grid;grid-template-columns:7px minmax(0,1fr);gap:10px}.signal{width:7px;height:100%;min-height:50px;background:var(--off)}.signal.live{background:var(--green)}.signal.connecting{background:var(--cyan)}.signal.waiting{background:var(--amber)}.signal.stopped{background:#424b54}
-.channel-name{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.channel-tech{margin-top:5px;color:var(--muted);font:11px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.state{font:700 11px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.06em}.state.live{color:var(--green)}.state.connecting{color:var(--cyan)}.state.waiting{color:var(--amber)}.state.error{color:var(--red)}.state.stopped,.state.idle{color:var(--off)}
-.mono{font:12px ui-monospace,SFMono-Regular,Consolas,monospace}.outputs{display:flex;flex-direction:column;gap:5px;width:100%}.output{display:grid;grid-template-columns:minmax(0,1fr) 72px;gap:8px;align-items:center;border-bottom:1px dotted #242c33;padding-bottom:4px}.output:last-child{border:0;padding-bottom:0}.output-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.output-state{text-align:right}
-.empty{padding:28px 14px;color:var(--muted);font:12px ui-monospace,SFMono-Regular,Consolas,monospace}.statusline{margin-top:10px;display:flex;gap:18px;flex-wrap:wrap;color:var(--muted);font:11px ui-monospace,SFMono-Regular,Consolas,monospace}.dot{display:inline-block;width:7px;height:7px;margin-right:6px;background:var(--off)}.dot.ok{background:var(--green)}.dot.bad{background:var(--red)}.dot.warn{background:var(--amber)}
-@media(max-width:1080px){.shell{grid-template-columns:64px minmax(0,1fr)}.brand{font-size:0}.brand:before{content:"SS";font-size:15px}.brand small,.nav-item span{display:none}.nav-item{justify-content:center}.telemetry{grid-template-columns:repeat(3,1fr)}.metric:nth-child(3){border-right:0}.channel-head{display:none}.channel-row{grid-template-columns:minmax(200px,1.7fr) 90px 160px 90px minmax(170px,1fr)}.channel-row>.cell:nth-child(5){display:none}}
-@media(max-width:760px){.shell{display:block}.sidebar{display:none}.topbar{padding:0 12px}.content{padding:12px}.telemetry{grid-template-columns:repeat(2,1fr)}.metric{border-bottom:1px solid var(--line)}.metric:nth-child(even){border-right:0}.channel-row{display:block;padding:10px}.cell{border:0;padding:5px 0}.identity{min-height:50px}.signal{min-height:44px}}
+:root{color-scheme:dark;--bg:#07090b;--side:#050708;--panel:#0b0f12;--line:#263039;--line-soft:#182027;--text:#e9eef2;--muted:#7d8a95;--cyan:#43c7f4;--green:#5cdb7c;--amber:#f0b64d;--red:#ff6464;--off:#606b74;font-family:Arial,Helvetica,sans-serif}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text)}body{font-size:13px}button{font:inherit}
+.shell{min-height:100vh;display:grid;grid-template-columns:190px minmax(0,1fr)}.sidebar{background:var(--side);border-right:1px solid var(--line);padding:18px 12px;display:flex;flex-direction:column}
+.brand{padding:3px 8px 18px;font-size:14px;font-weight:800;letter-spacing:.12em;border-bottom:1px solid var(--line)}.brand small{display:block;margin-top:6px;color:var(--muted);font:10px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.08em}
+.nav{padding-top:14px}.nav-item{height:36px;display:flex;align-items:center;gap:10px;padding:0 9px;color:#89959f;border-left:2px solid transparent;font-size:11px;font-weight:800;letter-spacing:.08em}.nav-item.active{color:#fff;background:#0c1115;border-left-color:var(--cyan)}.nav-item.disabled{opacity:.32}.nav-dot{width:5px;height:5px;background:currentColor}
+.side-foot{margin-top:auto;padding:13px 8px 0;border-top:1px solid var(--line);color:var(--muted);font:10px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace}.main{min-width:0}
+.topbar{height:58px;padding:0 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);background:#080b0d}.title-wrap{display:flex;align-items:baseline;gap:12px}.title{font-size:15px;font-weight:800;letter-spacing:.09em}.subtitle{color:var(--muted);font:10px ui-monospace,SFMono-Regular,Consolas,monospace}.top-right{display:flex;align-items:center;gap:10px}.clock{color:#aeb8c0;font:11px ui-monospace,SFMono-Regular,Consolas,monospace}
+.badge{padding:6px 8px;border:1px solid var(--line);font:10px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.04em}.badge.readonly{border-color:#5b4923;color:var(--amber);background:#151107}.badge.secure{border-color:#235a34;color:var(--green);background:#09150d}.badge.open{border-color:#6b5021;color:var(--amber);background:#171208}
+.content{padding:16px 18px 30px}.service-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid var(--line);margin-bottom:12px;background:var(--panel)}.service{min-height:54px;padding:10px 12px;border-right:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}.service:last-child{border-right:0}.service-label{color:var(--muted);font-size:10px;font-weight:800;letter-spacing:.09em;text-transform:uppercase}.service-detail{margin-top:5px;color:#b9c2c9;font:11px ui-monospace,SFMono-Regular,Consolas,monospace}.service-state{font:800 11px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.05em}.ok{color:var(--green)}.warn{color:var(--amber)}.bad{color:var(--red)}.dim{color:var(--off)}
+.telemetry{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));border:1px solid var(--line);background:var(--panel);margin-bottom:12px}.metric{min-height:68px;padding:11px 12px;border-right:1px solid var(--line)}.metric:last-child{border-right:0}.metric-label{color:var(--muted);font-size:9px;font-weight:800;letter-spacing:.11em;text-transform:uppercase}.metric-value{margin-top:8px;font:800 18px ui-monospace,SFMono-Regular,Consolas,monospace}.metric-sub{margin-top:3px;color:var(--muted);font:9px ui-monospace,SFMono-Regular,Consolas,monospace}
+.toolbar{height:42px;display:flex;align-items:center;justify-content:space-between;border:1px solid var(--line);border-bottom:0;background:#090c0f;padding:0 10px}.toolbar-title{font-size:10px;font-weight:800;letter-spacing:.11em}.filters{display:flex;gap:5px}.filter{border:1px solid var(--line);background:#080b0d;color:var(--muted);padding:5px 8px;font:10px ui-monospace,SFMono-Regular,Consolas,monospace;cursor:pointer}.filter.active{color:#fff;border-color:#46535d;background:#11171c}
+.table{border:1px solid var(--line);background:var(--panel)}.table-head,.channel{display:grid;grid-template-columns:minmax(230px,2.1fr) 100px 160px 145px 120px 92px minmax(280px,2fr)}.table-head{background:#0c1014;border-bottom:1px solid var(--line);color:var(--muted);font-size:9px;font-weight:800;letter-spacing:.09em;text-transform:uppercase}.table-head>div{padding:8px 9px;border-right:1px solid var(--line-soft)}
+.channel{min-height:80px;border-bottom:1px solid var(--line-soft);background:#0a0e11}.channel:last-child{border-bottom:0}.channel:hover{background:#0d1216}.cell{padding:9px;border-right:1px solid var(--line-soft);min-width:0;display:flex;align-items:center}.cell:last-child{border-right:0}
+.identity{display:grid;grid-template-columns:6px minmax(0,1fr);gap:10px;width:100%;align-items:stretch}.signal{width:6px;min-height:54px;background:var(--off)}.signal.live{background:var(--green)}.signal.connecting{background:var(--cyan)}.signal.waiting{background:var(--amber)}.signal.stopped{background:#3e4850}.channel-name{font-size:14px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.techline{margin-top:6px;color:var(--muted);font:10px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.state{font:800 10px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.05em}.state.live{color:var(--green)}.state.connecting{color:var(--cyan)}.state.waiting{color:var(--amber)}.state.error{color:var(--red)}.state.stopped,.state.idle{color:var(--off)}.spec{font:11px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}.spec small{display:block;color:var(--muted);font-size:9px}
+.outputs{display:flex;flex-direction:column;gap:5px;width:100%}.output{display:grid;grid-template-columns:minmax(0,1fr) 74px;gap:8px;padding-bottom:4px;border-bottom:1px dotted #222a31}.output:last-child{border:0;padding-bottom:0}.output-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:11px}.output-meta{margin-top:2px;color:var(--muted);font:9px ui-monospace,SFMono-Regular,Consolas,monospace}.output-state{text-align:right}
+.empty{padding:30px 12px;color:var(--muted);font:11px ui-monospace,SFMono-Regular,Consolas,monospace}.footerline{display:flex;gap:18px;flex-wrap:wrap;margin-top:9px;color:var(--muted);font:10px ui-monospace,SFMono-Regular,Consolas,monospace}.dot{display:inline-block;width:6px;height:6px;margin-right:6px;background:var(--off)}.dot.ok{background:var(--green)}.dot.warn{background:var(--amber)}.dot.bad{background:var(--red)}
+.alert-note{display:none;margin-bottom:12px;border:1px solid #614a20;background:#151106;color:#e8c16f;padding:9px 11px;font:10px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace}.alert-note.show{display:block}
+@media(max-width:1280px){.table-head,.channel{grid-template-columns:minmax(210px,2fr) 95px 150px 120px 105px minmax(240px,2fr)}.table-head>div:nth-child(6),.channel>.cell:nth-child(6){display:none}}
+@media(max-width:1050px){.shell{grid-template-columns:58px minmax(0,1fr)}.brand{font-size:0}.brand:before{content:"SS";font-size:14px}.brand small,.nav-item span{display:none}.nav-item{justify-content:center}.telemetry{grid-template-columns:repeat(3,1fr)}.metric:nth-child(3){border-right:0}.service-strip{grid-template-columns:1fr}.service{border-right:0;border-bottom:1px solid var(--line)}.service:last-child{border-bottom:0}.table-head{display:none}.channel{grid-template-columns:minmax(200px,1.8fr) 90px 140px 110px minmax(220px,1.6fr)}.channel>.cell:nth-child(4),.channel>.cell:nth-child(6){display:none}}
+@media(max-width:760px){.shell{display:block}.sidebar{display:none}.topbar{padding:0 10px}.subtitle,.clock{display:none}.content{padding:10px}.telemetry{grid-template-columns:repeat(2,1fr)}.metric:nth-child(odd){border-right:1px solid var(--line)}.metric:nth-child(even){border-right:0}.channel{display:block;padding:9px}.cell{border:0;padding:5px 0}.identity{min-height:50px}.toolbar{height:auto;padding:8px;gap:10px;align-items:flex-start;flex-direction:column}}
 </style>
 </head>
+
 <body>
 <div class="shell">
-<aside class="sidebar"><div class="brand">STREAM SUPERVISOR<small>CONTROL ROOM / READ ONLY</small></div><nav class="nav"><div class="nav-item active"><i class="nav-dot"></i><span>CHANNELS</span></div><div class="nav-item disabled"><i class="nav-dot"></i><span>SYSTEM</span></div><div class="nav-item disabled"><i class="nav-dot"></i><span>INCIDENTS</span></div><div class="nav-item disabled"><i class="nav-dot"></i><span>SETTINGS</span></div></nav><div class="side-foot">v0.1.0-alpha.3<br>RESTREAMER ADAPTER</div></aside>
-<main class="main"><header class="topbar"><div class="title">CHANNEL MONITOR</div><div class="mode">READ ONLY · NO STREAM CONTROL</div></header><div class="content">
-<section class="telemetry"><div class="metric"><div class="metric-label">Core</div><div id="coreState" class="metric-value">--</div></div><div class="metric"><div class="metric-label">Core version</div><div id="coreVersion" class="metric-value small">--</div></div><div class="metric"><div class="metric-label">Channels live</div><div id="channelsLive" class="metric-value">--</div></div><div class="metric"><div class="metric-label">Outputs live</div><div id="outputsLive" class="metric-value">--</div></div><div class="metric"><div class="metric-label">Output errors</div><div id="outputErrors" class="metric-value">--</div></div><div class="metric"><div class="metric-label">Refresh</div><div id="refreshAge" class="metric-value small">--</div></div></section>
-<section class="section"><div class="section-head"><div class="section-title">Restreamer channels</div><div id="channelCount" class="refresh">--</div></div><div class="channel-head"><div>Channel / signal</div><div>State</div><div>Format</div><div>Bitrate</div><div>Uptime</div><div>Destinations</div></div><div id="channels"><div class="empty">Waiting for Supervisor API…</div></div></section>
-<div class="statusline"><span><i id="apiDot" class="dot"></i>Supervisor API</span><span><i id="restreamerDot" class="dot"></i>Restreamer Core</span><span>Secrets: backend allow-list only</span><span id="supervisorVersion">--</span></div>
-</div></main></div>
+  <aside class="sidebar">
+    <div class="brand">STREAM SUPERVISOR<small>OPERATIONS CONSOLE</small></div>
+    <nav class="nav">
+      <div class="nav-item active"><i class="nav-dot"></i><span>CHANNELS</span></div>
+      <div class="nav-item disabled"><i class="nav-dot"></i><span>SYSTEM</span></div>
+      <div class="nav-item disabled"><i class="nav-dot"></i><span>INCIDENTS</span></div>
+      <div class="nav-item disabled"><i class="nav-dot"></i><span>SETTINGS</span></div>
+    </nav>
+    <div class="side-foot">RESTREAMER / READ ONLY<br><span id="sideVersion">v0.1.0-alpha.4</span></div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="title-wrap"><div class="title">CHANNEL MONITOR</div><div class="subtitle">LIVE OPERATIONS</div></div>
+      <div class="top-right"><div id="clock" class="clock">--:--:--</div><div class="badge readonly">READ ONLY</div><div id="authBadge" class="badge open">ACCESS OPEN</div></div>
+    </header>
+
+    <div class="content">
+      <div id="accessWarning" class="alert-note">SUPERVISOR ACCESS IS NOT AUTHENTICATED. READ-ONLY MODE ONLY — enable SUPERVISOR_USERNAME / SUPERVISOR_PASSWORD before control actions are introduced.</div>
+
+      <section class="service-strip">
+        <div class="service"><div><div class="service-label">Restreamer Core</div><div id="coreDetail" class="service-detail">Waiting…</div></div><div id="coreState" class="service-state dim">--</div></div>
+        <div class="service"><div><div class="service-label">Restreamer Web UI</div><div id="uiDetail" class="service-detail">Waiting…</div></div><div id="uiState" class="service-state dim">--</div></div>
+        <div class="service"><div><div class="service-label">Supervisor API</div><div id="apiDetail" class="service-detail">Waiting…</div></div><div id="apiState" class="service-state dim">--</div></div>
+      </section>
+
+      <section class="telemetry">
+        <div class="metric"><div class="metric-label">Channels live</div><div id="channelsLive" class="metric-value">--</div><div id="channelsSub" class="metric-sub">--</div></div>
+        <div class="metric"><div class="metric-label">Outputs live</div><div id="outputsLive" class="metric-value">--</div><div id="outputsSub" class="metric-sub">--</div></div>
+        <div class="metric"><div class="metric-label">Alerts</div><div id="alerts" class="metric-value">--</div><div class="metric-sub">channels needing attention</div></div>
+        <div class="metric"><div class="metric-label">Output errors</div><div id="outputErrors" class="metric-value">--</div><div class="metric-sub">active start failures</div></div>
+        <div class="metric"><div class="metric-label">Core latency</div><div id="coreLatency" class="metric-value">--</div><div class="metric-sub">API /api</div></div>
+        <div class="metric"><div class="metric-label">Refresh</div><div id="refreshAge" class="metric-value">--</div><div class="metric-sub">automatic · 5 sec</div></div>
+      </section>
+
+      <div class="toolbar">
+        <div class="toolbar-title">RESTREAMER CHANNELS <span id="channelCount" style="color:var(--muted);margin-left:8px">--</span></div>
+        <div class="filters">
+          <button class="filter active" data-filter="all">ALL</button>
+          <button class="filter" data-filter="live">LIVE</button>
+          <button class="filter" data-filter="issues">ISSUES</button>
+          <button class="filter" data-filter="stopped">STOPPED</button>
+        </div>
+      </div>
+
+      <section class="table">
+        <div class="table-head"><div>Channel / signal</div><div>Ingest</div><div>Video</div><div>Audio</div><div>Traffic</div><div>Uptime</div><div>Destinations</div></div>
+        <div id="channels"><div class="empty">Waiting for Supervisor API…</div></div>
+      </section>
+
+      <div class="footerline">
+        <span><i id="apiDot" class="dot"></i>Supervisor</span>
+        <span><i id="coreDot" class="dot"></i>Core</span>
+        <span><i id="uiDot" class="dot"></i>Web UI</span>
+        <span>backend allow-list active</span>
+        <span id="supervisorVersion">--</span>
+      </div>
+    </div>
+  </main>
+</div>
+
+
 <script>
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
 const fmtTime=s=>{s=Math.max(0,Math.floor(Number(s)||0));const d=Math.floor(s/86400);s%=86400;const h=Math.floor(s/3600);s%=3600;const m=Math.floor(s/60);return[d?d+"d":null,h?h+"h":null,m+"m"].filter(Boolean).join(" ")||"<1m"};
 const fmtBitrate=k=>{k=Number(k)||0;return k>=1000?(k/1000).toFixed(2)+" Mb/s":Math.round(k)+" kb/s"};
-const fmtFormat=c=>{const v=c.video,a=c.audio,parts=[];if(v){parts.push([v.codec?.toUpperCase(),v.width&&v.height?`${v.width}×${v.height}`:"",v.fps?`${v.fps.toFixed(1)} fps`:""].filter(Boolean).join(" "))}if(a){parts.push([a.codec?.toUpperCase(),a.samplingHz?`${Math.round(a.samplingHz/1000)}kHz`:"",a.channels===2?"stereo":a.channels===1?"mono":""].filter(Boolean).join(" "))}return parts.length?parts.join(" · "):"No signal details"};
+const fmtMem=b=>{b=Number(b)||0;return b>=1048576?(b/1048576).toFixed(0)+" MiB":Math.round(b/1024)+" KiB"};
 const stateLabel=s=>({live:"LIVE",connecting:"CONNECTING",waiting:"NO SOURCE",error:"ERROR",stopped:"STOPPED",idle:"IDLE"}[s]||String(s||"UNKNOWN").toUpperCase());
-let lastRefresh=0;
-function renderChannel(c){const outputs=c.outputs||[];const outHtml=outputs.length?outputs.map(o=>`<div class="output"><div class="output-name">${esc(o.name||o.provider||"Output")}</div><div class="output-state state ${esc(o.status)}">${esc(stateLabel(o.status))}</div></div>`).join(""):`<span class="mono" style="color:var(--muted)">No destinations</span>`;return`<div class="channel-row"><div class="cell identity"><i class="signal ${esc(c.status)}"></i><div><div class="channel-name">${esc(c.name)}</div><div class="channel-tech">${esc(fmtFormat(c))}</div></div></div><div class="cell"><span class="state ${esc(c.status)}">${esc(stateLabel(c.status))}</span></div><div class="cell mono">${esc(fmtFormat(c))}</div><div class="cell mono">${esc(fmtBitrate(c.bitrateKbit))}</div><div class="cell mono">${esc(fmtTime(c.runtimeSeconds))}</div><div class="cell"><div class="outputs">${outHtml}</div></div></div>`}
-async function refresh(){try{const response=await fetch("/api/status",{cache:"no-store"});if(!response.ok)throw new Error("api");const x=await response.json(),r=x.restreamer||{},s=r.summary||{},channels=r.channels||[];$("apiDot").className="dot ok";$("restreamerDot").className="dot "+(r.authenticated?"ok":r.online?"warn":"bad");$("coreState").textContent=r.authenticated?"ONLINE":r.online?"AUTH":"OFFLINE";$("coreState").style.color=r.authenticated?"var(--green)":r.online?"var(--amber)":"var(--red)";$("coreVersion").textContent=r.version||"--";$("channelsLive").textContent=`${s.live??0} / ${s.channels??0}`;$("outputsLive").textContent=`${s.outputsLive??0} / ${s.outputs??0}`;$("outputErrors").textContent=s.outputErrors??0;$("outputErrors").style.color=(s.outputErrors??0)>0?"var(--red)":"var(--text)";$("channelCount").textContent=`${channels.length} CHANNEL${channels.length===1?"":"S"}`;$("supervisorVersion").textContent=x.supervisor?.version||"--";$("channels").innerHTML=channels.length?channels.map(renderChannel).join(""):`<div class="empty">No Restreamer channels discovered.</div>`;lastRefresh=Date.now()}catch{$("apiDot").className="dot bad";$("coreState").textContent="NO DATA";$("coreState").style.color="var(--red)"}}
-setInterval(()=>{$("refreshAge").textContent=lastRefresh?Math.max(0,Math.floor((Date.now()-lastRefresh)/1000))+"s ago":"--"},1000);refresh();setInterval(refresh,5000);
+const statusClass=s=>["live","connecting","waiting","error","stopped","idle"].includes(s)?s:"idle";
+let lastRefresh=0,currentFilter="all",latestChannels=[];
+
+function renderVideo(v){
+  if(!v)return '<span class="dim">NO SIGNAL</span>';
+  const line=[v.codec?.toUpperCase(),v.width&&v.height?(v.width+"×"+v.height):""].filter(Boolean).join(" · ");
+  return '<div class="spec">'+esc(line||"--")+'<small>'+(v.fps?esc(v.fps.toFixed(1)+" fps"):"fps --")+'</small></div>';
+}
+function renderAudio(a){
+  if(!a)return '<span class="dim">NO SIGNAL</span>';
+  const chan=a.channels===2?"stereo":a.channels===1?"mono":a.channels?(a.channels+" ch"):"";
+  const line=[a.codec?.toUpperCase(),a.samplingHz?(Math.round(a.samplingHz/1000)+" kHz"):"",chan].filter(Boolean).join(" · ");
+  return '<div class="spec">'+esc(line||"--")+'<small>'+(a.bitrateKbit?esc(Math.round(a.bitrateKbit)+" kb/s"):"bitrate --")+'</small></div>';
+}
+function channelHasIssue(c){
+  return ["waiting","connecting"].includes(c.status)||(c.outputs||[]).some(o=>o.status==="error");
+}
+function renderOutputs(outputs){
+  if(!outputs?.length)return '<span class="dim spec">NO DESTINATIONS</span>';
+  return '<div class="outputs">'+outputs.map(o=>{
+    const meta=[String(o.provider||"").toUpperCase(),o.bitrateKbit?fmtBitrate(o.bitrateKbit):"",o.runtimeSeconds?fmtTime(o.runtimeSeconds):""].filter(Boolean).join(" · ");
+    return '<div class="output"><div><div class="output-name">'+esc(o.name||o.provider||"Output")+'</div><div class="output-meta">'+esc(meta)+'</div></div><div class="output-state state '+statusClass(o.status)+'">'+esc(stateLabel(o.status))+'</div></div>';
+  }).join("")+'</div>';
+}
+function filteredChannels(){
+  if(currentFilter==="live")return latestChannels.filter(c=>c.status==="live");
+  if(currentFilter==="issues")return latestChannels.filter(channelHasIssue);
+  if(currentFilter==="stopped")return latestChannels.filter(c=>c.status==="stopped");
+  return latestChannels;
+}
+function renderChannels(){
+  const channels=filteredChannels();
+  $("channelCount").textContent=channels.length+" / "+latestChannels.length;
+  $("channels").innerHTML=channels.length?channels.map(c=>{
+    const counters=[];
+    if(c.drop)counters.push("DROP "+c.drop);
+    if(c.dup)counters.push("DUP "+c.dup);
+    const perf=[fmtBitrate(c.bitrateKbit),c.fps?(c.fps.toFixed(1)+" fps"):"",c.cpuUsage?("CPU "+c.cpuUsage.toFixed(1)+"%"):"",c.memoryBytes?fmtMem(c.memoryBytes):"",...counters].filter(Boolean).join(" · ");
+    const retry=c.reconnectSeconds>=0&&c.status==="waiting"?('<small>retry '+esc(c.reconnectSeconds)+'s</small>'):"";
+    return '<div class="channel">'+
+      '<div class="cell identity"><i class="signal '+statusClass(c.status)+'"></i><div><div class="channel-name">'+esc(c.name)+'</div><div class="techline">'+esc(perf||"No active metrics")+'</div></div></div>'+
+      '<div class="cell"><span class="state '+statusClass(c.status)+'">'+esc(stateLabel(c.status))+'</span></div>'+
+      '<div class="cell">'+renderVideo(c.video)+'</div>'+
+      '<div class="cell">'+renderAudio(c.audio)+'</div>'+
+      '<div class="cell"><div class="spec">'+esc(fmtBitrate(c.bitrateKbit))+'<small>'+(c.fps?esc(c.fps.toFixed(1)+" fps"):"fps --")+'</small></div></div>'+
+      '<div class="cell"><div class="spec">'+esc(fmtTime(c.runtimeSeconds))+retry+'</div></div>'+
+      '<div class="cell">'+renderOutputs(c.outputs)+'</div>'+
+    '</div>';
+  }).join(""):'<div class="empty">No channels match this view.</div>';
+}
+function setService(id,state,detail,kind){
+  $(id+"State").textContent=state;
+  $(id+"State").className="service-state "+kind;
+  $(id+"Detail").textContent=detail;
+  const dot=id==="api"?"apiDot":id==="core"?"coreDot":"uiDot";
+  $(dot).className="dot "+kind;
+}
+function updateClock(){
+  $("clock").textContent=new Date().toLocaleTimeString("fr-FR",{hour12:false});
+}
+async function refresh(){
+  try{
+    const response=await fetch("/api/status",{cache:"no-store"});
+    if(!response.ok)throw new Error("api");
+    const x=await response.json();
+    const r=x.restreamer||{},core=r.core||{},ui=r.ui||{},s=r.summary||{},security=x.supervisor?.security||{};
+    setService("api","ONLINE",(x.supervisor?.version||"--")+" · READ ONLY","ok");
+    setService("core",core.authenticated?"ONLINE":core.online?"AUTH ERROR":"OFFLINE",[core.version?("Core "+core.version):"version --",core.latencyMs!=null?(core.latencyMs+" ms"):""].filter(Boolean).join(" · "),core.authenticated?"ok":core.online?"warn":"bad");
+    const uiText=ui.online?"ONLINE":ui.reachable?("HTTP "+(ui.httpStatus||"ERR")):"OFFLINE";
+    setService("ui",uiText,[ui.httpStatus?("HTTP "+ui.httpStatus):"no response",ui.latencyMs!=null?(ui.latencyMs+" ms"):""].filter(Boolean).join(" · "),ui.online?"ok":ui.reachable?"warn":"bad");
+    $("authBadge").textContent=security.authEnabled?"AUTH ON":"ACCESS OPEN";
+    $("authBadge").className="badge "+(security.authEnabled?"secure":"open");
+    $("accessWarning").className="alert-note "+(security.authEnabled?"":"show");
+    $("channelsLive").textContent=(s.live??0)+" / "+(s.channels??0);
+    $("channelsSub").textContent=(s.waiting??0)+" no source · "+(s.stopped??0)+" stopped";
+    $("outputsLive").textContent=(s.outputsLive??0)+" / "+(s.outputs??0);
+    $("outputsSub").textContent=(s.outputsStopped??0)+" stopped";
+    $("alerts").textContent=s.alerts??0;
+    $("alerts").style.color=(s.alerts??0)>0?"var(--amber)":"var(--text)";
+    $("outputErrors").textContent=s.outputErrors??0;
+    $("outputErrors").style.color=(s.outputErrors??0)>0?"var(--red)":"var(--text)";
+    $("coreLatency").textContent=core.latencyMs!=null?(core.latencyMs+" ms"):"--";
+    $("supervisorVersion").textContent=x.supervisor?.version||"--";
+    $("sideVersion").textContent=x.supervisor?.version||"v0.1.0-alpha.4";
+    latestChannels=r.channels||[];
+    renderChannels();
+    lastRefresh=Date.now();
+  }catch{
+    setService("api","NO DATA","Supervisor API unreachable","bad");
+  }
+}
+document.querySelectorAll(".filter").forEach(btn=>btn.addEventListener("click",()=>{
+  document.querySelectorAll(".filter").forEach(x=>x.classList.remove("active"));
+  btn.classList.add("active");
+  currentFilter=btn.dataset.filter;
+  renderChannels();
+}));
+setInterval(()=>{$("refreshAge").textContent=lastRefresh?Math.max(0,Math.floor((Date.now()-lastRefresh)/1000))+"s":"--"},1000);
+setInterval(updateClock,1000);
+updateClock();
+refresh();
+setInterval(refresh,5000);
 </script>
 </body>
 </html>
