@@ -1,0 +1,51 @@
+name: visual
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  screenshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Build demo image
+        run: docker build -t stream-supervisor-visual .
+
+      - name: Start demo Supervisor
+        run: |
+          docker run -d --name stream-supervisor-visual             -e DEMO_MODE=true             -p 8090:8090 stream-supervisor-visual
+          for i in $(seq 1 20); do
+            if curl -fsS http://127.0.0.1:8090/health >/dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          docker logs stream-supervisor-visual
+          exit 1
+
+      - name: Install Chromium
+        run: npx --yes playwright@1.55.0 install --with-deps chromium
+
+      - name: Capture channel monitor
+        run: |
+          mkdir -p artifacts
+          npx --yes playwright@1.55.0 screenshot             --browser=chromium             --viewport-size="1600,1000"             --wait-for-timeout=2000             --full-page             http://127.0.0.1:8090             artifacts/channel-monitor.png
+
+      - name: Upload visual artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: stream-supervisor-alpha4-ui
+          path: artifacts/channel-monitor.png
+          if-no-files-found: error
