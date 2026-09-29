@@ -22,7 +22,7 @@ test("Docker adapter only exposes the observer allow-list model", async () => {
       status: "Up 2 hours (healthy)",
       health: "healthy",
       uptimeSeconds: 7200,
-      cpuPercent: 12.5,
+      cpuPercent: 125,
       memory: { usageBytes: 123456789, limitBytes: 1000000000, usagePercent: 12.3 },
       env: ["PASSWORD=" + secret],
       command: secret,
@@ -35,6 +35,7 @@ test("Docker adapter only exposes the observer allow-list model", async () => {
 
   assert.equal(data.connected, true);
   assert.equal(data.containers[0].name, "restreamer");
+  assert.equal(data.containers[0].cpuCores, 1.25);
   assert.ok(!text.includes(secret));
   assert.ok(!text.includes('"env"'));
   assert.ok(!text.includes('"command"'));
