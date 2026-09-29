@@ -15,12 +15,14 @@ Le premier moteur ciblé est **Restreamer**. L'architecture reste volontairement
 
 ## État actuel
 
-`0.1.0-alpha.9.1`
+`0.1.0-alpha.9.2`
 
 - adapter Restreamer Core 16 avec monitoring et contrôle limité des destinations ;
 - channels, destinations et métriques de streaming en pseudo temps réel SSE ;
 - monitoring VPS : CPU, RAM, disque, réseau, load et uptime ;
 - page **SYSTEM** avec Docker Adapter read-only ;
+- Supervisor rejoint automatiquement le réseau Docker externe `web-proxy` ;
+- le port hôte `8090` est limité à `127.0.0.1` et n'est plus publié sur toutes les interfaces ;
 - CPU Docker affiché en équivalent de cœurs (`1.00` = un cœur pleinement utilisé), jamais en pourcentage multi-cœur ambigu ;
 - rôles Supervisor **Admin** et **Technician** ;
 - interface ouverte = monitoring uniquement, aucune action d'écriture ;
@@ -75,4 +77,4 @@ sh deployment/update.sh
 
 Les secrets restent dans `.env` sur le VPS et ne sont jamais versionnés.
 
-Voir `STATUS.md`, `ROADMAP.md`, `SECURITY.md` et `docs/`.
+Voir `STATUS.md`, `ROADMAP.md`, `SECURITY.md`, `docs/ADMIN_VPS.md` et `docs/`.

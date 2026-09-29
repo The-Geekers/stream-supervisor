@@ -1,19 +1,21 @@
 # Project Status
 
-**Version :** 0.1.0-alpha.9.1  
+**Version :** 0.1.0-alpha.9.2  
 **Phase :** supervision complète + premières actions opérateur sécurisées
 
 | Domaine | État |
 |---|---|
 | Dépôt GitHub / workflow GitHub → VPS | OK |
 | Application Docker | OK |
-| Interface monitoring | Alpha 9.1 |
+| Interface monitoring | Alpha 9.2 |
 | Restreamer Core 16 | Intégré |
 | Channels / outputs / métriques | Intégrés |
 | Monitoring SSE quasi temps réel | Intégré, 1 s par défaut |
 | VPS CPU / RAM / load / uptime | Intégrés |
 | VPS disque / réseau | Intégrés |
 | Docker Adapter | Intégré read-only |
+| Réseau proxy Docker partagé | `web-proxy` externe |
+| Port Supervisor 8090 | Bouclé sur `127.0.0.1` uniquement |
 | CPU Docker | Affiché en équivalent de cœurs |
 | Page SYSTEM | Intégrée |
 | Rôles Admin / Technician | Intégrés |
@@ -52,4 +54,4 @@ Avec authentification :
 
 ## Prochaine étape
 
-Valider alpha.9 sur le VPS réel, puis construire la vue INCIDENTS et le journal d'événements avant le watchdog automatique.
+Valider alpha.9.2 sur le VPS réel, rendre les règles firewall testées persistantes, puis construire la vue INCIDENTS et le journal d'événements avant le watchdog automatique.

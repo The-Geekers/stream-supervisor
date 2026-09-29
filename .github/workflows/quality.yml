@@ -39,6 +39,7 @@ jobs:
           mkdir -p runtime/disk-probe
           export SYSTEM_NETWORK_INTERFACE="$(ip route show default | awk '/default/ {for (i=1;i<=NF;i++) if ($i=="dev") {print $(i+1); exit}}')"
           test -n "$SYSTEM_NETWORK_INTERFACE"
+          docker network create web-proxy >/dev/null
           docker compose config -q
 
       - name: Container health smoke test
