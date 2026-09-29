@@ -20,7 +20,7 @@
 .channel{min-height:80px;border-bottom:1px solid var(--line-soft);background:#0a0e11}.channel:last-child{border-bottom:0}.channel:hover{background:#0d1216}.cell{padding:9px;border-right:1px solid var(--line-soft);min-width:0;display:flex;align-items:center}.cell:last-child{border-right:0}
 .identity{display:grid;grid-template-columns:6px minmax(0,1fr);gap:10px;width:100%;align-items:stretch}.signal{width:6px;min-height:54px;background:var(--off)}.signal.live{background:var(--green)}.signal.connecting{background:var(--cyan)}.signal.waiting{background:var(--amber)}.signal.stopped{background:#3e4850}.channel-name{font-size:14px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.techline{margin-top:6px;color:var(--muted);font:10px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .state{font:800 10px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.05em}.state.live{color:var(--green)}.state.connecting{color:var(--cyan)}.state.waiting{color:var(--amber)}.state.error{color:var(--red)}.state.stopped,.state.idle{color:var(--off)}.spec{font:11px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}.spec small{display:block;color:var(--muted);font-size:9px}
-.outputs{display:flex;flex-direction:column;gap:5px;width:100%}.output{display:grid;grid-template-columns:minmax(0,1fr) 74px;gap:8px;padding-bottom:4px;border-bottom:1px dotted #222a31}.output:last-child{border:0;padding-bottom:0}.output-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:11px}.output-meta{margin-top:2px;color:var(--muted);font:9px ui-monospace,SFMono-Regular,Consolas,monospace}.output-state{text-align:right}
+.outputs{display:flex;flex-direction:column;gap:5px;width:100%}.output{display:grid;grid-template-columns:minmax(0,1fr) 74px 52px;gap:8px;padding-bottom:4px;border-bottom:1px dotted #222a31;align-items:center}.output:last-child{border:0;padding-bottom:0}.output-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:11px}.output-meta{margin-top:2px;color:var(--muted);font:9px ui-monospace,SFMono-Regular,Consolas,monospace}.output-state{text-align:right}.output-action{border:1px solid var(--line);background:#090d10;color:var(--muted);padding:4px 5px;font:800 9px ui-monospace,SFMono-Regular,Consolas,monospace;cursor:pointer}.output-action:hover{color:var(--text);border-color:#4d5a64}.output-action.start{color:var(--green)}.output-action.stop{color:var(--amber)}.output-action:disabled{opacity:.35;cursor:not-allowed}
 .empty{padding:30px 12px;color:var(--muted);font:11px ui-monospace,SFMono-Regular,Consolas,monospace}.footerline{display:flex;gap:18px;flex-wrap:wrap;margin-top:9px;color:var(--muted);font:10px ui-monospace,SFMono-Regular,Consolas,monospace}.dot{display:inline-block;width:6px;height:6px;margin-right:6px;background:var(--off)}.dot.ok{background:var(--green)}.dot.warn{background:var(--amber)}.dot.bad{background:var(--red)}
 .alert-note{display:none;margin-bottom:12px;border:1px solid #614a20;background:#151106;color:#e8c16f;padding:9px 11px;font:10px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace}.alert-note.show{display:block}.docker-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--line);background:var(--panel);margin-bottom:12px}.docker-summary .metric:nth-child(4){border-right:0}.docker-table{border:1px solid var(--line);background:var(--panel)}.docker-head,.docker-row{display:grid;grid-template-columns:minmax(170px,1.5fr) minmax(220px,2fr) 100px 100px 110px 120px 110px}.docker-head{background:#0c1014;color:var(--muted);font-size:9px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;border-bottom:1px solid var(--line)}.docker-head>div,.docker-cell{padding:9px 10px;border-right:1px solid var(--line-soft)}.docker-head>div:last-child,.docker-cell:last-child{border-right:0}.docker-row{min-height:54px;border-bottom:1px solid var(--line-soft)}.docker-row:last-child{border-bottom:0}.docker-name{font-weight:800}.docker-image{color:var(--muted);font:10px ui-monospace,SFMono-Regular,Consolas,monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.docker-note{margin-top:9px;color:var(--muted);font:9px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}
 @media(max-width:1280px){.table-head,.channel{grid-template-columns:minmax(210px,2fr) 95px 150px 120px 105px minmax(240px,2fr)}.table-head>.sort-head:nth-child(6),.channel>.cell:nth-child(6){display:none}}
@@ -39,17 +39,17 @@
       <div class="nav-item disabled"><i class="nav-dot"></i><span>INCIDENTS</span></div>
       <div class="nav-item disabled"><i class="nav-dot"></i><span>SETTINGS</span></div>
     </nav>
-    <div class="side-foot">RESTREAMER / READ ONLY<br><span id="sideVersion">v0.1.0-alpha.8</span></div>
+    <div class="side-foot">RESTREAMER / READ ONLY<br><span id="sideVersion">v0.1.0-alpha.9</span></div>
   </aside>
 
   <main class="main">
     <header class="topbar">
       <div class="title-wrap"><div id="pageTitle" class="title">CHANNEL MONITOR</div><div id="pageSubtitle" class="subtitle">LIVE OPERATIONS</div></div>
-      <div class="top-right"><div id="clock" class="clock">--:--:--</div><div class="badge readonly">READ ONLY</div><div id="authBadge" class="badge open">ACCESS OPEN</div></div>
+      <div class="top-right"><div id="clock" class="clock">--:--:--</div><div id="modeBadge" class="badge readonly">READ ONLY</div><div id="authBadge" class="badge open">ACCESS OPEN</div></div>
     </header>
 
     <div class="content">
-      <div id="accessWarning" class="alert-note">SUPERVISOR ACCESS IS NOT AUTHENTICATED. READ-ONLY MODE ONLY — enable SUPERVISOR_USERNAME / SUPERVISOR_PASSWORD before control actions are introduced.</div>
+      <div id="accessWarning" class="alert-note">SUPERVISOR ACCESS IS OPEN. MONITORING IS AVAILABLE, BUT OUTPUT CONTROL IS LOCKED UNTIL AUTHENTICATION IS CONFIGURED.</div>
 
       <section class="service-strip">
         <div class="service"><div><div class="service-label">Restreamer Core</div><div id="coreDetail" class="service-detail">Waiting…</div></div><div id="coreState" class="service-state dim">--</div></div>
@@ -146,7 +146,7 @@ const fmtMem=b=>{b=Number(b)||0;return b>=1073741824?(b/1073741824).toFixed(1)+"
 const fmtRate=bps=>{bps=Number(bps)||0;const bits=bps*8;return bits>=1000000000?(bits/1000000000).toFixed(2)+" Gb/s":bits>=1000000?(bits/1000000).toFixed(1)+" Mb/s":bits>=1000?(bits/1000).toFixed(0)+" kb/s":"0 kb/s"};
 const stateLabel=s=>({live:"LIVE",connecting:"CONNECTING",waiting:"NO SOURCE",error:"ERROR",stopped:"STOPPED",idle:"IDLE"}[s]||String(s||"UNKNOWN").toUpperCase());
 const statusClass=s=>["live","connecting","waiting","error","stopped","idle"].includes(s)?s:"idle";
-let lastRefresh=0,currentFilter="all",currentSort="name",currentDirection="asc",latestChannels=[],eventStream=null,currentView="channels";
+let lastRefresh=0,currentFilter="all",currentSort="name",currentDirection="asc",latestChannels=[],eventStream=null,currentView="channels",session={authenticated:false,role:"viewer",username:null,actionsEnabled:false},actionBusy=false;
 
 function renderDocker(docker){
   const containers=Array.isArray(docker?.containers)?docker.containers:[];
@@ -185,6 +185,47 @@ function switchView(view){
   $("pageSubtitle").textContent=currentView==="system"?"HOST + DOCKER SERVICES":"LIVE OPERATIONS";
 }
 
+async function loadSession(){
+  try{
+    const response=await fetch("/api/session",{cache:"no-store"});
+    if(!response.ok)throw new Error("session");
+    session=await response.json();
+  }catch{
+    session={authenticated:false,role:"viewer",username:null,actionsEnabled:false};
+  }
+
+  $("authBadge").textContent=session.authenticated?session.role.toUpperCase():"ACCESS OPEN";
+  $("authBadge").className="badge "+(session.authenticated?"secure":"open");
+  $("modeBadge").textContent=session.actionsEnabled?"OUTPUT CONTROL":"READ ONLY";
+  $("modeBadge").className="badge "+(session.actionsEnabled?"secure":"readonly");
+  renderChannels();
+}
+
+async function commandOutput(outputId, outputName, command){
+  if(!session.actionsEnabled||actionBusy)return;
+  const verb=command==="stop"?"STOP":"START";
+  const warning=command==="stop"
+    ? verb+' destination "'+outputName+'"? The channel ingest will keep running.'
+    : verb+' destination "'+outputName+'"?';
+  if(!window.confirm(warning))return;
+
+  actionBusy=true;
+  renderChannels();
+  try{
+    const response=await fetch("/api/restreamer/output-command",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({outputId,command})
+    });
+    if(!response.ok)throw new Error("command");
+  }catch{
+    window.alert("Destination command failed. No global Restreamer restart was attempted.");
+  }finally{
+    actionBusy=false;
+    setTimeout(fetchSnapshot,300);
+  }
+}
+
 function renderVideo(v){
   if(!v)return '<span class="dim">NO SIGNAL</span>';
   const line=[v.codec?.toUpperCase(),v.width&&v.height?(v.width+"×"+v.height):""].filter(Boolean).join(" · ");
@@ -203,7 +244,10 @@ function renderOutputs(outputs){
   if(!outputs?.length)return '<span class="dim spec">NO DESTINATIONS</span>';
   return '<div class="outputs">'+outputs.map(o=>{
     const meta=[String(o.provider||"").toUpperCase(),o.bitrateKbit?("OUT "+fmtBitrate(o.bitrateKbit)):"",o.runtimeSeconds?fmtTime(o.runtimeSeconds):""].filter(Boolean).join(" · ");
-    return '<div class="output"><div><div class="output-name">'+esc(o.name||o.provider||"Output")+'</div><div class="output-meta">'+esc(meta)+'</div></div><div class="output-state state '+statusClass(o.status)+'">'+esc(stateLabel(o.status))+'</div></div>';
+    const canControl=session.actionsEnabled;
+    const command=["live","connecting"].includes(o.status)?"stop":"start";
+    const action=canControl?('<button class="output-action '+command+'" data-output-id="'+esc(o.id)+'" data-output-name="'+esc(o.name||o.provider||"Output")+'" data-command="'+command+'" '+(actionBusy?"disabled":"")+'>'+command.toUpperCase()+'</button>'):'';
+    return '<div class="output"><div><div class="output-name">'+esc(o.name||o.provider||"Output")+'</div><div class="output-meta">'+esc(meta)+'</div></div><div class="output-state state '+statusClass(o.status)+'">'+esc(stateLabel(o.status))+'</div>'+action+'</div>';
   }).join("")+'</div>';
 }
 function compareName(a,b){
@@ -292,8 +336,6 @@ function applyStatus(x){
     setService("core",core.authenticated?"ONLINE":core.online?"AUTH ERROR":"OFFLINE",[core.version?("Core "+core.version):"version --",core.latencyMs!=null?(core.latencyMs+" ms"):""].filter(Boolean).join(" · "),core.authenticated?"ok":core.online?"warn":"bad");
     const uiText=ui.online?"ONLINE":ui.reachable?"REACHABLE":"OFFLINE";
     setService("ui",uiText,[ui.httpStatus?("HTTP "+ui.httpStatus):"no response",ui.latencyMs!=null?(ui.latencyMs+" ms"):""].filter(Boolean).join(" · "),ui.online?"ok":ui.reachable?"warn":"bad");
-    $("authBadge").textContent=security.authEnabled?"AUTH ON":"ACCESS OPEN";
-    $("authBadge").className="badge "+(security.authEnabled?"secure":"open");
     $("accessWarning").className="alert-note "+(security.authEnabled?"":"show");
     $("hostCpu").textContent=host.available&&host.cpu?.usagePercent!=null?Number(host.cpu.usagePercent).toFixed(1)+"%":"--";
     $("hostMemory").textContent=host.available?Number(host.memory?.usedPercent||0).toFixed(0)+"%":"--";
@@ -319,7 +361,7 @@ function applyStatus(x){
     $("outputErrors").textContent=s.outputErrors??0;
     $("outputErrors").style.color=(s.outputErrors??0)>0?"var(--red)":"var(--text)";
     $("supervisorVersion").textContent=x.supervisor?.version||"--";
-    $("sideVersion").textContent=x.supervisor?.version||"v0.1.0-alpha.8";
+    $("sideVersion").textContent=x.supervisor?.version||"v0.1.0-alpha.9";
     $("monitorTransport").textContent=(monitoring.transport||"poll").toUpperCase()+" · source "+(monitoring.sourcePollMs||"--")+" ms · core "+(monitoring.pollDurationMs??"--")+" ms";
     latestChannels=r.channels||[];
     renderChannels();
@@ -364,6 +406,11 @@ function connectRealtime(){
   fetchSnapshot();
 }
 document.querySelectorAll(".nav-item[data-view]").forEach(item=>item.addEventListener("click",()=>switchView(item.dataset.view)));
+$("channels").addEventListener("click",(event)=>{
+  const button=event.target.closest(".output-action");
+  if(!button)return;
+  commandOutput(button.dataset.outputId,button.dataset.outputName,button.dataset.command);
+});
 document.querySelectorAll(".filter").forEach(btn=>btn.addEventListener("click",()=>{
   document.querySelectorAll(".filter").forEach(x=>x.classList.remove("active"));
   btn.classList.add("active");
@@ -394,6 +441,7 @@ setInterval(updateClock,1000);
 updateClock();
 const initialView=new URLSearchParams(window.location.search).get("view");
 if(initialView==="system") switchView("system");
+loadSession();
 connectRealtime();
 </script>
 </body>
