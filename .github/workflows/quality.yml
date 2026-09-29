@@ -30,9 +30,14 @@ jobs:
       - name: Docker build
         run: docker build -t stream-supervisor-ci .
 
-      - name: Container health smoke test
+      - name: Docker Compose configuration
         run: |
           cp .env.example .env
+          mkdir -p runtime/disk-probe
+          docker compose config -q
+
+      - name: Container health smoke test
+        run: |
           docker run -d --name stream-supervisor-ci --env-file .env -e DEMO_MODE=true -p 8090:8090 stream-supervisor-ci
           for i in $(seq 1 20); do
             if curl -fsS http://127.0.0.1:8090/health >/dev/null; then
