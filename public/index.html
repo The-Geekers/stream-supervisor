@@ -92,17 +92,116 @@
   </main>
 </div>
 
+
 <script>
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
 const fmtTime=s=>{s=Math.max(0,Math.floor(Number(s)||0));const d=Math.floor(s/86400);s%=86400;const h=Math.floor(s/3600);s%=3600;const m=Math.floor(s/60);return[d?d+"d":null,h?h+"h":null,m+"m"].filter(Boolean).join(" ")||"<1m"};
 const fmtBitrate=k=>{k=Number(k)||0;return k>=1000?(k/1000).toFixed(2)+" Mb/s":Math.round(k)+" kb/s"};
-const fmtFormat=c=>{const v=c.video,a=c.audio,parts=[];if(v){parts.push([v.codec?.toUpperCase(),v.width&&v.height?`${v.width}×${v.height}`:"",v.fps?`${v.fps.toFixed(1)} fps`:""].filter(Boolean).join(" "))}if(a){parts.push([a.codec?.toUpperCase(),a.samplingHz?`${Math.round(a.samplingHz/1000)}kHz`:"",a.channels===2?"stereo":a.channels===1?"mono":""].filter(Boolean).join(" "))}return parts.length?parts.join(" · "):"No signal details"};
+const fmtMem=b=>{b=Number(b)||0;return b>=1048576?(b/1048576).toFixed(0)+" MiB":Math.round(b/1024)+" KiB"};
 const stateLabel=s=>({live:"LIVE",connecting:"CONNECTING",waiting:"NO SOURCE",error:"ERROR",stopped:"STOPPED",idle:"IDLE"}[s]||String(s||"UNKNOWN").toUpperCase());
-let lastRefresh=0;
-function renderChannel(c){const outputs=c.outputs||[];const outHtml=outputs.length?outputs.map(o=>`<div class="output"><div class="output-name">${esc(o.name||o.provider||"Output")}</div><div class="output-state state ${esc(o.status)}">${esc(stateLabel(o.status))}</div></div>`).join(""):`<span class="mono" style="color:var(--muted)">No destinations</span>`;return`<div class="channel-row"><div class="cell identity"><i class="signal ${esc(c.status)}"></i><div><div class="channel-name">${esc(c.name)}</div><div class="channel-tech">${esc(fmtFormat(c))}</div></div></div><div class="cell"><span class="state ${esc(c.status)}">${esc(stateLabel(c.status))}</span></div><div class="cell mono">${esc(fmtFormat(c))}</div><div class="cell mono">${esc(fmtBitrate(c.bitrateKbit))}</div><div class="cell mono">${esc(fmtTime(c.runtimeSeconds))}</div><div class="cell"><div class="outputs">${outHtml}</div></div></div>`}
-async function refresh(){try{const response=await fetch("/api/status",{cache:"no-store"});if(!response.ok)throw new Error("api");const x=await response.json(),r=x.restreamer||{},s=r.summary||{},channels=r.channels||[];$("apiDot").className="dot ok";$("restreamerDot").className="dot "+(r.authenticated?"ok":r.online?"warn":"bad");$("coreState").textContent=r.authenticated?"ONLINE":r.online?"AUTH":"OFFLINE";$("coreState").style.color=r.authenticated?"var(--green)":r.online?"var(--amber)":"var(--red)";$("coreVersion").textContent=r.version||"--";$("channelsLive").textContent=`${s.live??0} / ${s.channels??0}`;$("outputsLive").textContent=`${s.outputsLive??0} / ${s.outputs??0}`;$("outputErrors").textContent=s.outputErrors??0;$("outputErrors").style.color=(s.outputErrors??0)>0?"var(--red)":"var(--text)";$("channelCount").textContent=`${channels.length} CHANNEL${channels.length===1?"":"S"}`;$("supervisorVersion").textContent=x.supervisor?.version||"--";$("channels").innerHTML=channels.length?channels.map(renderChannel).join(""):`<div class="empty">No Restreamer channels discovered.</div>`;lastRefresh=Date.now()}catch{$("apiDot").className="dot bad";$("coreState").textContent="NO DATA";$("coreState").style.color="var(--red)"}}
-setInterval(()=>{$("refreshAge").textContent=lastRefresh?Math.max(0,Math.floor((Date.now()-lastRefresh)/1000))+"s ago":"--"},1000);refresh();setInterval(refresh,5000);
+const statusClass=s=>["live","connecting","waiting","error","stopped","idle"].includes(s)?s:"idle";
+let lastRefresh=0,currentFilter="all",latestChannels=[];
+
+function renderVideo(v){
+  if(!v)return '<span class="dim">NO SIGNAL</span>';
+  const line=[v.codec?.toUpperCase(),v.width&&v.height?(v.width+"×"+v.height):""].filter(Boolean).join(" · ");
+  return '<div class="spec">'+esc(line||"--")+'<small>'+(v.fps?esc(v.fps.toFixed(1)+" fps"):"fps --")+'</small></div>';
+}
+function renderAudio(a){
+  if(!a)return '<span class="dim">NO SIGNAL</span>';
+  const chan=a.channels===2?"stereo":a.channels===1?"mono":a.channels?(a.channels+" ch"):"";
+  const line=[a.codec?.toUpperCase(),a.samplingHz?(Math.round(a.samplingHz/1000)+" kHz"):"",chan].filter(Boolean).join(" · ");
+  return '<div class="spec">'+esc(line||"--")+'<small>'+(a.bitrateKbit?esc(Math.round(a.bitrateKbit)+" kb/s"):"bitrate --")+'</small></div>';
+}
+function channelHasIssue(c){
+  return ["waiting","connecting"].includes(c.status)||(c.outputs||[]).some(o=>o.status==="error");
+}
+function renderOutputs(outputs){
+  if(!outputs?.length)return '<span class="dim spec">NO DESTINATIONS</span>';
+  return '<div class="outputs">'+outputs.map(o=>{
+    const meta=[String(o.provider||"").toUpperCase(),o.bitrateKbit?fmtBitrate(o.bitrateKbit):"",o.runtimeSeconds?fmtTime(o.runtimeSeconds):""].filter(Boolean).join(" · ");
+    return '<div class="output"><div><div class="output-name">'+esc(o.name||o.provider||"Output")+'</div><div class="output-meta">'+esc(meta)+'</div></div><div class="output-state state '+statusClass(o.status)+'">'+esc(stateLabel(o.status))+'</div></div>';
+  }).join("")+'</div>';
+}
+function filteredChannels(){
+  if(currentFilter==="live")return latestChannels.filter(c=>c.status==="live");
+  if(currentFilter==="issues")return latestChannels.filter(channelHasIssue);
+  if(currentFilter==="stopped")return latestChannels.filter(c=>c.status==="stopped");
+  return latestChannels;
+}
+function renderChannels(){
+  const channels=filteredChannels();
+  $("channelCount").textContent=channels.length+" / "+latestChannels.length;
+  $("channels").innerHTML=channels.length?channels.map(c=>{
+    const counters=[];
+    if(c.drop)counters.push("DROP "+c.drop);
+    if(c.dup)counters.push("DUP "+c.dup);
+    const perf=[fmtBitrate(c.bitrateKbit),c.fps?(c.fps.toFixed(1)+" fps"):"",c.cpuUsage?("CPU "+c.cpuUsage.toFixed(1)+"%"):"",c.memoryBytes?fmtMem(c.memoryBytes):"",...counters].filter(Boolean).join(" · ");
+    const retry=c.reconnectSeconds>=0&&c.status==="waiting"?('<small>retry '+esc(c.reconnectSeconds)+'s</small>'):"";
+    return '<div class="channel">'+
+      '<div class="cell identity"><i class="signal '+statusClass(c.status)+'"></i><div><div class="channel-name">'+esc(c.name)+'</div><div class="techline">'+esc(perf||"No active metrics")+'</div></div></div>'+
+      '<div class="cell"><span class="state '+statusClass(c.status)+'">'+esc(stateLabel(c.status))+'</span></div>'+
+      '<div class="cell">'+renderVideo(c.video)+'</div>'+
+      '<div class="cell">'+renderAudio(c.audio)+'</div>'+
+      '<div class="cell"><div class="spec">'+esc(fmtBitrate(c.bitrateKbit))+'<small>'+(c.fps?esc(c.fps.toFixed(1)+" fps"):"fps --")+'</small></div></div>'+
+      '<div class="cell"><div class="spec">'+esc(fmtTime(c.runtimeSeconds))+retry+'</div></div>'+
+      '<div class="cell">'+renderOutputs(c.outputs)+'</div>'+
+    '</div>';
+  }).join(""):'<div class="empty">No channels match this view.</div>';
+}
+function setService(id,state,detail,kind){
+  $(id+"State").textContent=state;
+  $(id+"State").className="service-state "+kind;
+  $(id+"Detail").textContent=detail;
+  const dot=id==="api"?"apiDot":id==="core"?"coreDot":"uiDot";
+  $(dot).className="dot "+kind;
+}
+function updateClock(){
+  $("clock").textContent=new Date().toLocaleTimeString("fr-FR",{hour12:false});
+}
+async function refresh(){
+  try{
+    const response=await fetch("/api/status",{cache:"no-store"});
+    if(!response.ok)throw new Error("api");
+    const x=await response.json();
+    const r=x.restreamer||{},core=r.core||{},ui=r.ui||{},s=r.summary||{},security=x.supervisor?.security||{};
+    setService("api","ONLINE",(x.supervisor?.version||"--")+" · READ ONLY","ok");
+    setService("core",core.authenticated?"ONLINE":core.online?"AUTH ERROR":"OFFLINE",[core.version?("Core "+core.version):"version --",core.latencyMs!=null?(core.latencyMs+" ms"):""].filter(Boolean).join(" · "),core.authenticated?"ok":core.online?"warn":"bad");
+    const uiText=ui.online?"ONLINE":ui.reachable?("HTTP "+(ui.httpStatus||"ERR")):"OFFLINE";
+    setService("ui",uiText,[ui.httpStatus?("HTTP "+ui.httpStatus):"no response",ui.latencyMs!=null?(ui.latencyMs+" ms"):""].filter(Boolean).join(" · "),ui.online?"ok":ui.reachable?"warn":"bad");
+    $("authBadge").textContent=security.authEnabled?"AUTH ON":"ACCESS OPEN";
+    $("authBadge").className="badge "+(security.authEnabled?"secure":"open");
+    $("accessWarning").className="alert-note "+(security.authEnabled?"":"show");
+    $("channelsLive").textContent=(s.live??0)+" / "+(s.channels??0);
+    $("channelsSub").textContent=(s.waiting??0)+" no source · "+(s.stopped??0)+" stopped";
+    $("outputsLive").textContent=(s.outputsLive??0)+" / "+(s.outputs??0);
+    $("outputsSub").textContent=(s.outputsStopped??0)+" stopped";
+    $("alerts").textContent=s.alerts??0;
+    $("alerts").style.color=(s.alerts??0)>0?"var(--amber)":"var(--text)";
+    $("outputErrors").textContent=s.outputErrors??0;
+    $("outputErrors").style.color=(s.outputErrors??0)>0?"var(--red)":"var(--text)";
+    $("coreLatency").textContent=core.latencyMs!=null?(core.latencyMs+" ms"):"--";
+    $("supervisorVersion").textContent=x.supervisor?.version||"--";
+    $("sideVersion").textContent=x.supervisor?.version||"v0.1.0-alpha.4";
+    latestChannels=r.channels||[];
+    renderChannels();
+    lastRefresh=Date.now();
+  }catch{
+    setService("api","NO DATA","Supervisor API unreachable","bad");
+  }
+}
+document.querySelectorAll(".filter").forEach(btn=>btn.addEventListener("click",()=>{
+  document.querySelectorAll(".filter").forEach(x=>x.classList.remove("active"));
+  btn.classList.add("active");
+  currentFilter=btn.dataset.filter;
+  renderChannels();
+}));
+setInterval(()=>{$("refreshAge").textContent=lastRefresh?Math.max(0,Math.floor((Date.now()-lastRefresh)/1000))+"s":"--"},1000);
+setInterval(updateClock,1000);
+updateClock();
+refresh();
+setInterval(refresh,5000);
 </script>
 </body>
 </html>
