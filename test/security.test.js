@@ -97,7 +97,11 @@ test("channel model groups egresses by Restreamer reference", () => {
     outputsLive: 1,
     outputsStopped: 0,
     outputErrors: 0,
-    alerts: 0
+    alerts: 0,
+    ingestBitrateKbit: 6000,
+    egressBitrateKbit: 6000,
+    processCpuUsage: 0,
+    processMemoryBytes: 0
   });
 });
 
@@ -120,4 +124,23 @@ test("a missing source and failed destination create one channel alert", () => {
   assert.equal(summary.waiting, 1);
   assert.equal(summary.outputErrors, 1);
   assert.equal(summary.alerts, 1);
+});
+
+
+test("channels are returned alphabetically by their Restreamer names", () => {
+  const make = (id, name) => sanitizeProcess({
+    id: `restreamer-ui:ingest:${id}`,
+    reference: id,
+    metadata: {"restreamer-ui": {name}},
+    state: {order:"stop", exec:"finished", progress:{}}
+  });
+
+  const channels = buildChannels([
+    make("11111111-1111-4111-8111-111111111111", "Sommet"),
+    make("22222222-2222-4222-8222-222222222222", "Agora"),
+    make("33333333-3333-4333-8333-333333333333", "Site 10"),
+    make("44444444-4444-4444-8444-444444444444", "Site 2")
+  ]);
+
+  assert.deepEqual(channels.map((c) => c.name), ["Agora", "Site 2", "Site 10", "Sommet"]);
 });
