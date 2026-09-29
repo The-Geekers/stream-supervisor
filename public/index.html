@@ -14,8 +14,8 @@
 .topbar{height:58px;padding:0 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);background:#080b0d}.title-wrap{display:flex;align-items:baseline;gap:12px}.title{font-size:15px;font-weight:800;letter-spacing:.09em}.subtitle{color:var(--muted);font:10px ui-monospace,SFMono-Regular,Consolas,monospace}.top-right{display:flex;align-items:center;gap:10px}.clock{color:#aeb8c0;font:11px ui-monospace,SFMono-Regular,Consolas,monospace}
 .badge{padding:6px 8px;border:1px solid var(--line);font:10px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.04em}.badge.readonly{border-color:#5b4923;color:var(--amber);background:#151107}.badge.secure{border-color:#235a34;color:var(--green);background:#09150d}.badge.open{border-color:#6b5021;color:var(--amber);background:#171208}
 .content{padding:16px 18px 30px}.service-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid var(--line);margin-bottom:12px;background:var(--panel)}.service{min-height:54px;padding:10px 12px;border-right:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}.service:last-child{border-right:0}.service-label{color:var(--muted);font-size:10px;font-weight:800;letter-spacing:.09em;text-transform:uppercase}.service-detail{margin-top:5px;color:#b9c2c9;font:11px ui-monospace,SFMono-Regular,Consolas,monospace}.service-state{font:800 11px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.05em}.ok{color:var(--green)}.warn{color:var(--amber)}.bad{color:var(--red)}.dim{color:var(--off)}
-.telemetry{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));border:1px solid var(--line);background:var(--panel);margin-bottom:12px}.metric{min-height:68px;padding:11px 12px;border-right:1px solid var(--line)}.metric:last-child{border-right:0}.metric-label{color:var(--muted);font-size:9px;font-weight:800;letter-spacing:.11em;text-transform:uppercase}.metric-value{margin-top:8px;font:800 18px ui-monospace,SFMono-Regular,Consolas,monospace}.metric-sub{margin-top:3px;color:var(--muted);font:9px ui-monospace,SFMono-Regular,Consolas,monospace}
-.toolbar{height:42px;display:flex;align-items:center;justify-content:space-between;border:1px solid var(--line);border-bottom:0;background:#090c0f;padding:0 10px}.toolbar-title{font-size:10px;font-weight:800;letter-spacing:.11em}.filters{display:flex;gap:5px}.filter{border:1px solid var(--line);background:#080b0d;color:var(--muted);padding:5px 8px;font:10px ui-monospace,SFMono-Regular,Consolas,monospace;cursor:pointer}.filter.active{color:#fff;border-color:#46535d;background:#11171c}
+.telemetry{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));border:1px solid var(--line);background:var(--panel);margin-bottom:12px}.metric{min-height:68px;padding:11px 12px;border-right:1px solid var(--line)}.metric:last-child{border-right:0}.metric-label{color:var(--muted);font-size:9px;font-weight:800;letter-spacing:.11em;text-transform:uppercase}.metric-value{margin-top:8px;font:800 18px ui-monospace,SFMono-Regular,Consolas,monospace}.metric-sub{margin-top:3px;color:var(--muted);font:9px ui-monospace,SFMono-Regular,Consolas,monospace}
+.toolbar{min-height:42px;display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid var(--line);border-bottom:0;background:#090c0f;padding:6px 10px}.toolbar-title{font-size:10px;font-weight:800;letter-spacing:.11em}.toolbar-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.filters,.sorts{display:flex;gap:5px}.control-label{align-self:center;color:var(--muted);font:9px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.08em}.filter,.sort{border:1px solid var(--line);background:#080b0d;color:var(--muted);padding:5px 8px;font:10px ui-monospace,SFMono-Regular,Consolas,monospace;cursor:pointer}.filter.active,.sort.active{color:#fff;border-color:#46535d;background:#11171c}
 .table{border:1px solid var(--line);background:var(--panel)}.table-head,.channel{display:grid;grid-template-columns:minmax(230px,2.1fr) 100px 160px 145px 120px 92px minmax(280px,2fr)}.table-head{background:#0c1014;border-bottom:1px solid var(--line);color:var(--muted);font-size:9px;font-weight:800;letter-spacing:.09em;text-transform:uppercase}.table-head>div{padding:8px 9px;border-right:1px solid var(--line-soft)}
 .channel{min-height:80px;border-bottom:1px solid var(--line-soft);background:#0a0e11}.channel:last-child{border-bottom:0}.channel:hover{background:#0d1216}.cell{padding:9px;border-right:1px solid var(--line-soft);min-width:0;display:flex;align-items:center}.cell:last-child{border-right:0}
 .identity{display:grid;grid-template-columns:6px minmax(0,1fr);gap:10px;width:100%;align-items:stretch}.signal{width:6px;min-height:54px;background:var(--off)}.signal.live{background:var(--green)}.signal.connecting{background:var(--cyan)}.signal.waiting{background:var(--amber)}.signal.stopped{background:#3e4850}.channel-name{font-size:14px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.techline{margin-top:6px;color:var(--muted);font:10px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -24,7 +24,7 @@
 .empty{padding:30px 12px;color:var(--muted);font:11px ui-monospace,SFMono-Regular,Consolas,monospace}.footerline{display:flex;gap:18px;flex-wrap:wrap;margin-top:9px;color:var(--muted);font:10px ui-monospace,SFMono-Regular,Consolas,monospace}.dot{display:inline-block;width:6px;height:6px;margin-right:6px;background:var(--off)}.dot.ok{background:var(--green)}.dot.warn{background:var(--amber)}.dot.bad{background:var(--red)}
 .alert-note{display:none;margin-bottom:12px;border:1px solid #614a20;background:#151106;color:#e8c16f;padding:9px 11px;font:10px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace}.alert-note.show{display:block}
 @media(max-width:1280px){.table-head,.channel{grid-template-columns:minmax(210px,2fr) 95px 150px 120px 105px minmax(240px,2fr)}.table-head>div:nth-child(6),.channel>.cell:nth-child(6){display:none}}
-@media(max-width:1050px){.shell{grid-template-columns:58px minmax(0,1fr)}.brand{font-size:0}.brand:before{content:"SS";font-size:14px}.brand small,.nav-item span{display:none}.nav-item{justify-content:center}.telemetry{grid-template-columns:repeat(3,1fr)}.metric:nth-child(3){border-right:0}.service-strip{grid-template-columns:1fr}.service{border-right:0;border-bottom:1px solid var(--line)}.service:last-child{border-bottom:0}.table-head{display:none}.channel{grid-template-columns:minmax(200px,1.8fr) 90px 140px 110px minmax(220px,1.6fr)}.channel>.cell:nth-child(4),.channel>.cell:nth-child(6){display:none}}
+@media(max-width:1200px){.telemetry{grid-template-columns:repeat(4,1fr)}.metric:nth-child(4n){border-right:0}}@media(max-width:1050px){.shell{grid-template-columns:58px minmax(0,1fr)}.brand{font-size:0}.brand:before{content:"SS";font-size:14px}.brand small,.nav-item span{display:none}.nav-item{justify-content:center}.telemetry{grid-template-columns:repeat(4,1fr)}.metric:nth-child(3){border-right:0}.service-strip{grid-template-columns:1fr}.service{border-right:0;border-bottom:1px solid var(--line)}.service:last-child{border-bottom:0}.table-head{display:none}.channel{grid-template-columns:minmax(200px,1.8fr) 90px 140px 110px minmax(220px,1.6fr)}.channel>.cell:nth-child(4),.channel>.cell:nth-child(6){display:none}}
 @media(max-width:760px){.shell{display:block}.sidebar{display:none}.topbar{padding:0 10px}.subtitle,.clock{display:none}.content{padding:10px}.telemetry{grid-template-columns:repeat(2,1fr)}.metric:nth-child(odd){border-right:1px solid var(--line)}.metric:nth-child(even){border-right:0}.channel{display:block;padding:9px}.cell{border:0;padding:5px 0}.identity{min-height:50px}.toolbar{height:auto;padding:8px;gap:10px;align-items:flex-start;flex-direction:column}}
 </style>
 </head>
@@ -39,7 +39,7 @@
       <div class="nav-item disabled"><i class="nav-dot"></i><span>INCIDENTS</span></div>
       <div class="nav-item disabled"><i class="nav-dot"></i><span>SETTINGS</span></div>
     </nav>
-    <div class="side-foot">RESTREAMER / READ ONLY<br><span id="sideVersion">v0.1.0-alpha.4</span></div>
+    <div class="side-foot">RESTREAMER / READ ONLY<br><span id="sideVersion">v0.1.0-alpha.5</span></div>
   </aside>
 
   <main class="main">
@@ -60,24 +60,34 @@
       <section class="telemetry">
         <div class="metric"><div class="metric-label">Channels live</div><div id="channelsLive" class="metric-value">--</div><div id="channelsSub" class="metric-sub">--</div></div>
         <div class="metric"><div class="metric-label">Outputs live</div><div id="outputsLive" class="metric-value">--</div><div id="outputsSub" class="metric-sub">--</div></div>
+        <div class="metric"><div class="metric-label">Ingress total</div><div id="ingressTotal" class="metric-value">--</div><div class="metric-sub">received by Restreamer</div></div>
+        <div class="metric"><div class="metric-label">Egress total</div><div id="egressTotal" class="metric-value">--</div><div class="metric-sub">sent to destinations</div></div>
+        <div class="metric"><div class="metric-label">Process CPU</div><div id="processCpu" class="metric-value">--</div><div class="metric-sub">Restreamer process sum</div></div>
+        <div class="metric"><div class="metric-label">Process RAM</div><div id="processMemory" class="metric-value">--</div><div class="metric-sub">Restreamer process sum</div></div>
         <div class="metric"><div class="metric-label">Alerts</div><div id="alerts" class="metric-value">--</div><div class="metric-sub">channels needing attention</div></div>
         <div class="metric"><div class="metric-label">Output errors</div><div id="outputErrors" class="metric-value">--</div><div class="metric-sub">active start failures</div></div>
-        <div class="metric"><div class="metric-label">Core latency</div><div id="coreLatency" class="metric-value">--</div><div class="metric-sub">API /api</div></div>
-        <div class="metric"><div class="metric-label">Refresh</div><div id="refreshAge" class="metric-value">--</div><div class="metric-sub">automatic · 5 sec</div></div>
       </section>
 
       <div class="toolbar">
         <div class="toolbar-title">RESTREAMER CHANNELS <span id="channelCount" style="color:var(--muted);margin-left:8px">--</span></div>
-        <div class="filters">
-          <button class="filter active" data-filter="all">ALL</button>
-          <button class="filter" data-filter="live">LIVE</button>
-          <button class="filter" data-filter="issues">ISSUES</button>
-          <button class="filter" data-filter="stopped">STOPPED</button>
+        <div class="toolbar-actions">
+          <div class="filters">
+            <span class="control-label">VIEW</span>
+            <button class="filter active" data-filter="all">ALL</button>
+            <button class="filter" data-filter="live">LIVE</button>
+            <button class="filter" data-filter="issues">ISSUES</button>
+            <button class="filter" data-filter="stopped">STOPPED</button>
+          </div>
+          <div class="sorts">
+            <span class="control-label">SORT</span>
+            <button class="sort active" data-sort="name">NAME</button>
+            <button class="sort" data-sort="status">STATUS</button>
+          </div>
         </div>
       </div>
 
       <section class="table">
-        <div class="table-head"><div>Channel / signal</div><div>Ingest</div><div>Video</div><div>Audio</div><div>Traffic</div><div>Uptime</div><div>Destinations</div></div>
+        <div class="table-head"><div>Channel / signal</div><div>Ingest</div><div>Video</div><div>Audio</div><div>Ingress</div><div>Uptime</div><div>Destinations / egress</div></div>
         <div id="channels"><div class="empty">Waiting for Supervisor API…</div></div>
       </section>
 
@@ -86,6 +96,7 @@
         <span><i id="coreDot" class="dot"></i>Core</span>
         <span><i id="uiDot" class="dot"></i>Web UI</span>
         <span>backend allow-list active</span>
+        <span>refresh <span id="refreshAge">--</span></span>
         <span id="supervisorVersion">--</span>
       </div>
     </div>
@@ -101,7 +112,7 @@ const fmtBitrate=k=>{k=Number(k)||0;return k>=1000?(k/1000).toFixed(2)+" Mb/s":M
 const fmtMem=b=>{b=Number(b)||0;return b>=1048576?(b/1048576).toFixed(0)+" MiB":Math.round(b/1024)+" KiB"};
 const stateLabel=s=>({live:"LIVE",connecting:"CONNECTING",waiting:"NO SOURCE",error:"ERROR",stopped:"STOPPED",idle:"IDLE"}[s]||String(s||"UNKNOWN").toUpperCase());
 const statusClass=s=>["live","connecting","waiting","error","stopped","idle"].includes(s)?s:"idle";
-let lastRefresh=0,currentFilter="all",latestChannels=[];
+let lastRefresh=0,currentFilter="all",currentSort="name",latestChannels=[];
 
 function renderVideo(v){
   if(!v)return '<span class="dim">NO SIGNAL</span>';
@@ -120,15 +131,22 @@ function channelHasIssue(c){
 function renderOutputs(outputs){
   if(!outputs?.length)return '<span class="dim spec">NO DESTINATIONS</span>';
   return '<div class="outputs">'+outputs.map(o=>{
-    const meta=[String(o.provider||"").toUpperCase(),o.bitrateKbit?fmtBitrate(o.bitrateKbit):"",o.runtimeSeconds?fmtTime(o.runtimeSeconds):""].filter(Boolean).join(" · ");
+    const meta=[String(o.provider||"").toUpperCase(),o.bitrateKbit?("OUT "+fmtBitrate(o.bitrateKbit)):"",o.runtimeSeconds?fmtTime(o.runtimeSeconds):""].filter(Boolean).join(" · ");
     return '<div class="output"><div><div class="output-name">'+esc(o.name||o.provider||"Output")+'</div><div class="output-meta">'+esc(meta)+'</div></div><div class="output-state state '+statusClass(o.status)+'">'+esc(stateLabel(o.status))+'</div></div>';
   }).join("")+'</div>';
 }
 function filteredChannels(){
-  if(currentFilter==="live")return latestChannels.filter(c=>c.status==="live");
-  if(currentFilter==="issues")return latestChannels.filter(channelHasIssue);
-  if(currentFilter==="stopped")return latestChannels.filter(c=>c.status==="stopped");
-  return latestChannels;
+  let channels=latestChannels.slice();
+  if(currentFilter==="live")channels=channels.filter(c=>c.status==="live");
+  if(currentFilter==="issues")channels=channels.filter(channelHasIssue);
+  if(currentFilter==="stopped")channels=channels.filter(c=>c.status==="stopped");
+  if(currentSort==="status"){
+    const rank={live:0,connecting:1,waiting:2,error:3,idle:4,stopped:5};
+    channels.sort((a,b)=>(rank[a.status]??9)-(rank[b.status]??9)||String(a.name||"").localeCompare(String(b.name||""),"fr",{sensitivity:"base",numeric:true}));
+  }else{
+    channels.sort((a,b)=>String(a.name||"").localeCompare(String(b.name||""),"fr",{sensitivity:"base",numeric:true}));
+  }
+  return channels;
 }
 function renderChannels(){
   const channels=filteredChannels();
@@ -137,14 +155,14 @@ function renderChannels(){
     const counters=[];
     if(c.drop)counters.push("DROP "+c.drop);
     if(c.dup)counters.push("DUP "+c.dup);
-    const perf=[fmtBitrate(c.bitrateKbit),c.fps?(c.fps.toFixed(1)+" fps"):"",c.cpuUsage?("CPU "+c.cpuUsage.toFixed(1)+"%"):"",c.memoryBytes?fmtMem(c.memoryBytes):"",...counters].filter(Boolean).join(" · ");
+    const perf=["IN "+fmtBitrate(c.bitrateKbit),c.fps?(c.fps.toFixed(1)+" fps"):"",c.cpuUsage?("CPU "+c.cpuUsage.toFixed(1)+"%"):"",c.memoryBytes?fmtMem(c.memoryBytes):"",...counters].filter(Boolean).join(" · ");
     const retry=c.reconnectSeconds>=0&&c.status==="waiting"?('<small>retry '+esc(c.reconnectSeconds)+'s</small>'):"";
     return '<div class="channel">'+
       '<div class="cell identity"><i class="signal '+statusClass(c.status)+'"></i><div><div class="channel-name">'+esc(c.name)+'</div><div class="techline">'+esc(perf||"No active metrics")+'</div></div></div>'+
       '<div class="cell"><span class="state '+statusClass(c.status)+'">'+esc(stateLabel(c.status))+'</span></div>'+
       '<div class="cell">'+renderVideo(c.video)+'</div>'+
       '<div class="cell">'+renderAudio(c.audio)+'</div>'+
-      '<div class="cell"><div class="spec">'+esc(fmtBitrate(c.bitrateKbit))+'<small>'+(c.fps?esc(c.fps.toFixed(1)+" fps"):"fps --")+'</small></div></div>'+
+      '<div class="cell"><div class="spec">IN '+esc(fmtBitrate(c.bitrateKbit))+'<small>'+(c.fps?esc(c.fps.toFixed(1)+" fps"):"fps --")+'</small></div></div>'+
       '<div class="cell"><div class="spec">'+esc(fmtTime(c.runtimeSeconds))+retry+'</div></div>'+
       '<div class="cell">'+renderOutputs(c.outputs)+'</div>'+
     '</div>';
@@ -177,13 +195,16 @@ async function refresh(){
     $("channelsSub").textContent=(s.waiting??0)+" no source · "+(s.stopped??0)+" stopped";
     $("outputsLive").textContent=(s.outputsLive??0)+" / "+(s.outputs??0);
     $("outputsSub").textContent=(s.outputsStopped??0)+" stopped";
+    $("ingressTotal").textContent=fmtBitrate(s.ingestBitrateKbit??0);
+    $("egressTotal").textContent=fmtBitrate(s.egressBitrateKbit??0);
+    $("processCpu").textContent=((s.processCpuUsage??0).toFixed?Number(s.processCpuUsage??0).toFixed(1):"0.0")+"%";
+    $("processMemory").textContent=fmtMem(s.processMemoryBytes??0);
     $("alerts").textContent=s.alerts??0;
     $("alerts").style.color=(s.alerts??0)>0?"var(--amber)":"var(--text)";
     $("outputErrors").textContent=s.outputErrors??0;
     $("outputErrors").style.color=(s.outputErrors??0)>0?"var(--red)":"var(--text)";
-    $("coreLatency").textContent=core.latencyMs!=null?(core.latencyMs+" ms"):"--";
     $("supervisorVersion").textContent=x.supervisor?.version||"--";
-    $("sideVersion").textContent=x.supervisor?.version||"v0.1.0-alpha.4";
+    $("sideVersion").textContent=x.supervisor?.version||"v0.1.0-alpha.5";
     latestChannels=r.channels||[];
     renderChannels();
     lastRefresh=Date.now();
@@ -195,6 +216,12 @@ document.querySelectorAll(".filter").forEach(btn=>btn.addEventListener("click",(
   document.querySelectorAll(".filter").forEach(x=>x.classList.remove("active"));
   btn.classList.add("active");
   currentFilter=btn.dataset.filter;
+  renderChannels();
+}));
+document.querySelectorAll(".sort").forEach(btn=>btn.addEventListener("click",()=>{
+  document.querySelectorAll(".sort").forEach(x=>x.classList.remove("active"));
+  btn.classList.add("active");
+  currentSort=btn.dataset.sort;
   renderChannels();
 }));
 setInterval(()=>{$("refreshAge").textContent=lastRefresh?Math.max(0,Math.floor((Date.now()-lastRefresh)/1000))+"s":"--"},1000);

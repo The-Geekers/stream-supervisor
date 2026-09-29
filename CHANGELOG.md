@@ -14,8 +14,14 @@
 - Workflow GitHub Actions générant une capture visuelle de l'interface.
 - Smoke test CI de l'authentification Supervisor.
 
+### Added
+- Tri des channels par nom ou par état, avec tri par nom par défaut.
+- Débit entrant total et débit sortant total Restreamer.
+- CPU et RAM cumulés des processus ingest/egress supervisés.
+- Indication IN/OUT explicite dans l'interface.
+
 ### Changed
-- Passage à `0.1.0-alpha.4`.
+- Passage à `0.1.0-alpha.5`.
 - Interface encore plus dense et orientée régie/control-room.
 - Modèle Restreamer enrichi tout en conservant l'allow-list anti-secrets.
 
