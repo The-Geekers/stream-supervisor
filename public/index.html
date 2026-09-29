@@ -6,7 +6,7 @@
 <title>Stream Supervisor</title>
 <style>
 :root{color-scheme:dark;--bg:#07090b;--side:#050708;--panel:#0b0f12;--line:#263039;--line-soft:#182027;--text:#e9eef2;--muted:#7d8a95;--cyan:#43c7f4;--green:#5cdb7c;--amber:#f0b64d;--red:#ff6464;--off:#606b74;font-family:Arial,Helvetica,sans-serif}
-*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text)}body{font-size:13px}button{font:inherit}
+*{box-sizing:border-box}html{overflow-y:scroll;scrollbar-gutter:stable}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text)}body{font-size:13px}button{font:inherit}
 .shell{min-height:100vh;display:grid;grid-template-columns:190px minmax(0,1fr)}.sidebar{background:var(--side);border-right:1px solid var(--line);padding:18px 12px;display:flex;flex-direction:column}
 .brand{padding:3px 8px 18px;font-size:14px;font-weight:800;letter-spacing:.12em;border-bottom:1px solid var(--line)}.brand small{display:block;margin-top:6px;color:var(--muted);font:10px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.08em}
 .nav{padding-top:14px}.nav-item{height:36px;display:flex;align-items:center;gap:10px;padding:0 9px;color:#89959f;border-left:2px solid transparent;font-size:11px;font-weight:800;letter-spacing:.08em}.nav-item.active{color:#fff;background:#0c1115;border-left-color:var(--cyan)}.nav-item.disabled{opacity:.32}.nav-dot{width:5px;height:5px;background:currentColor}
@@ -14,18 +14,18 @@
 .topbar{height:58px;padding:0 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);background:#080b0d}.title-wrap{display:flex;align-items:baseline;gap:12px}.title{font-size:15px;font-weight:800;letter-spacing:.09em}.subtitle{color:var(--muted);font:10px ui-monospace,SFMono-Regular,Consolas,monospace}.top-right{display:flex;align-items:center;gap:10px}.clock{color:#aeb8c0;font:11px ui-monospace,SFMono-Regular,Consolas,monospace}
 .badge{padding:6px 8px;border:1px solid var(--line);font:10px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.04em}.badge.readonly{border-color:#5b4923;color:var(--amber);background:#151107}.badge.secure{border-color:#235a34;color:var(--green);background:#09150d}.badge.open{border-color:#6b5021;color:var(--amber);background:#171208}
 .content{padding:16px 18px 30px}.service-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid var(--line);margin-bottom:12px;background:var(--panel)}.service{min-height:54px;padding:10px 12px;border-right:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}.service:last-child{border-right:0}.service-label{color:var(--muted);font-size:10px;font-weight:800;letter-spacing:.09em;text-transform:uppercase}.service-detail{margin-top:5px;color:#b9c2c9;font:11px ui-monospace,SFMono-Regular,Consolas,monospace}.service-state{font:800 11px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.05em}.ok{color:var(--green)}.warn{color:var(--amber)}.bad{color:var(--red)}.dim{color:var(--off)}
-.telemetry{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));border:1px solid var(--line);background:var(--panel);margin-bottom:12px}.metric{min-height:68px;padding:11px 12px;border-right:1px solid var(--line)}.metric:last-child{border-right:0}.metric-label{color:var(--muted);font-size:9px;font-weight:800;letter-spacing:.11em;text-transform:uppercase}.metric-value{margin-top:8px;font:800 18px ui-monospace,SFMono-Regular,Consolas,monospace}.metric-sub{margin-top:3px;color:var(--muted);font:9px ui-monospace,SFMono-Regular,Consolas,monospace}
-.toolbar{min-height:42px;display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid var(--line);border-bottom:0;background:#090c0f;padding:6px 10px}.toolbar-title{font-size:10px;font-weight:800;letter-spacing:.11em}.toolbar-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.filters,.sorts{display:flex;gap:5px}.control-label{align-self:center;color:var(--muted);font:9px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.08em}.filter,.sort{border:1px solid var(--line);background:#080b0d;color:var(--muted);padding:5px 8px;font:10px ui-monospace,SFMono-Regular,Consolas,monospace;cursor:pointer}.filter.active,.sort.active{color:#fff;border-color:#46535d;background:#11171c}
-.table{border:1px solid var(--line);background:var(--panel)}.table-head,.channel{display:grid;grid-template-columns:minmax(230px,2.1fr) 100px 160px 145px 120px 92px minmax(280px,2fr)}.table-head{background:#0c1014;border-bottom:1px solid var(--line);color:var(--muted);font-size:9px;font-weight:800;letter-spacing:.09em;text-transform:uppercase}.table-head>div{padding:8px 9px;border-right:1px solid var(--line-soft)}
+.host-strip{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));border:1px solid var(--line);background:#080c0f;margin-bottom:12px}.host-metric{min-height:56px;padding:9px 11px;border-right:1px solid var(--line)}.host-metric:last-child{border-right:0}.host-label{color:var(--muted);font-size:8px;font-weight:800;letter-spacing:.11em;text-transform:uppercase}.host-value{margin-top:7px;font:800 14px ui-monospace,SFMono-Regular,Consolas,monospace}.host-sub{margin-top:2px;color:var(--muted);font:8px ui-monospace,SFMono-Regular,Consolas,monospace}.telemetry{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));border:1px solid var(--line);background:var(--panel);margin-bottom:12px}.metric{min-height:68px;padding:11px 12px;border-right:1px solid var(--line)}.metric:last-child{border-right:0}.metric-label{color:var(--muted);font-size:9px;font-weight:800;letter-spacing:.11em;text-transform:uppercase}.metric-value{margin-top:8px;font:800 18px ui-monospace,SFMono-Regular,Consolas,monospace}.metric-sub{margin-top:3px;color:var(--muted);font:9px ui-monospace,SFMono-Regular,Consolas,monospace}
+.toolbar{min-height:42px;display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid var(--line);border-bottom:0;background:#090c0f;padding:6px 10px}.toolbar-title{font-size:10px;font-weight:800;letter-spacing:.11em}.toolbar-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.filters{display:flex;gap:5px}.control-label{align-self:center;color:var(--muted);font:9px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.08em}.filter{border:1px solid var(--line);background:#080b0d;color:var(--muted);padding:5px 8px;font:10px ui-monospace,SFMono-Regular,Consolas,monospace;cursor:pointer}.filter.active{color:#fff;border-color:#46535d;background:#11171c}
+.table{border:1px solid var(--line);background:var(--panel)}.table-head,.channel{display:grid;grid-template-columns:minmax(230px,2.1fr) 100px 160px 145px 120px 92px minmax(280px,2fr)}.table-head{background:#0c1014;border-bottom:1px solid var(--line);color:var(--muted);font-size:9px;font-weight:800;letter-spacing:.09em;text-transform:uppercase}.sort-head{appearance:none;border:0;border-right:1px solid var(--line-soft);background:transparent;color:var(--muted);padding:8px 9px;text-align:left;font:inherit;letter-spacing:inherit;text-transform:inherit;cursor:pointer;white-space:nowrap}.sort-head:hover,.sort-head:focus-visible{color:var(--text);background:#11171c;outline:none}.sort-head.active{color:var(--text)}.sort-arrow{display:inline-block;min-width:10px;margin-left:4px;color:var(--cyan)}
 .channel{min-height:80px;border-bottom:1px solid var(--line-soft);background:#0a0e11}.channel:last-child{border-bottom:0}.channel:hover{background:#0d1216}.cell{padding:9px;border-right:1px solid var(--line-soft);min-width:0;display:flex;align-items:center}.cell:last-child{border-right:0}
 .identity{display:grid;grid-template-columns:6px minmax(0,1fr);gap:10px;width:100%;align-items:stretch}.signal{width:6px;min-height:54px;background:var(--off)}.signal.live{background:var(--green)}.signal.connecting{background:var(--cyan)}.signal.waiting{background:var(--amber)}.signal.stopped{background:#3e4850}.channel-name{font-size:14px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.techline{margin-top:6px;color:var(--muted);font:10px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .state{font:800 10px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.05em}.state.live{color:var(--green)}.state.connecting{color:var(--cyan)}.state.waiting{color:var(--amber)}.state.error{color:var(--red)}.state.stopped,.state.idle{color:var(--off)}.spec{font:11px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}.spec small{display:block;color:var(--muted);font-size:9px}
 .outputs{display:flex;flex-direction:column;gap:5px;width:100%}.output{display:grid;grid-template-columns:minmax(0,1fr) 74px;gap:8px;padding-bottom:4px;border-bottom:1px dotted #222a31}.output:last-child{border:0;padding-bottom:0}.output-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:11px}.output-meta{margin-top:2px;color:var(--muted);font:9px ui-monospace,SFMono-Regular,Consolas,monospace}.output-state{text-align:right}
 .empty{padding:30px 12px;color:var(--muted);font:11px ui-monospace,SFMono-Regular,Consolas,monospace}.footerline{display:flex;gap:18px;flex-wrap:wrap;margin-top:9px;color:var(--muted);font:10px ui-monospace,SFMono-Regular,Consolas,monospace}.dot{display:inline-block;width:6px;height:6px;margin-right:6px;background:var(--off)}.dot.ok{background:var(--green)}.dot.warn{background:var(--amber)}.dot.bad{background:var(--red)}
 .alert-note{display:none;margin-bottom:12px;border:1px solid #614a20;background:#151106;color:#e8c16f;padding:9px 11px;font:10px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace}.alert-note.show{display:block}
-@media(max-width:1280px){.table-head,.channel{grid-template-columns:minmax(210px,2fr) 95px 150px 120px 105px minmax(240px,2fr)}.table-head>div:nth-child(6),.channel>.cell:nth-child(6){display:none}}
-@media(max-width:1200px){.telemetry{grid-template-columns:repeat(4,1fr)}.metric:nth-child(4n){border-right:0}}@media(max-width:1050px){.shell{grid-template-columns:58px minmax(0,1fr)}.brand{font-size:0}.brand:before{content:"SS";font-size:14px}.brand small,.nav-item span{display:none}.nav-item{justify-content:center}.telemetry{grid-template-columns:repeat(4,1fr)}.metric:nth-child(3){border-right:0}.service-strip{grid-template-columns:1fr}.service{border-right:0;border-bottom:1px solid var(--line)}.service:last-child{border-bottom:0}.table-head{display:none}.channel{grid-template-columns:minmax(200px,1.8fr) 90px 140px 110px minmax(220px,1.6fr)}.channel>.cell:nth-child(4),.channel>.cell:nth-child(6){display:none}}
-@media(max-width:760px){.shell{display:block}.sidebar{display:none}.topbar{padding:0 10px}.subtitle,.clock{display:none}.content{padding:10px}.telemetry{grid-template-columns:repeat(2,1fr)}.metric:nth-child(odd){border-right:1px solid var(--line)}.metric:nth-child(even){border-right:0}.channel{display:block;padding:9px}.cell{border:0;padding:5px 0}.identity{min-height:50px}.toolbar{height:auto;padding:8px;gap:10px;align-items:flex-start;flex-direction:column}}
+@media(max-width:1280px){.table-head,.channel{grid-template-columns:minmax(210px,2fr) 95px 150px 120px 105px minmax(240px,2fr)}.table-head>.sort-head:nth-child(6),.channel>.cell:nth-child(6){display:none}}
+@media(max-width:1200px){.host-strip{grid-template-columns:repeat(4,1fr)}.host-metric:nth-child(4n){border-right:0}.telemetry{grid-template-columns:repeat(4,1fr)}.metric:nth-child(4n){border-right:0}}@media(max-width:1050px){.shell{grid-template-columns:58px minmax(0,1fr)}.brand{font-size:0}.brand:before{content:"SS";font-size:14px}.brand small,.nav-item span{display:none}.nav-item{justify-content:center}.telemetry{grid-template-columns:repeat(4,1fr)}.metric:nth-child(4n){border-right:0}.service-strip{grid-template-columns:1fr}.service{border-right:0;border-bottom:1px solid var(--line)}.service:last-child{border-bottom:0}.table-head{display:none}.channel{grid-template-columns:minmax(200px,1.8fr) 90px 140px 110px minmax(220px,1.6fr)}.channel>.cell:nth-child(4),.channel>.cell:nth-child(6){display:none}}
+@media(max-width:760px){.host-strip{grid-template-columns:repeat(2,1fr)}.host-metric:nth-child(even){border-right:0}.shell{display:block}.sidebar{display:none}.topbar{padding:0 10px}.subtitle,.clock{display:none}.content{padding:10px}.telemetry{grid-template-columns:repeat(2,1fr)}.metric:nth-child(odd){border-right:1px solid var(--line)}.metric:nth-child(even){border-right:0}.channel{display:block;padding:9px}.cell{border:0;padding:5px 0}.identity{min-height:50px}.toolbar{height:auto;padding:8px;gap:10px;align-items:flex-start;flex-direction:column}}
 </style>
 </head>
 
@@ -39,7 +39,7 @@
       <div class="nav-item disabled"><i class="nav-dot"></i><span>INCIDENTS</span></div>
       <div class="nav-item disabled"><i class="nav-dot"></i><span>SETTINGS</span></div>
     </nav>
-    <div class="side-foot">RESTREAMER / READ ONLY<br><span id="sideVersion">v0.1.0-alpha.6</span></div>
+    <div class="side-foot">RESTREAMER / READ ONLY<br><span id="sideVersion">v0.1.0-alpha.7</span></div>
   </aside>
 
   <main class="main">
@@ -55,6 +55,16 @@
         <div class="service"><div><div class="service-label">Restreamer Core</div><div id="coreDetail" class="service-detail">Waiting…</div></div><div id="coreState" class="service-state dim">--</div></div>
         <div class="service"><div><div class="service-label">Restreamer Web UI</div><div id="uiDetail" class="service-detail">Waiting…</div></div><div id="uiState" class="service-state dim">--</div></div>
         <div class="service"><div><div class="service-label">Supervisor API</div><div id="apiDetail" class="service-detail">Waiting…</div></div><div id="apiState" class="service-state dim">--</div></div>
+      </section>
+
+      <section class="host-strip" aria-label="VPS host metrics">
+        <div class="host-metric"><div class="host-label">VPS CPU</div><div id="hostCpu" class="host-value">--</div><div class="host-sub">host total</div></div>
+        <div class="host-metric"><div class="host-label">VPS RAM</div><div id="hostMemory" class="host-value">--</div><div id="hostMemorySub" class="host-sub">--</div></div>
+        <div class="host-metric"><div class="host-label">Disk /</div><div id="hostDisk" class="host-value">--</div><div id="hostDiskSub" class="host-sub">--</div></div>
+        <div class="host-metric"><div class="host-label">Network IN</div><div id="hostNetIn" class="host-value">--</div><div id="hostNetIf" class="host-sub">--</div></div>
+        <div class="host-metric"><div class="host-label">Network OUT</div><div id="hostNetOut" class="host-value">--</div><div class="host-sub">host interface</div></div>
+        <div class="host-metric"><div class="host-label">Load 1 / 5 / 15</div><div id="hostLoad" class="host-value">--</div><div class="host-sub">system load</div></div>
+        <div class="host-metric"><div class="host-label">VPS uptime</div><div id="hostUptime" class="host-value">--</div><div class="host-sub">host uptime</div></div>
       </section>
 
       <section class="telemetry">
@@ -78,16 +88,19 @@
             <button class="filter" data-filter="issues">ISSUES</button>
             <button class="filter" data-filter="stopped" title="Channels dont l’ingest est arrêté.">INGEST STOPPED</button>
           </div>
-          <div class="sorts">
-            <span class="control-label">SORT</span>
-            <button class="sort active" data-sort="name">NAME</button>
-            <button class="sort" data-sort="status">STATUS</button>
-          </div>
         </div>
       </div>
 
       <section class="table">
-        <div class="table-head"><div>Channel / signal</div><div>Ingest</div><div>Video</div><div>Audio</div><div>Ingress</div><div>Uptime</div><div>Destinations / egress</div></div>
+        <div class="table-head">
+          <button class="sort-head active" data-sort-key="name">Channel / signal <span class="sort-arrow">▲</span></button>
+          <button class="sort-head" data-sort-key="status">Ingest <span class="sort-arrow"></span></button>
+          <button class="sort-head" data-sort-key="video">Video <span class="sort-arrow"></span></button>
+          <button class="sort-head" data-sort-key="audio">Audio <span class="sort-arrow"></span></button>
+          <button class="sort-head" data-sort-key="ingress">Ingress <span class="sort-arrow"></span></button>
+          <button class="sort-head" data-sort-key="uptime">Uptime <span class="sort-arrow"></span></button>
+          <button class="sort-head" data-sort-key="outputs">Destinations / egress <span class="sort-arrow"></span></button>
+        </div>
         <div id="channels"><div class="empty">Waiting for Supervisor API…</div></div>
       </section>
 
@@ -110,10 +123,11 @@ const $=id=>document.getElementById(id);
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
 const fmtTime=s=>{s=Math.max(0,Math.floor(Number(s)||0));const d=Math.floor(s/86400);s%=86400;const h=Math.floor(s/3600);s%=3600;const m=Math.floor(s/60);return[d?d+"d":null,h?h+"h":null,m+"m"].filter(Boolean).join(" ")||"<1m"};
 const fmtBitrate=k=>{k=Number(k)||0;return k>=1000?(k/1000).toFixed(2)+" Mb/s":Math.round(k)+" kb/s"};
-const fmtMem=b=>{b=Number(b)||0;return b>=1048576?(b/1048576).toFixed(0)+" MiB":Math.round(b/1024)+" KiB"};
+const fmtMem=b=>{b=Number(b)||0;return b>=1073741824?(b/1073741824).toFixed(1)+" GiB":b>=1048576?(b/1048576).toFixed(0)+" MiB":Math.round(b/1024)+" KiB"};
+const fmtRate=bps=>{bps=Number(bps)||0;const bits=bps*8;return bits>=1000000000?(bits/1000000000).toFixed(2)+" Gb/s":bits>=1000000?(bits/1000000).toFixed(1)+" Mb/s":bits>=1000?(bits/1000).toFixed(0)+" kb/s":"0 kb/s"};
 const stateLabel=s=>({live:"LIVE",connecting:"CONNECTING",waiting:"NO SOURCE",error:"ERROR",stopped:"STOPPED",idle:"IDLE"}[s]||String(s||"UNKNOWN").toUpperCase());
 const statusClass=s=>["live","connecting","waiting","error","stopped","idle"].includes(s)?s:"idle";
-let lastRefresh=0,currentFilter="all",currentSort="name",latestChannels=[],eventStream=null;
+let lastRefresh=0,currentFilter="all",currentSort="name",currentDirection="asc",latestChannels=[],eventStream=null;
 
 function renderVideo(v){
   if(!v)return '<span class="dim">NO SIGNAL</span>';
@@ -140,22 +154,54 @@ function compareName(a,b){
   const byName=String(a.name||"").localeCompare(String(b.name||""),"fr",{sensitivity:"base",numeric:true});
   return byName||String(a.id||"").localeCompare(String(b.id||""));
 }
+function compareChannels(a,b,key){
+  const statusRank={live:0,connecting:1,waiting:2,error:3,idle:4,stopped:5};
+  let result=0;
+  if(key==="name") result=compareName(a,b);
+  if(key==="status") result=(statusRank[a.status]??9)-(statusRank[b.status]??9);
+  if(key==="video"){
+    result=String(a.video?.codec||"").localeCompare(String(b.video?.codec||""),"fr",{sensitivity:"base"});
+    if(!result) result=((a.video?.width||0)*(a.video?.height||0))-((b.video?.width||0)*(b.video?.height||0));
+    if(!result) result=(a.video?.fps||0)-(b.video?.fps||0);
+  }
+  if(key==="audio"){
+    result=String(a.audio?.codec||"").localeCompare(String(b.audio?.codec||""),"fr",{sensitivity:"base"});
+    if(!result) result=(a.audio?.samplingHz||0)-(b.audio?.samplingHz||0);
+    if(!result) result=(a.audio?.channels||0)-(b.audio?.channels||0);
+  }
+  if(key==="ingress") result=(a.bitrateKbit||0)-(b.bitrateKbit||0);
+  if(key==="uptime") result=(a.runtimeSeconds||0)-(b.runtimeSeconds||0);
+  if(key==="outputs"){
+    result=(a.outputs?.length||0)-(b.outputs?.length||0);
+    if(!result){
+      const aLive=(a.outputs||[]).filter(o=>o.status==="live").length;
+      const bLive=(b.outputs||[]).filter(o=>o.status==="live").length;
+      result=aLive-bLive;
+    }
+  }
+  if(!result && key!=="name") result=compareName(a,b);
+  return currentDirection==="desc"?-result:result;
+}
 function filteredChannels(){
   let channels=latestChannels.slice();
   if(currentFilter==="live")channels=channels.filter(c=>c.status==="live");
   if(currentFilter==="issues")channels=channels.filter(channelHasIssue);
   if(currentFilter==="stopped")channels=channels.filter(c=>c.status==="stopped");
-  if(currentSort==="status"){
-    const rank={live:0,connecting:1,waiting:2,error:3,idle:4,stopped:5};
-    channels.sort((a,b)=>(rank[a.status]??9)-(rank[b.status]??9)||compareName(a,b));
-  }else{
-    channels.sort(compareName);
-  }
+  channels.sort((a,b)=>compareChannels(a,b,currentSort));
   return channels;
+}
+function updateSortHeaders(){
+  document.querySelectorAll(".sort-head").forEach(head=>{
+    const active=head.dataset.sortKey===currentSort;
+    head.classList.toggle("active",active);
+    const arrow=head.querySelector(".sort-arrow");
+    if(arrow) arrow.textContent=active?(currentDirection==="asc"?"▲":"▼"):"";
+  });
 }
 function renderChannels(){
   const channels=filteredChannels();
   $("channelCount").textContent=channels.length+" / "+latestChannels.length;
+  updateSortHeaders();
   $("channels").innerHTML=channels.length?channels.map(c=>{
     const counters=[];
     if(c.drop)counters.push("DROP "+c.drop);
@@ -185,7 +231,7 @@ function updateClock(){
 }
 function applyStatus(x){
   try{
-    const r=x.restreamer||{},core=r.core||{},ui=r.ui||{},s=r.summary||{},security=x.supervisor?.security||{},monitoring=x.supervisor?.monitoring||{};
+    const r=x.restreamer||{},core=r.core||{},ui=r.ui||{},s=r.summary||{},security=x.supervisor?.security||{},monitoring=x.supervisor?.monitoring||{},host=x.system||{};
     setService("api","ONLINE",(x.supervisor?.version||"--")+" · READ ONLY","ok");
     setService("core",core.authenticated?"ONLINE":core.online?"AUTH ERROR":"OFFLINE",[core.version?("Core "+core.version):"version --",core.latencyMs!=null?(core.latencyMs+" ms"):""].filter(Boolean).join(" · "),core.authenticated?"ok":core.online?"warn":"bad");
     const uiText=ui.online?"ONLINE":ui.reachable?("HTTP "+(ui.httpStatus||"ERR")):"OFFLINE";
@@ -193,6 +239,16 @@ function applyStatus(x){
     $("authBadge").textContent=security.authEnabled?"AUTH ON":"ACCESS OPEN";
     $("authBadge").className="badge "+(security.authEnabled?"secure":"open");
     $("accessWarning").className="alert-note "+(security.authEnabled?"":"show");
+    $("hostCpu").textContent=host.available&&host.cpu?.usagePercent!=null?Number(host.cpu.usagePercent).toFixed(1)+"%":"--";
+    $("hostMemory").textContent=host.available?Number(host.memory?.usedPercent||0).toFixed(0)+"%":"--";
+    $("hostMemorySub").textContent=host.available?fmtMem(host.memory?.usedBytes||0)+" / "+fmtMem(host.memory?.totalBytes||0):"host metrics unavailable";
+    $("hostDisk").textContent=host.available?Number(host.disk?.usedPercent||0).toFixed(0)+"%":"--";
+    $("hostDiskSub").textContent=host.available?fmtMem(host.disk?.usedBytes||0)+" / "+fmtMem(host.disk?.totalBytes||0):"--";
+    $("hostNetIn").textContent=host.available?fmtRate(host.network?.rxBytesPerSecond||0):"--";
+    $("hostNetOut").textContent=host.available?fmtRate(host.network?.txBytesPerSecond||0):"--";
+    $("hostNetIf").textContent=host.available?(host.network?.interface||"interface --"):"host metrics unavailable";
+    $("hostLoad").textContent=host.available?[host.load?.one,host.load?.five,host.load?.fifteen].map(v=>Number(v||0).toFixed(2)).join(" / "):"--";
+    $("hostUptime").textContent=host.available?fmtTime(host.uptimeSeconds||0):"--";
     $("channelsLive").textContent=(s.live??0)+" / "+(s.channels??0);
     $("channelsSub").textContent=(s.waiting??0)+" no source · "+(s.stopped??0)+" stopped";
     $("outputsLive").textContent=(s.outputsLive??0)+" / "+(s.outputs??0);
@@ -206,7 +262,7 @@ function applyStatus(x){
     $("outputErrors").textContent=s.outputErrors??0;
     $("outputErrors").style.color=(s.outputErrors??0)>0?"var(--red)":"var(--text)";
     $("supervisorVersion").textContent=x.supervisor?.version||"--";
-    $("sideVersion").textContent=x.supervisor?.version||"v0.1.0-alpha.6";
+    $("sideVersion").textContent=x.supervisor?.version||"v0.1.0-alpha.7";
     $("monitorTransport").textContent=(monitoring.transport||"poll").toUpperCase()+" · source "+(monitoring.sourcePollMs||"--")+" ms · core "+(monitoring.pollDurationMs??"--")+" ms";
     latestChannels=r.channels||[];
     renderChannels();
@@ -256,12 +312,25 @@ document.querySelectorAll(".filter").forEach(btn=>btn.addEventListener("click",(
   currentFilter=btn.dataset.filter;
   renderChannels();
 }));
-document.querySelectorAll(".sort").forEach(btn=>btn.addEventListener("click",()=>{
-  document.querySelectorAll(".sort").forEach(x=>x.classList.remove("active"));
-  btn.classList.add("active");
-  currentSort=btn.dataset.sort;
-  renderChannels();
-}));
+document.querySelectorAll(".sort-head").forEach(head=>{
+  const activate=()=>{
+    const key=head.dataset.sortKey;
+    if(key===currentSort){
+      currentDirection=currentDirection==="asc"?"desc":"asc";
+    }else{
+      currentSort=key;
+      currentDirection=["ingress","uptime","outputs"].includes(key)?"desc":"asc";
+    }
+    renderChannels();
+  };
+  head.addEventListener("click",activate);
+  head.addEventListener("keydown",(event)=>{
+    if(event.key==="Enter"||event.key===" "){
+      event.preventDefault();
+      activate();
+    }
+  });
+});
 setInterval(()=>{$("refreshAge").textContent=lastRefresh?Math.max(0,Math.floor((Date.now()-lastRefresh)/1000))+"s":"--"},1000);
 setInterval(updateClock,1000);
 updateClock();

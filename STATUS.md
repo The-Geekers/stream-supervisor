@@ -1,32 +1,44 @@
 # Project Status
 
-**Version :** 0.1.0-alpha.6  
-**Phase :** supervision Restreamer read-only avancée
+**Version :** 0.1.0-alpha.7  
+**Phase :** supervision Restreamer + VPS en lecture seule
 
 | Domaine | État |
 |---|---|
 | Dépôt GitHub / workflow GitHub → VPS | OK |
 | Application Docker | OK |
-| Interface monitoring | Alpha 6 |
+| Interface monitoring | Alpha 7 |
 | Audit Core Restreamer | Core 16.0.0 identifié |
 | Auth API Restreamer | OK |
 | État Web UI Restreamer séparé | Intégré |
-| Noms de channels via `metadata.meta.name` | Corrigé / intégré |
+| Noms de channels | Intégrés |
 | Ingest / outputs / métriques | Lecture seule intégrée |
-| Filtres opérateur | Clarifiés (état ingest) |
-| Tri channels par nom / état | Intégré |
-| Débit total entrant / sortant | Intégré |
-| CPU / RAM cumulés des processus Restreamer | Intégrés |
+| Filtres opérateur | Intégrés |
+| Tri par en-tête de colonne | Intégré |
+| Tri ascendant / descendant | Intégré |
+| Débit total entrant / sortant Restreamer | Intégré |
+| CPU / RAM cumulés processus Restreamer | Intégrés |
+| VPS CPU / RAM / load / uptime | Intégrés |
+| VPS disque racine | Intégré |
+| VPS réseau IN / OUT | Intégré |
+| Stabilité scrollbar / layout | Intégrée |
 | Tests anti-fuite secrets | Intégrés |
 | Auth Supervisor | Basic Auth optionnelle |
 | CI GitHub qualité | Intégrée |
 | Monitoring SSE quasi temps réel | Intégré, 1 s par défaut |
 | CI visuelle / capture UI | Intégrée |
-| Monitoring système VPS | Partiel, métriques actuelles = conteneur Supervisor |
 | Docker Adapter | À faire |
 | Start/stop sorties | À faire après sécurisation accès |
 | Diagnostics | À faire |
 | Watchdog | À faire |
+
+## Sécurité du System Adapter
+
+Le System Adapter ne reçoit ni socket Docker, ni mount complet de `/`, ni mode privileged.
+
+Seuls quelques fichiers `/proc` nécessaires aux métriques sont montés en lecture seule. Le disque est mesuré via un répertoire vide de probe sur le filesystem du VPS.
+
+Le conteneur conserve `no-new-privileges` et toutes les capabilities Linux sont supprimées.
 
 ## Sécurité d'accès
 
@@ -42,8 +54,8 @@ GitHub `main` est la source de vérité. Le VPS ne sert plus au développement d
 sh deployment/update.sh
 ```
 
-Le fichier `.env` contenant les secrets reste uniquement sur le VPS.
+Le script prépare automatiquement le répertoire de probe disque avant le rebuild.
 
 ## Prochaine étape
 
-Valider alpha.6 sur les flux réels, mesurer la charge réelle du polling 1 s, puis ajouter le monitoring système VPS.
+Valider alpha.7 sur le VPS réel, comparer les métriques hôte avec les outils système, puis préparer le Docker Adapter read-only.

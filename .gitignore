@@ -8,6 +8,7 @@ data/
 logs/
 diagnostics/
 exports/
+runtime/
 *.sqlite
 *.sqlite3
 *.db
