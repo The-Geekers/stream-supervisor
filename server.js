@@ -1,21 +1,24 @@
 import http from "node:http";
-import os from "node:os";
 import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { createBasicAuth } from "./lib/auth.js";
 import { buildDemoStatus } from "./lib/demo.js";
 import { RestreamerAdapter } from "./lib/restreamer.js";
+import { SystemAdapter } from "./lib/system.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const HOST = process.env.HOST || "0.0.0.0";
 const PORT = Number(process.env.PORT || 8090);
-const VERSION = "0.1.0-alpha.6";
+const VERSION = "0.1.0-alpha.7";
 const DEMO_MODE = process.env.DEMO_MODE === "true";
 const requestedMonitorInterval = Number(process.env.MONITOR_INTERVAL_MS || 1000);
-const MONITOR_INTERVAL_MS = Math.min(10000, Math.max(500, Number.isFinite(requestedMonitorInterval) ? requestedMonitorInterval : 1000));
+const MONITOR_INTERVAL_MS = Math.min(
+  10000,
+  Math.max(500, Number.isFinite(requestedMonitorInterval) ? requestedMonitorInterval : 1000)
+);
 const startedAt = Date.now();
 
 const auth = createBasicAuth({
@@ -28,6 +31,11 @@ const restreamer = new RestreamerAdapter({
   uiUrl: process.env.RESTREAMER_UI_URL,
   username: process.env.RESTREAMER_USERNAME,
   password: process.env.RESTREAMER_PASSWORD
+});
+
+const system = new SystemAdapter({
+  procRoot: process.env.SYSTEM_PROC_ROOT || "/host/proc",
+  diskPath: process.env.SYSTEM_DISK_PATH || "/host/disk"
 });
 
 const sseClients = new Set();
@@ -60,19 +68,6 @@ function unauthorized(res) {
     { status: "unauthorized" },
     { "WWW-Authenticate": 'Basic realm="Stream Supervisor", charset="UTF-8"' }
   );
-}
-
-function systemStatus() {
-  return {
-    scope: "container",
-    platform: os.platform(),
-    architecture: os.arch(),
-    cpuCount: os.cpus().length,
-    loadAverage: os.loadavg(),
-    totalMemoryBytes: os.totalmem(),
-    freeMemoryBytes: os.freemem(),
-    uptimeSeconds: Math.floor(os.uptime())
-  };
 }
 
 function supervisorInfo(pollDurationMs = null) {
@@ -111,12 +106,15 @@ async function collectStatus() {
     return status;
   }
 
-  const restreamerStatus = await restreamer.overview();
+  const [restreamerStatus, systemStatus] = await Promise.all([
+    restreamer.overview(),
+    system.snapshot()
+  ]);
   const pollDurationMs = Math.max(0, Math.round(performance.now() - started));
 
   return {
     supervisor: supervisorInfo(pollDurationMs),
-    system: systemStatus(),
+    system: systemStatus,
     restreamer: restreamerStatus,
     docker: {
       connected: false
@@ -159,7 +157,7 @@ async function monitorLoop() {
   try {
     await refreshStatus();
   } catch {
-    // Keep the monitor alive. No raw Restreamer error/payload is logged.
+    // Keep the monitor alive. No raw Restreamer/system payload is logged.
   } finally {
     monitorTimer = setTimeout(monitorLoop, MONITOR_INTERVAL_MS);
   }
