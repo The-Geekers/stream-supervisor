@@ -1,13 +1,13 @@
 # Project Status
 
-**Version :** 0.1.0-alpha.7  
+**Version :** 0.1.0-alpha.7.1  
 **Phase :** supervision Restreamer + VPS en lecture seule
 
 | Domaine | État |
 |---|---|
 | Dépôt GitHub / workflow GitHub → VPS | OK |
 | Application Docker | OK |
-| Interface monitoring | Alpha 7 |
+| Interface monitoring | Alpha 7.1 |
 | Audit Core Restreamer | Core 16.0.0 identifié |
 | Auth API Restreamer | OK |
 | État Web UI Restreamer séparé | Intégré |
@@ -20,7 +20,7 @@
 | CPU / RAM cumulés processus Restreamer | Intégrés |
 | VPS CPU / RAM / load / uptime | Intégrés |
 | VPS disque racine | Intégré |
-| VPS réseau IN / OUT | Intégré |
+| VPS réseau IN / OUT | Corrigé : interface hôte détectée + compteurs sysfs |
 | Stabilité scrollbar / layout | Intégrée |
 | Tests anti-fuite secrets | Intégrés |
 | Auth Supervisor | Basic Auth optionnelle |
@@ -58,4 +58,4 @@ Le script prépare automatiquement le répertoire de probe disque avant le rebui
 
 ## Prochaine étape
 
-Valider alpha.7 sur le VPS réel, comparer les métriques hôte avec les outils système, puis préparer le Docker Adapter read-only.
+Valider alpha.7.1 sur le VPS réel, puis préparer le Docker Adapter read-only.

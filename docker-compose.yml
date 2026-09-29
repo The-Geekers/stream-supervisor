@@ -15,6 +15,8 @@ services:
       PORT: 8090
       SYSTEM_PROC_ROOT: /host/proc
       SYSTEM_DISK_PATH: /host/disk
+      SYSTEM_NETWORK_ROOT: /host/net
+      SYSTEM_NETWORK_INTERFACE: ${SYSTEM_NETWORK_INTERFACE:-ens3}
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
@@ -22,8 +24,8 @@ services:
       - /proc/meminfo:/host/proc/meminfo:ro
       - /proc/loadavg:/host/proc/loadavg:ro
       - /proc/uptime:/host/proc/uptime:ro
-      - /proc/net/dev:/host/proc/net/dev:ro
-      - /proc/net/route:/host/proc/net/route:ro
+      - /sys/class/net/${SYSTEM_NETWORK_INTERFACE:-ens3}/statistics/rx_bytes:/host/net/rx_bytes:ro
+      - /sys/class/net/${SYSTEM_NETWORK_INTERFACE:-ens3}/statistics/tx_bytes:/host/net/tx_bytes:ro
       - ./runtime/disk-probe:/host/disk:ro
     security_opt:
       - no-new-privileges:true

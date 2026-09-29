@@ -8,10 +8,10 @@ if [ ! -f .env ]; then
   exit 1
 fi
 
-echo "[1/6] Fetching origin/main"
+echo "[1/7] Fetching origin/main"
 git fetch --prune origin main
 
-echo "[2/6] Verifying local tracked files"
+echo "[2/7] Verifying local tracked files"
 if ! git diff --quiet || ! git diff --cached --quiet; then
   echo "ERROR: tracked local changes detected."
   echo "This VPS is runtime-only. Resolve them before updating."
@@ -19,18 +19,31 @@ if ! git diff --quiet || ! git diff --cached --quiet; then
   exit 1
 fi
 
-echo "[3/6] Fast-forwarding main"
+echo "[3/7] Fast-forwarding main"
 git checkout main
 git merge --ff-only origin/main
 
-echo "[4/6] Preparing safe host metrics mount"
+echo "[4/7] Detecting host network interface"
+SYSTEM_NETWORK_INTERFACE="$(ip route show default | awk '/default/ {for (i=1;i<=NF;i++) if ($i=="dev") {print $(i+1); exit}}')"
+if [ -z "$SYSTEM_NETWORK_INTERFACE" ]; then
+  echo "ERROR: unable to detect default host network interface."
+  exit 1
+fi
+if [ ! -r "/sys/class/net/$SYSTEM_NETWORK_INTERFACE/statistics/rx_bytes" ] || [ ! -r "/sys/class/net/$SYSTEM_NETWORK_INTERFACE/statistics/tx_bytes" ]; then
+  echo "ERROR: network counters unavailable for $SYSTEM_NETWORK_INTERFACE."
+  exit 1
+fi
+export SYSTEM_NETWORK_INTERFACE
+echo "Host network interface: $SYSTEM_NETWORK_INTERFACE"
+
+echo "[5/7] Preparing safe host metrics mount"
 mkdir -p runtime/disk-probe
 chmod 755 runtime runtime/disk-probe
 
-echo "[5/6] Building and starting Supervisor"
+echo "[6/7] Building and starting Supervisor"
 docker compose up -d --build --remove-orphans
 
-echo "[6/6] Health check"
+echo "[7/7] Health check"
 attempt=0
 until curl -fsS http://127.0.0.1:8090/health >/dev/null; do
   attempt=$((attempt + 1))
@@ -43,4 +56,4 @@ until curl -fsS http://127.0.0.1:8090/health >/dev/null; do
 done
 
 echo "OK: Stream Supervisor updated and healthy."
-docker ps --filter name=stream-supervisor --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}'
+docker ps --filter name=stream-supervisor --format 'table {{.Names}}	{{.Status}}	{{.Ports}}'

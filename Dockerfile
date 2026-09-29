@@ -6,8 +6,8 @@ COPY server.js ./
 COPY lib ./lib
 COPY public ./public
 
-RUN mkdir -p /host/proc/net /host/disk \
-    && touch /host/proc/stat /host/proc/meminfo /host/proc/loadavg /host/proc/uptime /host/proc/net/dev /host/proc/net/route \
+RUN mkdir -p /host/proc /host/net /host/disk \
+    && touch /host/proc/stat /host/proc/meminfo /host/proc/loadavg /host/proc/uptime /host/net/rx_bytes /host/net/tx_bytes \
     && chown -R node:node /host
 
 ENV NODE_ENV=production
