@@ -18,23 +18,40 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Node 24
         uses: actions/setup-node@v4
         with:
           node-version: "24"
-      - name: Unit and security tests
+
+      - name: Unit, syntax and repository secret checks
         run: npm run check
+
       - name: Docker build
         run: docker build -t stream-supervisor-ci .
+
       - name: Container health smoke test
         run: |
           cp .env.example .env
-          docker run -d --name stream-supervisor-ci --env-file .env -p 8090:8090 stream-supervisor-ci
+          docker run -d --name stream-supervisor-ci --env-file .env -e DEMO_MODE=true -p 8090:8090 stream-supervisor-ci
           for i in $(seq 1 20); do
-            if curl -fsS http://127.0.0.1:8090/health; then
-              exit 0
+            if curl -fsS http://127.0.0.1:8090/health >/dev/null; then
+              break
             fi
             sleep 1
           done
-          docker logs stream-supervisor-ci
-          exit 1
+          curl -fsS http://127.0.0.1:8090/health
+          curl -fsS http://127.0.0.1:8090/api/status >/dev/null
+
+      - name: Supervisor auth smoke test
+        run: |
+          docker rm -f stream-supervisor-ci
+          docker run -d --name stream-supervisor-ci             -e DEMO_MODE=true             -e SUPERVISOR_USERNAME=ci-operator             -e SUPERVISOR_PASSWORD=ci-not-a-secret             -p 8090:8090 stream-supervisor-ci
+          for i in $(seq 1 20); do
+            if curl -fsS http://127.0.0.1:8090/health >/dev/null; then
+              break
+            fi
+            sleep 1
+          done
+          test "$(curl -sS -o /dev/null -w '%{http_code}' http://127.0.0.1:8090/api/status)" = "401"
+          curl -fsS -u ci-operator:ci-not-a-secret http://127.0.0.1:8090/api/status >/dev/null
