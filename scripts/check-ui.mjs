@@ -33,4 +33,13 @@ if (!html.includes("/api/restreamer/output-command")) {
   process.exit(1);
 }
 
+if (html.includes("item.cpuPercent")) {
+  console.error("UI CHECK FAILED: Docker CPU percent leaked into operator UI");
+  process.exit(1);
+}
+if (!html.includes("item.cpuCores")) {
+  console.error("UI CHECK FAILED: Docker CPU core-equivalent rendering is missing");
+  process.exit(1);
+}
+
 console.log("UI check: PASS");
