@@ -1,0 +1,13 @@
+services:
+  supervisor:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: stream-supervisor
+    restart: unless-stopped
+    ports:
+      - "8090:8090"
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 8090

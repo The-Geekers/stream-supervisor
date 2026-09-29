@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Stream Supervisor</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:#0b0d10;
+      color:#f5f7fa;
+    }
+    * { box-sizing:border-box; }
+    body { margin:0; background:linear-gradient(180deg,#0b0d10,#12161c); min-height:100vh; }
+    .wrap { max-width:1200px; margin:0 auto; padding:32px 20px 48px; }
+    header { display:flex; justify-content:space-between; gap:20px; align-items:flex-start; margin-bottom:28px; }
+    h1 { margin:0; font-size:clamp(28px,5vw,44px); letter-spacing:-.03em; }
+    .subtitle { color:#9ba7b4; margin-top:8px; }
+    .badge { padding:8px 12px; border:1px solid #2f3945; border-radius:999px; color:#b8c3ce; white-space:nowrap; }
+    .grid { display:grid; grid-template-columns:repeat(12,1fr); gap:16px; }
+    .card { grid-column:span 4; background:#151a21; border:1px solid #252d36; border-radius:18px; padding:20px; box-shadow:0 10px 30px rgba(0,0,0,.18); }
+    .card.wide { grid-column:span 8; }
+    .card.full { grid-column:1/-1; }
+    .label { color:#8592a0; font-size:13px; text-transform:uppercase; letter-spacing:.08em; }
+    .value { font-size:28px; margin-top:8px; font-weight:700; }
+    .ok { color:#7ee787; }
+    .muted { color:#9ba7b4; }
+    .kv { display:grid; grid-template-columns:180px 1fr; gap:10px; margin-top:14px; }
+    .kv div:nth-child(odd) { color:#8592a0; }
+    .notice { border-left:3px solid #5d6b7a; padding-left:14px; color:#aab5c0; line-height:1.55; }
+    @media(max-width:800px) {
+      .card,.card.wide { grid-column:1/-1; }
+      header { flex-direction:column; }
+      .kv { grid-template-columns:1fr; gap:4px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>Stream Supervisor</h1>
+        <div class="subtitle">v0.1.0-alpha.1 — première validation VPS</div>
+      </div>
+      <div class="badge">Safe mode · no streaming control</div>
+    </header>
+
+    <section class="grid">
+      <article class="card">
+        <div class="label">Supervisor</div>
+        <div class="value ok" id="supervisorStatus">Connexion…</div>
+      </article>
+
+      <article class="card">
+        <div class="label">Uptime Supervisor</div>
+        <div class="value" id="uptime">—</div>
+      </article>
+
+      <article class="card">
+        <div class="label">Version</div>
+        <div class="value" id="version">—</div>
+      </article>
+
+      <article class="card wide">
+        <div class="label">Système</div>
+        <div class="kv">
+          <div>Hostname</div><div id="hostname">—</div>
+          <div>Plateforme</div><div id="platform">—</div>
+          <div>Architecture</div><div id="arch">—</div>
+          <div>CPU logiques</div><div id="cpu">—</div>
+          <div>Mémoire disponible</div><div id="memory">—</div>
+          <div>Uptime OS</div><div id="osUptime">—</div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="label">Intégrations</div>
+        <div class="kv" style="grid-template-columns:1fr 1fr">
+          <div>Restreamer</div><div class="muted">Non connecté</div>
+          <div>Docker</div><div class="muted">Non connecté</div>
+        </div>
+      </article>
+
+      <article class="card full">
+        <div class="notice">
+          Cette alpha valide uniquement l'application, le conteneur et l'accès navigateur.
+          Elle n'a aucun accès à Restreamer, au socket Docker ou aux flux média.
+        </div>
+      </article>
+    </section>
+  </div>
+
+<script>
+const fmtBytes = n => {
+  const units = ["B","KiB","MiB","GiB","TiB"];
+  let i=0,v=n;
+  while (v>=1024 && i<units.length-1){v/=1024;i++;}
+  return `${v.toFixed(i>1?1:0)} ${units[i]}`;
+};
+const fmtTime = s => {
+  s=Math.max(0,Math.floor(s));
+  const d=Math.floor(s/86400); s%=86400;
+  const h=Math.floor(s/3600); s%=3600;
+  const m=Math.floor(s/60);
+  return [d?`${d}j`:null,`${h}h`,`${m}m`].filter(Boolean).join(" ");
+};
+
+async function refresh(){
+  try {
+    const r=await fetch("/api/status",{cache:"no-store"});
+    const x=await r.json();
+    supervisorStatus.textContent="Online";
+    version.textContent=x.supervisor.version;
+    uptime.textContent=fmtTime(x.supervisor.uptimeSeconds);
+    hostname.textContent=x.system.hostname;
+    platform.textContent=x.system.platform;
+    arch.textContent=x.system.architecture;
+    cpu.textContent=x.system.cpuCount;
+    memory.textContent=`${fmtBytes(x.system.freeMemoryBytes)} / ${fmtBytes(x.system.totalMemoryBytes)}`;
+    osUptime.textContent=fmtTime(x.system.osUptimeSeconds);
+  } catch(e) {
+    supervisorStatus.textContent="Offline";
+  }
+}
+refresh();
+setInterval(refresh,5000);
+</script>
+</body>
+</html>
