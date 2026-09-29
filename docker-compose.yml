@@ -20,8 +20,6 @@ services:
       DOCKER_STATUS_FILE: /runtime/docker-status/status.json
       EVENTS_FILE: /data/events.jsonl
       INCIDENT_STATE_FILE: /data/incidents-state.json
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     volumes:
       - /proc/stat:/host/proc/stat:ro
       - /proc/meminfo:/host/proc/meminfo:ro
