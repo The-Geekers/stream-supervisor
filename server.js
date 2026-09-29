@@ -5,6 +5,7 @@ import { dirname, join } from "node:path";
 import { createBasicAuth } from "./lib/auth.js";
 import { buildDemoStatus } from "./lib/demo.js";
 import { DockerAdapter } from "./lib/docker.js";
+import { buildDiagnostics } from "./lib/diagnostics.js";
 import { EventJournal, IncidentTracker } from "./lib/incidents.js";
 import { RestreamerAdapter } from "./lib/restreamer.js";
 import { SystemAdapter } from "./lib/system.js";
@@ -289,6 +290,28 @@ const server = http.createServer(async (req, res) => {
         persistent: journal.persistent
       }
     });
+  }
+
+  if (req.method === "GET" && url.pathname === "/api/diagnostics") {
+    let status = latestStatus;
+    if (!status) {
+      try { status = await refreshStatus(); } catch {}
+    }
+    if (!status) {
+      return sendJson(res, 503, { status:"unavailable", code:"diagnostics_status_unavailable" });
+    }
+
+    const report = buildDiagnostics(status, {
+      events: journal.list(50),
+      journalPersistent: journal.persistent
+    });
+    const download = url.searchParams.get("download") === "1";
+    return sendJson(
+      res,
+      200,
+      report,
+      download ? { "Content-Disposition": 'attachment; filename="stream-supervisor-diagnostics.json"' } : {}
+    );
   }
 
   if (req.method === "POST" && url.pathname === "/api/restreamer/output-command") {
