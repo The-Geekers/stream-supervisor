@@ -1,9 +1,15 @@
 {
   "name": "stream-supervisor",
-  "version": "0.1.0-alpha.1",
+  "version": "0.1.0-alpha.3",
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "test": "node --test",
+    "security:repo": "node scripts/check-repo-secrets.mjs",
+    "check": "npm test && npm run security:repo"
+  },
+  "engines": {
+    "node": ">=24"
   }
 }
