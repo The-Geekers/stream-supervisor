@@ -25,7 +25,9 @@ jobs:
           node-version: "24"
 
       - name: Unit, syntax and repository secret checks
-        run: npm run check
+        run: |
+          npm run check
+          sh -n deployment/update.sh
 
       - name: Docker build
         run: docker build -t stream-supervisor-ci .
