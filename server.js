@@ -51,6 +51,7 @@ const sseClients = new Set();
 let latestStatus = null;
 let refreshPromise = null;
 let monitorTimer = null;
+const outputActionsInFlight = new Set();
 
 function securityHeaders(extra = {}) {
   return {
@@ -268,6 +269,10 @@ const server = http.createServer(async (req, res) => {
   if (req.method === "POST" && url.pathname === "/api/restreamer/output-command") {
     if (!auth.enabled) return forbidden(res, "actions_locked");
     if (!session.actionsEnabled) return forbidden(res, "insufficient_role");
+    if (req.headers["x-supervisor-action"] !== "1") return forbidden(res, "action_header_required");
+    if (!String(req.headers["content-type"] || "").toLowerCase().startsWith("application/json")) {
+      return sendJson(res, 415, { status:"unsupported_media_type" });
+    }
 
     let body;
     try {
@@ -293,6 +298,11 @@ const server = http.createServer(async (req, res) => {
       return sendJson(res, 404, { status:"not_found", code:"unknown_output" });
     }
 
+    if (outputActionsInFlight.has(outputId)) {
+      return sendJson(res, 409, { status:"conflict", code:"output_action_in_progress" });
+    }
+
+    outputActionsInFlight.add(outputId);
     try {
       await restreamer.commandOutput(outputId, command);
       setTimeout(() => refreshStatus().catch(() => {}), 250);
@@ -312,6 +322,8 @@ const server = http.createServer(async (req, res) => {
         status:"error",
         code:"restreamer_command_failed"
       });
+    } finally {
+      outputActionsInFlight.delete(outputId);
     }
   }
 
