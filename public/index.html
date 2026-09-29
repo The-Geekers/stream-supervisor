@@ -1,130 +1,49 @@
 <!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Stream Supervisor</title>
-  <style>
-    :root {
-      color-scheme: dark;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background:#0b0d10;
-      color:#f5f7fa;
-    }
-    * { box-sizing:border-box; }
-    body { margin:0; background:linear-gradient(180deg,#0b0d10,#12161c); min-height:100vh; }
-    .wrap { max-width:1200px; margin:0 auto; padding:32px 20px 48px; }
-    header { display:flex; justify-content:space-between; gap:20px; align-items:flex-start; margin-bottom:28px; }
-    h1 { margin:0; font-size:clamp(28px,5vw,44px); letter-spacing:-.03em; }
-    .subtitle { color:#9ba7b4; margin-top:8px; }
-    .badge { padding:8px 12px; border:1px solid #2f3945; border-radius:999px; color:#b8c3ce; white-space:nowrap; }
-    .grid { display:grid; grid-template-columns:repeat(12,1fr); gap:16px; }
-    .card { grid-column:span 4; background:#151a21; border:1px solid #252d36; border-radius:18px; padding:20px; box-shadow:0 10px 30px rgba(0,0,0,.18); }
-    .card.wide { grid-column:span 8; }
-    .card.full { grid-column:1/-1; }
-    .label { color:#8592a0; font-size:13px; text-transform:uppercase; letter-spacing:.08em; }
-    .value { font-size:28px; margin-top:8px; font-weight:700; }
-    .ok { color:#7ee787; }
-    .muted { color:#9ba7b4; }
-    .kv { display:grid; grid-template-columns:180px 1fr; gap:10px; margin-top:14px; }
-    .kv div:nth-child(odd) { color:#8592a0; }
-    .notice { border-left:3px solid #5d6b7a; padding-left:14px; color:#aab5c0; line-height:1.55; }
-    @media(max-width:800px) {
-      .card,.card.wide { grid-column:1/-1; }
-      header { flex-direction:column; }
-      .kv { grid-template-columns:1fr; gap:4px; }
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Stream Supervisor</title>
+<style>
+:root{color-scheme:dark;--bg:#090b0d;--panel:#0d1013;--line:#273039;--line2:#1b2229;--text:#e7edf2;--muted:#87939d;--cyan:#40c8ff;--green:#54e07a;--amber:#f2b84b;--red:#ff6464;--off:#66717b;font-family:Arial,Helvetica,sans-serif}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--text);min-height:100%}body{font-size:14px}
+.shell{min-height:100vh;display:grid;grid-template-columns:210px minmax(0,1fr)}.sidebar{border-right:1px solid var(--line);background:#07090b;padding:18px 14px;display:flex;flex-direction:column}
+.brand{font-weight:800;letter-spacing:.09em;font-size:15px;padding:7px 8px 18px;border-bottom:1px solid var(--line)}.brand small{display:block;color:var(--muted);font:11px/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.04em;margin-top:5px}
+.nav{padding-top:14px}.nav-item{display:flex;align-items:center;gap:10px;padding:10px 8px;border-left:2px solid transparent;color:#96a2ac;font-size:12px;font-weight:700;letter-spacing:.08em}.nav-item.active{color:var(--text);border-left-color:var(--cyan);background:#0d1115}.nav-item.disabled{opacity:.38}.nav-dot{width:6px;height:6px;background:currentColor}
+.side-foot{margin-top:auto;border-top:1px solid var(--line);padding:14px 8px 0;color:var(--muted);font:11px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace}
+.main{min-width:0}.topbar{height:62px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 22px;background:#0b0e11}.title{font-size:17px;font-weight:800;letter-spacing:.06em}.mode{font:11px ui-monospace,SFMono-Regular,Consolas,monospace;color:var(--amber);border:1px solid #634c20;padding:7px 9px;background:#181409}
+.content{padding:18px 22px 34px}.telemetry{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));border:1px solid var(--line);background:var(--panel);margin-bottom:16px}.metric{min-height:70px;padding:12px 14px;border-right:1px solid var(--line)}.metric:last-child{border-right:0}.metric-label{color:var(--muted);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}.metric-value{margin-top:8px;font:700 18px ui-monospace,SFMono-Regular,Consolas,monospace}.metric-value.small{font-size:14px;margin-top:10px}
+.section{border:1px solid var(--line);background:var(--panel)}.section-head{height:42px;padding:0 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);background:#0a0d10}.section-title{font-size:11px;font-weight:800;letter-spacing:.11em;text-transform:uppercase}.refresh{color:var(--muted);font:11px ui-monospace,SFMono-Regular,Consolas,monospace}
+.channel-head,.channel-row{display:grid;grid-template-columns:minmax(240px,2.4fr) 105px 210px 115px 100px minmax(220px,1.6fr);align-items:stretch}.channel-head{color:var(--muted);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid var(--line);background:#0d1115}.channel-head>div{padding:9px 10px;border-right:1px solid var(--line2)}
+.channel-row{min-height:76px;border-bottom:1px solid var(--line2);background:#0c0f12}.channel-row:last-child{border-bottom:0}.channel-row:hover{background:#10151a}.cell{padding:10px;border-right:1px solid var(--line2);min-width:0;display:flex;align-items:center}
+.identity{display:grid;grid-template-columns:7px minmax(0,1fr);gap:10px}.signal{width:7px;height:100%;min-height:50px;background:var(--off)}.signal.live{background:var(--green)}.signal.connecting{background:var(--cyan)}.signal.waiting{background:var(--amber)}.signal.stopped{background:#424b54}
+.channel-name{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.channel-tech{margin-top:5px;color:var(--muted);font:11px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.state{font:700 11px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.06em}.state.live{color:var(--green)}.state.connecting{color:var(--cyan)}.state.waiting{color:var(--amber)}.state.error{color:var(--red)}.state.stopped,.state.idle{color:var(--off)}
+.mono{font:12px ui-monospace,SFMono-Regular,Consolas,monospace}.outputs{display:flex;flex-direction:column;gap:5px;width:100%}.output{display:grid;grid-template-columns:minmax(0,1fr) 72px;gap:8px;align-items:center;border-bottom:1px dotted #242c33;padding-bottom:4px}.output:last-child{border:0;padding-bottom:0}.output-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.output-state{text-align:right}
+.empty{padding:28px 14px;color:var(--muted);font:12px ui-monospace,SFMono-Regular,Consolas,monospace}.statusline{margin-top:10px;display:flex;gap:18px;flex-wrap:wrap;color:var(--muted);font:11px ui-monospace,SFMono-Regular,Consolas,monospace}.dot{display:inline-block;width:7px;height:7px;margin-right:6px;background:var(--off)}.dot.ok{background:var(--green)}.dot.bad{background:var(--red)}.dot.warn{background:var(--amber)}
+@media(max-width:1080px){.shell{grid-template-columns:64px minmax(0,1fr)}.brand{font-size:0}.brand:before{content:"SS";font-size:15px}.brand small,.nav-item span{display:none}.nav-item{justify-content:center}.telemetry{grid-template-columns:repeat(3,1fr)}.metric:nth-child(3){border-right:0}.channel-head{display:none}.channel-row{grid-template-columns:minmax(200px,1.7fr) 90px 160px 90px minmax(170px,1fr)}.channel-row>.cell:nth-child(5){display:none}}
+@media(max-width:760px){.shell{display:block}.sidebar{display:none}.topbar{padding:0 12px}.content{padding:12px}.telemetry{grid-template-columns:repeat(2,1fr)}.metric{border-bottom:1px solid var(--line)}.metric:nth-child(even){border-right:0}.channel-row{display:block;padding:10px}.cell{border:0;padding:5px 0}.identity{min-height:50px}.signal{min-height:44px}}
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <div>
-        <h1>Stream Supervisor</h1>
-        <div class="subtitle">v0.1.0-alpha.1 — première validation VPS</div>
-      </div>
-      <div class="badge">Safe mode · no streaming control</div>
-    </header>
-
-    <section class="grid">
-      <article class="card">
-        <div class="label">Supervisor</div>
-        <div class="value ok" id="supervisorStatus">Connexion…</div>
-      </article>
-
-      <article class="card">
-        <div class="label">Uptime Supervisor</div>
-        <div class="value" id="uptime">—</div>
-      </article>
-
-      <article class="card">
-        <div class="label">Version</div>
-        <div class="value" id="version">—</div>
-      </article>
-
-      <article class="card wide">
-        <div class="label">Système</div>
-        <div class="kv">
-          <div>Hostname</div><div id="hostname">—</div>
-          <div>Plateforme</div><div id="platform">—</div>
-          <div>Architecture</div><div id="arch">—</div>
-          <div>CPU logiques</div><div id="cpu">—</div>
-          <div>Mémoire disponible</div><div id="memory">—</div>
-          <div>Uptime OS</div><div id="osUptime">—</div>
-        </div>
-      </article>
-
-      <article class="card">
-        <div class="label">Intégrations</div>
-        <div class="kv" style="grid-template-columns:1fr 1fr">
-          <div>Restreamer</div><div class="muted">Non connecté</div>
-          <div>Docker</div><div class="muted">Non connecté</div>
-        </div>
-      </article>
-
-      <article class="card full">
-        <div class="notice">
-          Cette alpha valide uniquement l'application, le conteneur et l'accès navigateur.
-          Elle n'a aucun accès à Restreamer, au socket Docker ou aux flux média.
-        </div>
-      </article>
-    </section>
-  </div>
-
+<div class="shell">
+<aside class="sidebar"><div class="brand">STREAM SUPERVISOR<small>CONTROL ROOM / READ ONLY</small></div><nav class="nav"><div class="nav-item active"><i class="nav-dot"></i><span>CHANNELS</span></div><div class="nav-item disabled"><i class="nav-dot"></i><span>SYSTEM</span></div><div class="nav-item disabled"><i class="nav-dot"></i><span>INCIDENTS</span></div><div class="nav-item disabled"><i class="nav-dot"></i><span>SETTINGS</span></div></nav><div class="side-foot">v0.1.0-alpha.3<br>RESTREAMER ADAPTER</div></aside>
+<main class="main"><header class="topbar"><div class="title">CHANNEL MONITOR</div><div class="mode">READ ONLY · NO STREAM CONTROL</div></header><div class="content">
+<section class="telemetry"><div class="metric"><div class="metric-label">Core</div><div id="coreState" class="metric-value">--</div></div><div class="metric"><div class="metric-label">Core version</div><div id="coreVersion" class="metric-value small">--</div></div><div class="metric"><div class="metric-label">Channels live</div><div id="channelsLive" class="metric-value">--</div></div><div class="metric"><div class="metric-label">Outputs live</div><div id="outputsLive" class="metric-value">--</div></div><div class="metric"><div class="metric-label">Output errors</div><div id="outputErrors" class="metric-value">--</div></div><div class="metric"><div class="metric-label">Refresh</div><div id="refreshAge" class="metric-value small">--</div></div></section>
+<section class="section"><div class="section-head"><div class="section-title">Restreamer channels</div><div id="channelCount" class="refresh">--</div></div><div class="channel-head"><div>Channel / signal</div><div>State</div><div>Format</div><div>Bitrate</div><div>Uptime</div><div>Destinations</div></div><div id="channels"><div class="empty">Waiting for Supervisor API…</div></div></section>
+<div class="statusline"><span><i id="apiDot" class="dot"></i>Supervisor API</span><span><i id="restreamerDot" class="dot"></i>Restreamer Core</span><span>Secrets: backend allow-list only</span><span id="supervisorVersion">--</span></div>
+</div></main></div>
 <script>
-const fmtBytes = n => {
-  const units = ["B","KiB","MiB","GiB","TiB"];
-  let i=0,v=n;
-  while (v>=1024 && i<units.length-1){v/=1024;i++;}
-  return `${v.toFixed(i>1?1:0)} ${units[i]}`;
-};
-const fmtTime = s => {
-  s=Math.max(0,Math.floor(s));
-  const d=Math.floor(s/86400); s%=86400;
-  const h=Math.floor(s/3600); s%=3600;
-  const m=Math.floor(s/60);
-  return [d?`${d}j`:null,`${h}h`,`${m}m`].filter(Boolean).join(" ");
-};
-
-async function refresh(){
-  try {
-    const r=await fetch("/api/status",{cache:"no-store"});
-    const x=await r.json();
-    supervisorStatus.textContent="Online";
-    version.textContent=x.supervisor.version;
-    uptime.textContent=fmtTime(x.supervisor.uptimeSeconds);
-    hostname.textContent=x.system.hostname;
-    platform.textContent=x.system.platform;
-    arch.textContent=x.system.architecture;
-    cpu.textContent=x.system.cpuCount;
-    memory.textContent=`${fmtBytes(x.system.freeMemoryBytes)} / ${fmtBytes(x.system.totalMemoryBytes)}`;
-    osUptime.textContent=fmtTime(x.system.osUptimeSeconds);
-  } catch(e) {
-    supervisorStatus.textContent="Offline";
-  }
-}
-refresh();
-setInterval(refresh,5000);
+const $=id=>document.getElementById(id);
+const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
+const fmtTime=s=>{s=Math.max(0,Math.floor(Number(s)||0));const d=Math.floor(s/86400);s%=86400;const h=Math.floor(s/3600);s%=3600;const m=Math.floor(s/60);return[d?d+"d":null,h?h+"h":null,m+"m"].filter(Boolean).join(" ")||"<1m"};
+const fmtBitrate=k=>{k=Number(k)||0;return k>=1000?(k/1000).toFixed(2)+" Mb/s":Math.round(k)+" kb/s"};
+const fmtFormat=c=>{const v=c.video,a=c.audio,parts=[];if(v){parts.push([v.codec?.toUpperCase(),v.width&&v.height?`${v.width}×${v.height}`:"",v.fps?`${v.fps.toFixed(1)} fps`:""].filter(Boolean).join(" "))}if(a){parts.push([a.codec?.toUpperCase(),a.samplingHz?`${Math.round(a.samplingHz/1000)}kHz`:"",a.channels===2?"stereo":a.channels===1?"mono":""].filter(Boolean).join(" "))}return parts.length?parts.join(" · "):"No signal details"};
+const stateLabel=s=>({live:"LIVE",connecting:"CONNECTING",waiting:"NO SOURCE",error:"ERROR",stopped:"STOPPED",idle:"IDLE"}[s]||String(s||"UNKNOWN").toUpperCase());
+let lastRefresh=0;
+function renderChannel(c){const outputs=c.outputs||[];const outHtml=outputs.length?outputs.map(o=>`<div class="output"><div class="output-name">${esc(o.name||o.provider||"Output")}</div><div class="output-state state ${esc(o.status)}">${esc(stateLabel(o.status))}</div></div>`).join(""):`<span class="mono" style="color:var(--muted)">No destinations</span>`;return`<div class="channel-row"><div class="cell identity"><i class="signal ${esc(c.status)}"></i><div><div class="channel-name">${esc(c.name)}</div><div class="channel-tech">${esc(fmtFormat(c))}</div></div></div><div class="cell"><span class="state ${esc(c.status)}">${esc(stateLabel(c.status))}</span></div><div class="cell mono">${esc(fmtFormat(c))}</div><div class="cell mono">${esc(fmtBitrate(c.bitrateKbit))}</div><div class="cell mono">${esc(fmtTime(c.runtimeSeconds))}</div><div class="cell"><div class="outputs">${outHtml}</div></div></div>`}
+async function refresh(){try{const response=await fetch("/api/status",{cache:"no-store"});if(!response.ok)throw new Error("api");const x=await response.json(),r=x.restreamer||{},s=r.summary||{},channels=r.channels||[];$("apiDot").className="dot ok";$("restreamerDot").className="dot "+(r.authenticated?"ok":r.online?"warn":"bad");$("coreState").textContent=r.authenticated?"ONLINE":r.online?"AUTH":"OFFLINE";$("coreState").style.color=r.authenticated?"var(--green)":r.online?"var(--amber)":"var(--red)";$("coreVersion").textContent=r.version||"--";$("channelsLive").textContent=`${s.live??0} / ${s.channels??0}`;$("outputsLive").textContent=`${s.outputsLive??0} / ${s.outputs??0}`;$("outputErrors").textContent=s.outputErrors??0;$("outputErrors").style.color=(s.outputErrors??0)>0?"var(--red)":"var(--text)";$("channelCount").textContent=`${channels.length} CHANNEL${channels.length===1?"":"S"}`;$("supervisorVersion").textContent=x.supervisor?.version||"--";$("channels").innerHTML=channels.length?channels.map(renderChannel).join(""):`<div class="empty">No Restreamer channels discovered.</div>`;lastRefresh=Date.now()}catch{$("apiDot").className="dot bad";$("coreState").textContent="NO DATA";$("coreState").style.color="var(--red)"}}
+setInterval(()=>{$("refreshAge").textContent=lastRefresh?Math.max(0,Math.floor((Date.now()-lastRefresh)/1000))+"s ago":"--"},1000);refresh();setInterval(refresh,5000);
 </script>
 </body>
 </html>
