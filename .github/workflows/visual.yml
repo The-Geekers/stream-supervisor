@@ -43,6 +43,7 @@ jobs:
           mkdir -p artifacts
           npx --yes playwright@1.55.0 screenshot             --browser=chromium             --viewport-size="1600,1000"             --wait-for-timeout=2000             --full-page             http://127.0.0.1:8090             artifacts/channel-monitor.png
           npx --yes playwright@1.55.0 screenshot             --browser=chromium             --viewport-size="1600,1000"             --wait-for-timeout=2000             --full-page             'http://127.0.0.1:8090/?view=system'             artifacts/system-monitor.png
+          npx --yes playwright@1.55.0 screenshot             --browser=chromium             --viewport-size="1600,1000"             --wait-for-timeout=7000             --full-page             'http://127.0.0.1:8090/?view=incidents'             artifacts/incidents-monitor.png
 
       - name: Upload visual artifact
         uses: actions/upload-artifact@v4
