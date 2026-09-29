@@ -82,16 +82,26 @@ jobs:
             fi
             sleep 1
           done
-          curl -fsS http://127.0.0.1:8090/api/status | node -e '
-            let raw="";
-            process.stdin.on("data", c => raw += c);
-            process.stdin.on("end", () => {
-              const data=JSON.parse(raw);
-              if (!data.system?.available) process.exit(1);
-              if (data.system?.scope !== "host") process.exit(1);
-              if (!(data.system?.memory?.totalBytes > 0)) process.exit(1);
-              if (!(data.system?.disk?.totalBytes > 0)) process.exit(1);
-              if (!data.system?.network?.interface) process.exit(1);
-            });
-          '
-          docker compose down
+          ok=0
+          for i in $(seq 1 15); do
+            if curl -fsS http://127.0.0.1:8090/api/status | node -e '
+              let raw="";
+              process.stdin.on("data", c => raw += c);
+              process.stdin.on("end", () => {
+                const data=JSON.parse(raw);
+                if (!data.system?.available) process.exit(1);
+                if (data.system?.scope !== "host") process.exit(1);
+                if (!(data.system?.memory?.totalBytes > 0)) process.exit(1);
+                if (!(data.system?.disk?.totalBytes > 0)) process.exit(1);
+                if (!data.system?.network?.interface) process.exit(1);
+                if (!data.docker?.connected) process.exit(1);
+                if (!data.docker?.containers?.some(c => c.name === "stream-supervisor")) process.exit(1);
+              });
+            '; then
+              ok=1
+              break
+            fi
+            sleep 1
+          done
+          test "$ok" = "1"
+          docker compose down -v

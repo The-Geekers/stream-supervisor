@@ -15,41 +15,44 @@ Le premier moteur ciblé est **Restreamer**. L'architecture reste volontairement
 
 ## État actuel
 
-`0.1.0-alpha.7.1`
+`0.1.0-alpha.8`
 
-- application Docker fonctionnelle ;
 - adapter Restreamer Core 16 en lecture seule ;
-- Core/API et Web UI Restreamer supervisés séparément ;
-- channels et destinations regroupés à partir des processus Restreamer ;
-- métriques opérationnelles : état, runtime, FPS, bitrate, codecs, vidéo, audio, drop/dup, CPU/mémoire process ;
-- filtres All / Ingest Live / Issues / Ingest Stopped ;
-- tri directement depuis chaque en-tête du tableau : channel, ingest, vidéo, audio, ingress, uptime et destinations ;
-- tri ascendant / descendant avec ordre déterministe ;
-- total débit entrant et sortant Restreamer ;
-- total CPU et RAM des processus ingest/egress supervisés ;
-- monitoring VPS en lecture seule : CPU, RAM, disque racine, réseau de l'interface par défaut, load et uptime ;
-- authentification HTTP Basic optionnelle pour Supervisor ;
-- CI qualité et tests anti-fuite de secrets ;
-- monitoring quasi temps réel par SSE avec un seul polling Core partagé côté backend ;
-- scrollbar réservée en permanence pour éviter les décalages de mise en page ;
-- CI visuelle avec capture automatique de l'interface sur données fictives sûres.
+- channels, destinations et métriques de streaming en pseudo temps réel SSE ;
+- monitoring VPS : CPU, RAM, disque, réseau, load et uptime ;
+- tri des channels depuis les en-têtes du tableau ;
+- page **SYSTEM** dédiée ;
+- Docker Adapter read-only pour les services explicitement surveillés ;
+- état, image, health, uptime, CPU et RAM des conteneurs surveillés ;
+- collecte Docker isolée dans un helper sans réseau ;
+- le conteneur Web Supervisor ne reçoit jamais le socket Docker ;
+- tests anti-fuite de secrets, smoke tests Docker et captures visuelles CI ;
+- authentification HTTP Basic optionnelle.
 
-Aucune commande start/stop n'est encore exposée. L'alpha 7 reste strictement read-only.
+Aucune commande start/stop n'est encore exposée. L'alpha 8 reste strictement read-only.
+
+## Docker Adapter
+
+Le socket Docker est volontairement **absent du conteneur Supervisor**.
+
+Un petit conteneur `stream-supervisor-docker-observer` :
+
+- n'expose aucun port ;
+- fonctionne avec `network_mode: none` ;
+- lit le socket Docker ;
+- extrait uniquement une allow-list de données : nom, image, état, health, uptime, CPU et RAM ;
+- écrit un snapshot JSON sanitizé dans un volume Docker partagé ;
+- n'expose ni environnement, labels, commande, logs, fichiers ni configuration complète des conteneurs.
+
+Supervisor monte uniquement ce volume en lecture seule.
+
+Par défaut, seuls `restreamer` et `stream-supervisor` sont observés. La liste peut être changée localement avec `DOCKER_MONITOR_CONTAINERS`.
 
 ## Monitoring système VPS
 
-Supervisor ne monte pas tout le système de fichiers du VPS et n'utilise pas le socket Docker pour obtenir les métriques système.
+Supervisor ne monte pas tout le système de fichiers du VPS.
 
-Le conteneur reçoit uniquement en lecture seule des fichiers précis et non secrets de `/proc` :
-
-- `/proc/stat`
-- `/proc/meminfo`
-- `/proc/loadavg`
-- `/proc/uptime`
-
-Pour le réseau, l'interface de route par défaut est détectée par le script de déploiement et seuls ses compteurs sysfs `rx_bytes` / `tx_bytes` sont montés en lecture seule. Cela évite les compteurs du namespace réseau Docker.
-
-Pour l'espace disque, un répertoire vide `runtime/disk-probe` situé sur le filesystem du projet est bind-mounté et mesuré avec `statfs`. Aucun accès général au filesystem hôte n'est nécessaire.
+Le conteneur reçoit uniquement les fichiers nécessaires de `/proc`, les compteurs sysfs RX/TX de l'interface par défaut et un répertoire vide de probe disque.
 
 ## Workflow
 

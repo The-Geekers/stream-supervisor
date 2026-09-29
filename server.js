@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { createBasicAuth } from "./lib/auth.js";
 import { buildDemoStatus } from "./lib/demo.js";
+import { DockerAdapter } from "./lib/docker.js";
 import { RestreamerAdapter } from "./lib/restreamer.js";
 import { SystemAdapter } from "./lib/system.js";
 
@@ -12,7 +13,7 @@ const __dirname = dirname(__filename);
 
 const HOST = process.env.HOST || "0.0.0.0";
 const PORT = Number(process.env.PORT || 8090);
-const VERSION = "0.1.0-alpha.7.1";
+const VERSION = "0.1.0-alpha.8";
 const DEMO_MODE = process.env.DEMO_MODE === "true";
 const requestedMonitorInterval = Number(process.env.MONITOR_INTERVAL_MS || 1000);
 const MONITOR_INTERVAL_MS = Math.min(
@@ -38,6 +39,10 @@ const system = new SystemAdapter({
   diskPath: process.env.SYSTEM_DISK_PATH || "/host/disk",
   networkRoot: process.env.SYSTEM_NETWORK_ROOT || "/host/net",
   networkInterface: process.env.SYSTEM_NETWORK_INTERFACE || ""
+});
+
+const docker = new DockerAdapter({
+  snapshotPath: process.env.DOCKER_STATUS_FILE || "/runtime/docker-status/status.json"
 });
 
 const sseClients = new Set();
@@ -108,9 +113,10 @@ async function collectStatus() {
     return status;
   }
 
-  const [restreamerStatus, systemStatus] = await Promise.all([
+  const [restreamerStatus, systemStatus, dockerStatus] = await Promise.all([
     restreamer.overview(),
-    system.snapshot()
+    system.snapshot(),
+    docker.snapshot()
   ]);
   const pollDurationMs = Math.max(0, Math.round(performance.now() - started));
 
@@ -118,9 +124,7 @@ async function collectStatus() {
     supervisor: supervisorInfo(pollDurationMs),
     system: systemStatus,
     restreamer: restreamerStatus,
-    docker: {
-      connected: false
-    },
+    docker: dockerStatus,
     generatedAt: new Date().toISOString()
   };
 }
