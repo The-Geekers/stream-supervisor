@@ -62,3 +62,28 @@ jobs:
           done
           test "$(curl -sS -o /dev/null -w '%{http_code}' http://127.0.0.1:8090/api/status)" = "401"
           curl -fsS -u ci-operator:ci-not-a-secret http://127.0.0.1:8090/api/status >/dev/null
+
+      - name: Host System Adapter smoke test
+        run: |
+          docker rm -f stream-supervisor-ci
+          sed -i 's#^RESTREAMER_BASE_URL=.*#RESTREAMER_BASE_URL=http://127.0.0.1:1#' .env
+          sed -i 's#^RESTREAMER_UI_URL=.*#RESTREAMER_UI_URL=http://127.0.0.1:1#' .env
+          docker compose up -d --build --remove-orphans
+          for i in $(seq 1 20); do
+            if curl -fsS http://127.0.0.1:8090/health >/dev/null; then
+              break
+            fi
+            sleep 1
+          done
+          curl -fsS http://127.0.0.1:8090/api/status | node -e '
+            let raw="";
+            process.stdin.on("data", c => raw += c);
+            process.stdin.on("end", () => {
+              const data=JSON.parse(raw);
+              if (!data.system?.available) process.exit(1);
+              if (data.system?.scope !== "host") process.exit(1);
+              if (!(data.system?.memory?.totalBytes > 0)) process.exit(1);
+              if (!(data.system?.disk?.totalBytes > 0)) process.exit(1);
+            });
+          '
+          docker compose down
