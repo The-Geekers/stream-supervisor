@@ -39,7 +39,7 @@
       <div class="nav-item disabled"><i class="nav-dot"></i><span>INCIDENTS</span></div>
       <div class="nav-item disabled"><i class="nav-dot"></i><span>SETTINGS</span></div>
     </nav>
-    <div class="side-foot">RESTREAMER / READ ONLY<br><span id="sideVersion">v0.1.0-alpha.5</span></div>
+    <div class="side-foot">RESTREAMER / READ ONLY<br><span id="sideVersion">v0.1.0-alpha.6</span></div>
   </aside>
 
   <main class="main">
@@ -72,11 +72,11 @@
         <div class="toolbar-title">RESTREAMER CHANNELS <span id="channelCount" style="color:var(--muted);margin-left:8px">--</span></div>
         <div class="toolbar-actions">
           <div class="filters">
-            <span class="control-label">VIEW</span>
+            <span class="control-label">VIEW (INGEST)</span>
             <button class="filter active" data-filter="all">ALL</button>
-            <button class="filter" data-filter="live">LIVE</button>
+            <button class="filter" data-filter="live" title="Channels dont l’ingest est live. Les destinations stopped restent visibles dans le channel.">INGEST LIVE</button>
             <button class="filter" data-filter="issues">ISSUES</button>
-            <button class="filter" data-filter="stopped">STOPPED</button>
+            <button class="filter" data-filter="stopped" title="Channels dont l’ingest est arrêté.">INGEST STOPPED</button>
           </div>
           <div class="sorts">
             <span class="control-label">SORT</span>
@@ -96,6 +96,7 @@
         <span><i id="coreDot" class="dot"></i>Core</span>
         <span><i id="uiDot" class="dot"></i>Web UI</span>
         <span>backend allow-list active</span>
+        <span id="monitorTransport">monitor --</span>
         <span>refresh <span id="refreshAge">--</span></span>
         <span id="supervisorVersion">--</span>
       </div>
@@ -112,7 +113,7 @@ const fmtBitrate=k=>{k=Number(k)||0;return k>=1000?(k/1000).toFixed(2)+" Mb/s":M
 const fmtMem=b=>{b=Number(b)||0;return b>=1048576?(b/1048576).toFixed(0)+" MiB":Math.round(b/1024)+" KiB"};
 const stateLabel=s=>({live:"LIVE",connecting:"CONNECTING",waiting:"NO SOURCE",error:"ERROR",stopped:"STOPPED",idle:"IDLE"}[s]||String(s||"UNKNOWN").toUpperCase());
 const statusClass=s=>["live","connecting","waiting","error","stopped","idle"].includes(s)?s:"idle";
-let lastRefresh=0,currentFilter="all",currentSort="name",latestChannels=[];
+let lastRefresh=0,currentFilter="all",currentSort="name",latestChannels=[],eventStream=null;
 
 function renderVideo(v){
   if(!v)return '<span class="dim">NO SIGNAL</span>';
@@ -135,6 +136,10 @@ function renderOutputs(outputs){
     return '<div class="output"><div><div class="output-name">'+esc(o.name||o.provider||"Output")+'</div><div class="output-meta">'+esc(meta)+'</div></div><div class="output-state state '+statusClass(o.status)+'">'+esc(stateLabel(o.status))+'</div></div>';
   }).join("")+'</div>';
 }
+function compareName(a,b){
+  const byName=String(a.name||"").localeCompare(String(b.name||""),"fr",{sensitivity:"base",numeric:true});
+  return byName||String(a.id||"").localeCompare(String(b.id||""));
+}
 function filteredChannels(){
   let channels=latestChannels.slice();
   if(currentFilter==="live")channels=channels.filter(c=>c.status==="live");
@@ -142,9 +147,9 @@ function filteredChannels(){
   if(currentFilter==="stopped")channels=channels.filter(c=>c.status==="stopped");
   if(currentSort==="status"){
     const rank={live:0,connecting:1,waiting:2,error:3,idle:4,stopped:5};
-    channels.sort((a,b)=>(rank[a.status]??9)-(rank[b.status]??9)||String(a.name||"").localeCompare(String(b.name||""),"fr",{sensitivity:"base",numeric:true}));
+    channels.sort((a,b)=>(rank[a.status]??9)-(rank[b.status]??9)||compareName(a,b));
   }else{
-    channels.sort((a,b)=>String(a.name||"").localeCompare(String(b.name||""),"fr",{sensitivity:"base",numeric:true}));
+    channels.sort(compareName);
   }
   return channels;
 }
@@ -178,12 +183,9 @@ function setService(id,state,detail,kind){
 function updateClock(){
   $("clock").textContent=new Date().toLocaleTimeString("fr-FR",{hour12:false});
 }
-async function refresh(){
+function applyStatus(x){
   try{
-    const response=await fetch("/api/status",{cache:"no-store"});
-    if(!response.ok)throw new Error("api");
-    const x=await response.json();
-    const r=x.restreamer||{},core=r.core||{},ui=r.ui||{},s=r.summary||{},security=x.supervisor?.security||{};
+    const r=x.restreamer||{},core=r.core||{},ui=r.ui||{},s=r.summary||{},security=x.supervisor?.security||{},monitoring=x.supervisor?.monitoring||{};
     setService("api","ONLINE",(x.supervisor?.version||"--")+" · READ ONLY","ok");
     setService("core",core.authenticated?"ONLINE":core.online?"AUTH ERROR":"OFFLINE",[core.version?("Core "+core.version):"version --",core.latencyMs!=null?(core.latencyMs+" ms"):""].filter(Boolean).join(" · "),core.authenticated?"ok":core.online?"warn":"bad");
     const uiText=ui.online?"ONLINE":ui.reachable?("HTTP "+(ui.httpStatus||"ERR")):"OFFLINE";
@@ -204,7 +206,7 @@ async function refresh(){
     $("outputErrors").textContent=s.outputErrors??0;
     $("outputErrors").style.color=(s.outputErrors??0)>0?"var(--red)":"var(--text)";
     $("supervisorVersion").textContent=x.supervisor?.version||"--";
-    $("sideVersion").textContent=x.supervisor?.version||"v0.1.0-alpha.5";
+    $("sideVersion").textContent=x.supervisor?.version||"v0.1.0-alpha.6";
     latestChannels=r.channels||[];
     renderChannels();
     lastRefresh=Date.now();
@@ -227,8 +229,7 @@ document.querySelectorAll(".sort").forEach(btn=>btn.addEventListener("click",()=
 setInterval(()=>{$("refreshAge").textContent=lastRefresh?Math.max(0,Math.floor((Date.now()-lastRefresh)/1000))+"s":"--"},1000);
 setInterval(updateClock,1000);
 updateClock();
-refresh();
-setInterval(refresh,5000);
+connectRealtime();
 </script>
 </body>
 </html>
