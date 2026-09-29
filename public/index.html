@@ -290,7 +290,7 @@ function applyStatus(x){
     const r=x.restreamer||{},core=r.core||{},ui=r.ui||{},s=r.summary||{},security=x.supervisor?.security||{},monitoring=x.supervisor?.monitoring||{},host=x.system||{},docker=x.docker||{};
     setService("api","ONLINE",(x.supervisor?.version||"--")+" · READ ONLY","ok");
     setService("core",core.authenticated?"ONLINE":core.online?"AUTH ERROR":"OFFLINE",[core.version?("Core "+core.version):"version --",core.latencyMs!=null?(core.latencyMs+" ms"):""].filter(Boolean).join(" · "),core.authenticated?"ok":core.online?"warn":"bad");
-    const uiText=ui.online?"ONLINE":ui.reachable?("HTTP "+(ui.httpStatus||"ERR")):"OFFLINE";
+    const uiText=ui.online?"ONLINE":ui.reachable?"REACHABLE":"OFFLINE";
     setService("ui",uiText,[ui.httpStatus?("HTTP "+ui.httpStatus):"no response",ui.latencyMs!=null?(ui.latencyMs+" ms"):""].filter(Boolean).join(" · "),ui.online?"ok":ui.reachable?"warn":"bad");
     $("authBadge").textContent=security.authEnabled?"AUTH ON":"ACCESS OPEN";
     $("authBadge").className="badge "+(security.authEnabled?"secure":"open");
@@ -392,6 +392,8 @@ document.querySelectorAll(".sort-head").forEach(head=>{
 setInterval(()=>{$("refreshAge").textContent=lastRefresh?Math.max(0,Math.floor((Date.now()-lastRefresh)/1000))+"s":"--"},1000);
 setInterval(updateClock,1000);
 updateClock();
+const initialView=new URLSearchParams(window.location.search).get("view");
+if(initialView==="system") switchView("system");
 connectRealtime();
 </script>
 </body>
