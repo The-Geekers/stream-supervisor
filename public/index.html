@@ -77,7 +77,7 @@
       <div class="nav-item" data-view="watchdog"><i class="nav-dot"></i><span>WATCHDOG</span></div>
       <div class="nav-item disabled"><i class="nav-dot"></i><span>SETTINGS</span></div>
     </nav>
-    <div class="side-foot">RESTREAMER / READ ONLY<br><span id="sideVersion">v0.1.0-alpha.13</span></div>
+    <div class="side-foot">RESTREAMER / READ ONLY<br><span id="sideVersion">v0.1.0-alpha.14</span></div>
   </aside>
 
   <main class="main">
@@ -226,7 +226,7 @@
           <div id="watchdogCandidates"><div class="empty">Waiting for watchdog state…</div></div>
         </section>
 
-        <div class="watchdog-note">Safety policy: only an egress already configured to START, currently in ERROR, with its ingest LIVE and an active incident can become a recovery candidate. Alpha 12 never restarts Restreamer Core or the Restreamer container. OBSERVE mode never sends a command.</div>
+        <div class="watchdog-note">Safety policy: only an egress already configured to START, currently in ERROR, with its ingest LIVE and an active incident can become a recovery candidate. Supervisor never restarts Restreamer Core or the Restreamer container automatically. OBSERVE mode never sends a command.</div>
       </div>
 
       <div class="footerline">
@@ -320,7 +320,8 @@ function renderIncidents(){
 
   $("incidentActive").innerHTML=active.length?active.map(item=>{
     const subject=[item.channel,item.output].filter(Boolean).join(" · ");
-    const detail=subject?(subject+" — "+(item.detail||"")):(item.detail||"");
+    const rawDetail=String(item.detail||"");
+    const detail=subject&&rawDetail&&!rawDetail.startsWith(subject)?(subject+" — "+rawDetail):(rawDetail||subject);
     return '<div class="incident-row">'+
       '<div><span class="severity '+esc(item.severity||"info")+'">'+esc(String(item.severity||"info").toUpperCase())+'</span></div>'+
       '<div class="incident-meta">'+esc(item.source||"--")+'</div>'+
@@ -332,7 +333,8 @@ function renderIncidents(){
 
   $("incidentEvents").innerHTML=latestJournal.length?latestJournal.map(item=>{
     const subject=[item.channel,item.output].filter(Boolean).join(" · ");
-    const detail=[subject,item.detail].filter(Boolean).join(" — ");
+    const rawDetail=String(item.detail||"");
+    const detail=subject&&rawDetail&&!rawDetail.startsWith(subject)?(subject+" — "+rawDetail):(rawDetail||subject);
     const actor=item.actor||"--";
     return '<div class="event-row">'+
       '<div class="incident-meta">'+esc(fmtDateTime(item.timestamp))+'</div>'+
@@ -655,9 +657,11 @@ function channelHasIssue(c){
 function renderOutputs(outputs){
   if(!outputs?.length)return '<span class="dim spec">NO DESTINATIONS</span>';
   return '<div class="outputs">'+outputs.map(o=>{
-    const meta=[String(o.provider||"").toUpperCase(),o.bitrateKbit?("OUT "+fmtBitrate(o.bitrateKbit)):"",o.runtimeSeconds?fmtTime(o.runtimeSeconds):""].filter(Boolean).join(" · ");
-    const canControl=session.actionsEnabled;
-    const command=["live","connecting"].includes(o.status)?"stop":"start";
+    const retry=o.reconnectSeconds>=0&&["error","connecting"].includes(o.status)?("RETRY "+o.reconnectSeconds+"s"):"";
+    const meta=[String(o.provider||"").toUpperCase(),o.bitrateKbit?("OUT "+fmtBitrate(o.bitrateKbit)):"",o.runtimeSeconds?fmtTime(o.runtimeSeconds):"",retry].filter(Boolean).join(" · ");
+    const desiredState=String(o.desiredState||"unknown").toLowerCase();
+    const command=desiredState==="start"?"stop":desiredState==="stop"?"start":null;
+    const canControl=session.actionsEnabled&&Boolean(command);
     const action=canControl?('<button class="output-action '+command+'" data-output-id="'+esc(o.id)+'" data-output-name="'+esc(o.name||o.provider||"Output")+'" data-command="'+command+'" '+(actionBusy?"disabled":"")+'>'+command.toUpperCase()+'</button>'):'';
     return '<div class="output"><div><div class="output-name">'+esc(o.name||o.provider||"Output")+'</div><div class="output-meta">'+esc(meta)+'</div></div><div class="output-state state '+statusClass(o.status)+'">'+esc(stateLabel(o.status))+'</div>'+action+'</div>';
   }).join("")+'</div>';
@@ -773,7 +777,7 @@ function applyStatus(x){
     $("outputErrors").textContent=s.outputErrors??0;
     $("outputErrors").style.color=(s.outputErrors??0)>0?"var(--red)":"var(--text)";
     $("supervisorVersion").textContent=x.supervisor?.version||"--";
-    $("sideVersion").textContent=x.supervisor?.version||"v0.1.0-alpha.13";
+    $("sideVersion").textContent=x.supervisor?.version||"v0.1.0-alpha.14";
     $("monitorTransport").textContent=(monitoring.transport||"poll").toUpperCase()+" · source "+(monitoring.sourcePollMs||"--")+" ms · core "+(monitoring.pollDurationMs??"--")+" ms";
     latestChannels=r.channels||[];
     latestIncidentState=x.incidents||{active:[],summary:{}};

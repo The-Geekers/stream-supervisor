@@ -86,6 +86,8 @@ test("channel model groups egresses by Restreamer reference", () => {
   assert.equal(channels[0].outputs.length, 1);
   assert.equal(channels[0].outputs[0].name, "YouTube journée");
   assert.equal(channels[0].outputs[0].status, "live");
+  assert.equal(channels[0].outputs[0].desiredState, "start");
+  assert.equal(channels[0].outputs[0].reconnectSeconds, -1);
 
   assert.deepEqual(summarizeChannels(channels), {
     channels: 1,
@@ -117,10 +119,15 @@ test("a missing source and failed destination create one channel alert", () => {
     id: "restreamer-ui:egress:youtube:22222222-2222-4222-8222-222222222222",
     reference: UUID,
     metadata: {"restreamer-ui": {name: "YouTube"}},
-    state: {order: "start", exec: "failed", progress: {}}
+    state: {order: "start", exec: "failed", reconnect_seconds: 15, progress: {}}
   });
 
-  const summary = summarizeChannels(buildChannels([ingest, egress]));
+  const channels = buildChannels([ingest, egress]);
+  assert.equal(channels[0].outputs[0].status, "error");
+  assert.equal(channels[0].outputs[0].desiredState, "start");
+  assert.equal(channels[0].outputs[0].reconnectSeconds, 15);
+
+  const summary = summarizeChannels(channels);
   assert.equal(summary.waiting, 1);
   assert.equal(summary.outputErrors, 1);
   assert.equal(summary.alerts, 1);
