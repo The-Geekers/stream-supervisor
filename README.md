@@ -17,6 +17,8 @@ Le premier moteur ciblé est **Restreamer**. L'architecture reste volontairement
 
 `0.1.0-alpha.16`
 
+Alpha.16 est fusionnée sur `main`. Son déploiement sur le VPS réel reste à effectuer avant de considérer la validation visuelle Light terminée en production.
+
 - navigation compacte mobile vers les cinq vues, dont **SYSTEM**, avec sidebar conservée sur tablette/desktop ;
 - modales accessibles au clavier : focus initial, Tab/Shift+Tab confinés, Escape et retour au déclencheur ;
 - purge des données opérationnelles après logout/expiration, fond inerte et masqué aux technologies d'assistance ; les réponses tardives ne repeuplent pas une session fermée ;
