@@ -1,7 +1,7 @@
 # Project Status
 
-**Version :** 0.1.0-alpha.18
-**Phase :** socle 0.1 fonctionnel + recovery Admin manuelle de dernier recours
+**Version :** 0.2.0-alpha.1
+**Phase :** 0.2 Monitoring & exploitation — historique incidents minimal
 
 | Domaine | État |
 |---|---|
@@ -43,7 +43,9 @@
 | CI GitHub qualité | Intégrée |
 | Diagnostics | Intégrés, safe export JSON |
 | Incidents actifs | Intégrés |
-| Journal événements | Intégré, persistant |
+| Historique incidents TODAY | 0.2 alpha.1 : occurrences, résolus, temps cumulé, plus long, durée par incident |
+| Période TODAY | Minuit local du navigateur → maintenant |
+| Journal événements | Intégré, persistant ; fenêtre mémoire portée à 5000 événements |
 | Actions opérateur dans le journal | Intégrées, y compris restart Restreamer Admin |
 | Restart Restreamer manuel | Alpha 18 : Admin uniquement, confirmation forte, helper Docker cible fixe, vérification Core/UI |
 | Docker control helper | Réseau interne uniquement, aucun port hôte, socket absent du frontend/Supervisor Web |
@@ -73,13 +75,11 @@ Avec authentification :
 
 ## Prochaine étape
 
-Alpha.14 a été validée en conditions réelles : ERROR avec consigne START conserve STOP et RETRY ; watchdog observe sans tentative et retour propre à LIVE. Cette logique reste inchangée.
+Le tag `v0.1.0-alpha.18` fige la stabilisation 0.1.
 
-Alpha.15 a été déployée sur le VPS réel le 30/09/2026. Les cinq vues desktop ont été vérifiées, puis la navigation et le rendu mobile ont été contrôlés sur l'instance réelle. Les points d'accessibilité clavier restent couverts par les tests navigateur automatisés.
+0.2 alpha.1 démarre sans digression : **historique incidents uniquement**. La page INCIDENTS calcule désormais, pour la journée locale du navigateur, le nombre d'occurrences, le nombre résolu, le temps cumulé, l'incident le plus long et la durée de chaque occurrence à partir du journal persistant existant.
 
-Alpha.17 est fusionnée sur `main` après workflows `quality` et `visual` verts. Elle finalise le polish UI : Light par défaut, nom des channels à 13 px et vert LIVE dédié.
-
-Alpha.18 est fusionnée sur `main` via la PR #22 après workflows `quality` et `visual` verts. Elle implémente le **restart manuel du conteneur Restreamer réservé à Admin**. L'action exige une confirmation destructive, passe par un helper Docker séparé et interne dont la cible est fixée à `restreamer`, journalise demande/résultat, puis vérifie le retour de Core et de la Web UI. Technician ne reçoit pas ce contrôle. Aucun restart automatique n'est ajouté au watchdog et le frontend n'accède jamais au socket Docker. Prochaine action : déployer alpha.18, valider le contrôle de rôle puis effectuer un test réel uniquement dans une fenêtre où une interruption de tous les streams est acceptable.
+Aucune base de métriques, aucun graphique, aucune alerte externe et aucune nouvelle automatisation ne sont ajoutés dans ce lot. Après CI et validation réelle, le prochain choix 0.2 sera fait à partir de l'usage observé de cet historique.
 
 Point connu non bloquant : les channels 8 et 9 ont déjà montré des oscillations serveur `INCIDENT OPEN → RESOLVED → OPEN` lorsqu'ils sont sans source. La cause n'est pas démontrée ; ne pas modifier cette logique sans investigation dédiée.
 
