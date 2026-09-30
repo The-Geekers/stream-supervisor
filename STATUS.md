@@ -1,13 +1,13 @@
 # Project Status
 
-**Version :** 0.1.0-alpha.12.1  
+**Version :** 0.1.0-alpha.13  
 **Phase :** supervision complète + premières actions opérateur sécurisées
 
 | Domaine | État |
 |---|---|
 | Dépôt GitHub / workflow GitHub → VPS | OK |
 | Application Docker | OK |
-| Interface monitoring | Alpha 12.1 |
+| Interface monitoring | Alpha 13 |
 | Restreamer Core 16 | Intégré |
 | Channels / outputs / métriques | Intégrés |
 | Monitoring SSE quasi temps réel | Intégré, 1 s par défaut |
