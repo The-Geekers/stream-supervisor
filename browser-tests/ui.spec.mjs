@@ -7,7 +7,7 @@ async function login(page, role = "admin") {
   await page.getByRole("button", { name: "SIGN IN", exact: true }).click();
   await expect(page.locator("#loginGate")).not.toBeVisible();
   await expect(page.locator("#channels")).toContainText("Agora");
-  await expect(page.locator("#apiDetail")).toContainText("0.1.0-alpha.17");
+  await expect(page.locator("#apiDetail")).toContainText("0.1.0-alpha.18");
 }
 async function navigate(page, view) {
   if (await page.locator("#mobileView").isVisible()) await page.locator("#mobileView").selectOption(view);
@@ -95,6 +95,8 @@ for (const role of ["admin", "tech"]) {
   test(`${role}: modal focus, alpha14 ERROR/STOP, commands and logout/relogin`, async ({ page }) => {
     await page.goto("/");
     await login(page, role);
+    if(role==="admin") await expect(page.locator("#adminRecovery")).not.toHaveAttribute("hidden", "");
+    else await expect(page.locator("#adminRecovery")).toHaveAttribute("hidden", "");
     const output = page.locator('.output').filter({ hasText: "Facebook — Sommet" });
     await expect(output).toContainText("ERROR");
     await expect(output).toContainText("RETRY 9s");
@@ -149,6 +151,55 @@ for (const role of ["admin", "tech"]) {
     await expect(page.locator("#diagnosticChecks .diag-row").first()).toBeVisible();
   });
 }
+
+test("Admin restart is explicit, destructive, logged endpoint only and not sent on cancel", async ({ page }) => {
+  await page.goto("/");
+  await login(page, "admin");
+  await navigate(page, "system");
+  const section = page.locator("#adminRecovery");
+  const button = page.locator("#restartRestreamerButton");
+  await expect(section).toBeVisible();
+  await expect(button).toBeEnabled();
+
+  const requests = [];
+  await page.route("**/api/admin/restart-restreamer", async route => {
+    requests.push({
+      method:route.request().method(),
+      header:route.request().headers()["x-supervisor-action"]
+    });
+    await route.fulfill({
+      status:200,
+      json:{
+        status:"completed",
+        verification:{ coreOnline:true, uiOnline:true, uiHttpStatus:200, waitedMs:1200 }
+      }
+    });
+  });
+
+  await button.click();
+  await expect(page.locator("#modalTitle")).toHaveText("RESTART RESTREAMER");
+  await expect(page.locator("#modalDetail")).toContainText("ALL active streams");
+  await expect(page.locator("#modalConfirm")).toHaveClass(/danger/);
+  await page.locator("#modalCancel").click();
+  expect(requests).toEqual([]);
+
+  await button.click();
+  await page.locator("#modalConfirm").click();
+  await expect.poll(() => requests.length).toBe(1);
+  expect(requests[0]).toEqual({ method:"POST", header:"1" });
+  await expect(page.locator("#modalTitle")).toHaveText("RESTART COMPLETE");
+  await expect(page.locator("#modalMessage")).toContainText("Core and Web UI are back online");
+  await page.locator("#modalConfirm").click();
+  await expect(button).toBeEnabled();
+});
+
+test("Technician never receives the global Restreamer restart control", async ({ page }) => {
+  await page.goto("/");
+  await login(page, "tech");
+  await navigate(page, "system");
+  await expect(page.locator("#adminRecovery")).toHaveAttribute("hidden", "");
+  await expect(page.locator("#restartRestreamerButton")).not.toBeVisible();
+});
 
 test("session expiry discards a delayed response and reconnects normally", async ({ page, context }) => {
   await page.goto("/");

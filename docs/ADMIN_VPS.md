@@ -86,6 +86,21 @@ cd /opt/stream-supervisor
 sh deployment/update.sh
 ```
 
+### Helper de restart Admin (alpha.18)
+
+Compose démarre aussi `stream-supervisor-docker-control`. Il n'expose **aucun port hôte** et n'est pas connecté à `web-proxy`. Il partage uniquement un réseau Docker interne avec `stream-supervisor`.
+
+Le helper possède le socket Docker en écriture mais son code n'autorise qu'une seule cible : le conteneur exact `restreamer`. Le frontend n'accède jamais au socket.
+
+Vérifications sûres :
+
+```bash
+docker ps --filter name=stream-supervisor-docker-control --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}'
+docker inspect -f '{{range $name,$cfg := .NetworkSettings.Networks}}{{println $name}}{{end}}' stream-supervisor-docker-control
+```
+
+Le bouton `RESTART RESTREAMER` est réservé au compte Admin. Il doit être utilisé uniquement lorsqu'une interruption globale des streams est acceptable. Supervisor vérifie ensuite le retour de Core et de la Web UI, mais l'opérateur doit contrôler les ingests et destinations avant de considérer la récupération terminée.
+
 ## Vérifications réseau sûres
 
 Ports en écoute :

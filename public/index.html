@@ -23,6 +23,9 @@
 .outputs{display:flex;flex-direction:column;gap:5px;width:100%}.output{display:grid;grid-template-columns:minmax(0,1fr) 74px 52px;gap:8px;padding-bottom:4px;border-bottom:1px dotted #222a31;align-items:center}.output:last-child{border:0;padding-bottom:0}.output-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:11px}.output-meta{margin-top:2px;color:var(--muted);font:9px ui-monospace,SFMono-Regular,Consolas,monospace}.output-state{text-align:right}.output-action{border:1px solid var(--line);background:#090d10;color:var(--muted);padding:4px 5px;font:800 9px ui-monospace,SFMono-Regular,Consolas,monospace;cursor:pointer}.output-action:hover{color:var(--text);border-color:#4d5a64}.output-action.start{color:var(--green)}.output-action.stop{color:var(--amber)}.output-action:disabled{opacity:.35;cursor:not-allowed}
 .empty{padding:30px 12px;color:var(--muted);font:11px ui-monospace,SFMono-Regular,Consolas,monospace}.footerline{display:flex;gap:18px;flex-wrap:wrap;margin-top:9px;color:var(--muted);font:10px ui-monospace,SFMono-Regular,Consolas,monospace}.dot{display:inline-block;width:6px;height:6px;margin-right:6px;background:var(--off)}.dot.ok{background:var(--green)}.dot.warn{background:var(--amber)}.dot.bad{background:var(--red)}
 .alert-note{display:none;margin-bottom:12px;border:1px solid #614a20;background:#151106;color:#e8c16f;padding:9px 11px;font:10px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace}.alert-note.show{display:block}.docker-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--line);background:var(--panel);margin-bottom:12px}.docker-summary .metric:nth-child(4){border-right:0}.docker-table{border:1px solid var(--line);background:var(--panel)}.docker-head,.docker-row{display:grid;grid-template-columns:minmax(170px,1.5fr) minmax(220px,2fr) 100px 100px 110px 120px 110px}.docker-head{background:#0c1014;color:var(--muted);font-size:9px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;border-bottom:1px solid var(--line)}.docker-head>div,.docker-cell{padding:9px 10px;border-right:1px solid var(--line-soft)}.docker-head>div:last-child,.docker-cell:last-child{border-right:0}.docker-row{min-height:54px;border-bottom:1px solid var(--line-soft)}.docker-row:last-child{border-bottom:0}.docker-name{font-weight:800}.docker-image{color:var(--muted);font:10px ui-monospace,SFMono-Regular,Consolas,monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.docker-note{margin-top:9px;color:var(--muted);font:9px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}
+.admin-recovery{margin-top:12px;border:1px solid #6b2929;background:#170909;padding:14px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.admin-recovery[hidden]{display:none}.admin-recovery-title{color:var(--red);font-size:10px;font-weight:800;letter-spacing:.1em}.admin-recovery-copy{margin-top:6px;color:#d6b7b7;font:10px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace;max-width:920px}
+.danger-action{appearance:none;border:1px solid #8b3434;background:#210b0b;color:var(--red);padding:8px 11px;font:800 9px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.06em;cursor:pointer;white-space:nowrap}.danger-action:hover{border-color:var(--red)}.danger-action:disabled{opacity:.45;cursor:wait}
 .incident-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--line);background:var(--panel);margin-bottom:12px}.incident-summary .metric:nth-child(4){border-right:0}
 .incident-table{border:1px solid var(--line);background:var(--panel);margin-bottom:12px}.incident-head,.incident-row{display:grid;grid-template-columns:105px 150px minmax(220px,1.2fr) minmax(280px,2fr) 135px}.event-head,.event-row{display:grid;grid-template-columns:150px 135px 145px minmax(220px,1.2fr) minmax(280px,2fr) 120px}.incident-head,.event-head{background:#0c1014;color:var(--muted);font-size:9px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;border-bottom:1px solid var(--line)}.incident-head>div,.event-head>div,.incident-row>div,.event-row>div{padding:9px 10px;border-right:1px solid var(--line-soft);min-width:0}.incident-head>div:last-child,.event-head>div:last-child,.incident-row>div:last-child,.event-row>div:last-child{border-right:0}.incident-row,.event-row{min-height:50px;border-bottom:1px solid var(--line-soft)}.incident-row:last-child,.event-row:last-child{border-bottom:0}.severity{display:inline-block;padding:3px 6px;border:1px solid var(--line);font:800 9px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.05em}.severity.critical{color:var(--red);border-color:#6b3030}.severity.warning{color:var(--amber);border-color:#655126}.severity.info{color:var(--cyan);border-color:#245368}.incident-title{font-weight:800}.incident-detail{color:var(--muted);font:10px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace;overflow:hidden;text-overflow:ellipsis}.incident-meta{color:var(--muted);font:10px ui-monospace,SFMono-Regular,Consolas,monospace}
 .diag-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--line);background:var(--panel);margin-bottom:12px}.diag-summary .metric:nth-child(4){border-right:0}
@@ -71,7 +74,7 @@
   .mobile-navigation label{color:var(--muted);font:800 10px ui-monospace,SFMono-Regular,Consolas,monospace}
   .mobile-navigation select{min-width:0;width:100%;min-height:44px;padding:8px 12px;background:var(--panel);border:1px solid var(--cyan);color:var(--text);font:800 12px ui-monospace,SFMono-Regular,Consolas,monospace}
   .top-right{gap:6px}.title{font-size:13px}.badge{font-size:9px}
-  .output-action,.session-action,.modal-button,.filter,.diag-button{min-height:44px;min-width:44px}
+  .output-action,.session-action,.modal-button,.filter,.diag-button,.danger-action{min-height:44px;min-width:44px}
   .output{grid-template-columns:minmax(0,1fr) 74px 52px}
   .docker-row,.incident-row,.event-row,.diag-row,.watchdog-row{grid-template-columns:minmax(0,1fr)}
   .login-panel{padding:20px}.login-brand{font-size:16px}.modal-actions{flex-wrap:wrap}
@@ -164,8 +167,14 @@
 :root[data-theme="light"] .login-theme-toggle{background:#fff;color:#191919}
 :root[data-theme="light"] .theme-toggle:hover{border-color:#b33a18;color:#fff}
 :root[data-theme="light"] .login-theme-toggle:hover{color:#b33a18}
+:root[data-theme="light"] .admin-recovery{border-color:#d9a8ac;background:#f8ecee}
+:root[data-theme="light"] .admin-recovery-title{color:#8c2028}
+:root[data-theme="light"] .admin-recovery-copy{color:#70464a}
+:root[data-theme="light"] .danger-action{border-color:#aa2730;background:#fff;color:#8c2028}
 @media(max-width:760px){
   .mobile-navigation .theme-toggle{min-height:44px;min-width:58px;padding:8px 9px}
+  .admin-recovery{flex-direction:column;align-items:stretch}
+  .admin-recovery .danger-action{width:100%;white-space:normal}
 }
 
 </style>
@@ -209,7 +218,7 @@
       <button type="button" class="nav-item" data-view="diagnostics" title="DIAGNOSTICS"><i class="nav-dot" aria-hidden="true"></i><span>DIAGNOSTICS</span></button>
       <button type="button" class="nav-item" data-view="watchdog" title="WATCHDOG"><i class="nav-dot" aria-hidden="true"></i><span>WATCHDOG</span></button>
     </nav>
-    <div class="side-foot">RESTREAMER / READ ONLY<br><span id="sideVersion">v0.1.0-alpha.17</span><button id="desktopThemeToggle" class="theme-toggle" type="button" aria-label="Switch to light theme">LIGHT</button></div>
+    <div class="side-foot">RESTREAMER / READ ONLY<br><span id="sideVersion">v0.1.0-alpha.18</span><button id="desktopThemeToggle" class="theme-toggle" type="button" aria-label="Switch to light theme">LIGHT</button></div>
   </aside>
 
   <main class="main">
@@ -297,7 +306,14 @@
           <div class="docker-head"><div>Service</div><div>Image</div><div>State</div><div>Health</div><div>CPU CORES</div><div>RAM</div><div>Uptime</div></div>
           <div id="dockerContainers"><div class="empty">Waiting for Docker observer…</div></div>
         </section>
-        <div class="docker-note">Docker socket access is isolated inside a network-disabled observer. CPU is shown as core equivalents (1.00 = one fully used CPU core). Supervisor only reads a sanitized snapshot file.</div>
+        <div class="docker-note">Read-only Docker monitoring remains isolated inside a network-disabled observer. The Admin restart action uses a separate internal-only helper with a fixed Restreamer target. The frontend never receives Docker socket access.</div>
+        <section id="adminRecovery" class="admin-recovery" hidden>
+          <div>
+            <div class="admin-recovery-title">ADMIN ONLY · MANUAL RECOVERY</div>
+            <div class="admin-recovery-copy">Restarting Restreamer interrupts all active streams. Use only as a last resort, then verify every ingest and destination after Core and Web UI return.</div>
+          </div>
+          <button id="restartRestreamerButton" class="danger-action" type="button">RESTART RESTREAMER</button>
+        </section>
       </div>
 
       <div id="viewIncidents" class="view">
@@ -416,7 +432,7 @@ const stateLabel=s=>({live:"LIVE",connecting:"CONNECTING",waiting:"NO SOURCE",er
 const fmtDateTime=v=>{const d=new Date(v);return Number.isNaN(d.getTime())?"--":d.toLocaleString("fr-FR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false})};
 const statusClass=s=>["live","connecting","waiting","error","stopped","idle"].includes(s)?s:"idle";
 let lastRefresh=0,currentFilter="all",currentSort="name",currentDirection="asc",latestChannels=[],latestIncidentState={active:[],summary:{}},latestJournal=[],journalPersistent=null,latestDiagnostics=null,latestWatchdog=null,eventStream=null,pollFallbackTimer=null,currentView="channels",session={authenticated:false,authRequired:false,role:"viewer",username:null,actionsEnabled:false},actionBusy=false,modalResolver=null;
-let monitoringEnabled=false,sessionGeneration=0,requestController=new AbortController(),modalTrigger=null;
+let monitoringEnabled=false,sessionGeneration=0,requestController=new AbortController(),modalTrigger=null,adminRestartBusy=false;
 // Keep the original neutral values, not a copy of operational data or credentials.
 const neutralContent=[...document.querySelectorAll(".content [id]")]
   .filter(element=>!element.querySelector("[id]")&&element.tagName!=="BUTTON")
@@ -450,6 +466,7 @@ function clearOperationalData(){
   latestWatchdog=null;
   lastRefresh=0;
   actionBusy=false;
+  adminRestartBusy=false;
   neutralContent.forEach(({element,html,className,style})=>{
     element.innerHTML=html;
     element.className=className;
@@ -671,6 +688,10 @@ function updateSessionUi(){
   $("modeBadge").textContent=session.actionsEnabled?"OUTPUT CONTROL":"READ ONLY";
   $("modeBadge").className="badge "+(session.actionsEnabled?"secure":"readonly");
   $("logoutButton").hidden=!session.authenticated;
+  const adminRestart=session.authenticated&&session.role==="admin";
+  $("adminRecovery").hidden=!adminRestart;
+  $("restartRestreamerButton").disabled=!adminRestart||adminRestartBusy;
+  $("restartRestreamerButton").textContent=adminRestartBusy?"RESTARTING…":"RESTART RESTREAMER";
   renderChannels();
 }
 
@@ -850,6 +871,69 @@ async function logout(){
     });
   }catch{}
   await handleUnauthorized("Signed out.");
+}
+
+async function restartRestreamer(){
+  if(!session.authenticated||session.role!=="admin"||adminRestartBusy||!monitoringEnabled)return;
+
+  const confirmed=await showDialog({
+    title:"RESTART RESTREAMER",
+    message:"Restart the Restreamer container now?",
+    detail:"ALL active streams will be interrupted temporarily. After restart, verify every ingest and destination before resuming normal operation. This action is logged.",
+    confirmLabel:"RESTART",
+    tone:"danger"
+  });
+  if(!confirmed||session.role!=="admin"||!monitoringEnabled)return;
+
+  const generation=sessionGeneration;
+  adminRestartBusy=true;
+  updateSessionUi();
+
+  try{
+    const response=await apiFetch("/api/admin/restart-restreamer",{
+      method:"POST",
+      headers:{"X-Supervisor-Action":"1"}
+    });
+    let data=null;
+    try{data=await response.json()}catch{}
+    if(!response.ok)throw new Error(data?.code||"restart_failed");
+
+    const verification=data?.verification||{};
+    if(verification.coreOnline&&verification.uiOnline){
+      await showNotice(
+        "RESTART COMPLETE",
+        "Restreamer Core and Web UI are back online.",
+        "Verify every ingest and destination before considering the recovery complete."
+      );
+    }else if(verification.coreOnline){
+      const http=verification.uiHttpStatus?" HTTP "+verification.uiHttpStatus+".":"";
+      await showNotice(
+        "CORE ONLINE · UI NOT CONFIRMED",
+        "Restreamer Core is back online, but the Web UI was not confirmed."+http,
+        "Check the Restreamer UI and verify every ingest and destination manually."
+      );
+    }else{
+      await showNotice(
+        "RESTART SENT · VERIFY NOW",
+        "The restart command completed, but Core was not confirmed online within the verification window.",
+        "Check SYSTEM, CHANNELS and Restreamer directly before taking any further action."
+      );
+    }
+  }catch(error){
+    if(generation===sessionGeneration&&monitoringEnabled&&error.message!=="unauthorized"){
+      await showNotice(
+        "RESTART FAILED",
+        "Supervisor could not complete the Restreamer restart.",
+        "No automatic retry was attempted. Check the VPS and Restreamer manually."
+      );
+    }
+  }finally{
+    if(generation===sessionGeneration&&monitoringEnabled){
+      adminRestartBusy=false;
+      updateSessionUi();
+      setTimeout(()=>{if(generation===sessionGeneration)fetchSnapshot()},300);
+    }
+  }
 }
 
 async function commandOutput(outputId, outputName, command){
@@ -1034,7 +1118,7 @@ function applyStatus(x){
     $("outputErrors").textContent=s.outputErrors??0;
     $("outputErrors").style.color=(s.outputErrors??0)>0?"var(--red)":"var(--text)";
     $("supervisorVersion").textContent=x.supervisor?.version||"--";
-    $("sideVersion").textContent=x.supervisor?.version||"v0.1.0-alpha.17";
+    $("sideVersion").textContent=x.supervisor?.version||"v0.1.0-alpha.18";
     $("monitorTransport").textContent=(monitoring.transport||"poll").toUpperCase()+" · source "+(monitoring.sourcePollMs||"--")+" ms · core "+(monitoring.pollDurationMs??"--")+" ms";
     latestChannels=r.channels||[];
     latestIncidentState=x.incidents||{active:[],summary:{}};
@@ -1097,6 +1181,7 @@ $("mobileView").addEventListener("change",event=>switchView(event.target.value))
 document.querySelectorAll(".theme-toggle").forEach(button=>button.addEventListener("click",toggleTheme));
 $("loginForm").addEventListener("submit",submitLogin);
 $("logoutButton").addEventListener("click",logout);
+$("restartRestreamerButton").addEventListener("click",restartRestreamer);
 $("modalCancel").addEventListener("click",()=>closeModal(false));
 $("modalConfirm").addEventListener("click",()=>closeModal(true));
 $("appModal").addEventListener("click",(event)=>{if(event.target===$("appModal"))closeModal(false)});

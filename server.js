@@ -5,6 +5,7 @@ import { dirname, join } from "node:path";
 import { createSessionAuth } from "./lib/auth.js";
 import { buildDemoStatus } from "./lib/demo.js";
 import { DockerAdapter } from "./lib/docker.js";
+import { DockerControlAdapter } from "./lib/docker-control.js";
 import { buildDiagnostics } from "./lib/diagnostics.js";
 import { EventJournal, IncidentTracker } from "./lib/incidents.js";
 import { RestreamerAdapter } from "./lib/restreamer.js";
@@ -16,7 +17,7 @@ const __dirname = dirname(__filename);
 
 const HOST = process.env.HOST || "0.0.0.0";
 const PORT = Number(process.env.PORT || 8090);
-const VERSION = "0.1.0-alpha.17";
+const VERSION = "0.1.0-alpha.18";
 const DEMO_MODE = process.env.DEMO_MODE === "true";
 const requestedMonitorInterval = Number(process.env.MONITOR_INTERVAL_MS || 1000);
 const MONITOR_INTERVAL_MS = Math.min(
@@ -50,6 +51,9 @@ const system = new SystemAdapter({
 const docker = new DockerAdapter({
   snapshotPath: process.env.DOCKER_STATUS_FILE || "/runtime/docker-status/status.json"
 });
+const dockerControl = new DockerControlAdapter({
+  baseUrl: process.env.DOCKER_CONTROL_URL || ""
+});
 
 const journal = new EventJournal({
   filePath: process.env.EVENTS_FILE || "/data/events.jsonl"
@@ -59,6 +63,7 @@ const incidentTracker = new IncidentTracker({
   stateFile: process.env.INCIDENT_STATE_FILE || "/data/incidents-state.json"
 });
 const outputActionsInFlight = new Set();
+let restreamerRestartInFlight = false;
 const watchdog = new Watchdog({
   journal,
   restreamer,
@@ -387,6 +392,80 @@ const server = http.createServer(async (req, res) => {
   const session = auth.authenticate(req.headers.cookie);
   if (auth.enabled && !session.authenticated) {
     return unauthorized(res);
+  }
+
+  if (req.method === "POST" && url.pathname === "/api/admin/restart-restreamer") {
+    if (!auth.enabled) return forbidden(res, "actions_locked");
+    if (session.role !== "admin") return forbidden(res, "admin_required");
+    if (req.headers["x-supervisor-action"] !== "1") return forbidden(res, "action_header_required");
+    if (restreamerRestartInFlight) {
+      return sendJson(res, 409, { status:"conflict", code:"restreamer_restart_in_progress" });
+    }
+    if (!dockerControl.isConfigured()) {
+      return sendJson(res, 503, { status:"unavailable", code:"docker_control_unavailable" });
+    }
+
+    restreamerRestartInFlight = true;
+    const actor = session.username || session.role;
+    await journal.append({
+      kind: "operator_action",
+      severity: "warning",
+      source: "docker-control",
+      title: "Restart Restreamer demandé",
+      detail: "Redémarrage manuel du conteneur Restreamer par un administrateur.",
+      actor,
+      action: "restart_restreamer",
+      status: "requested"
+    });
+
+    try {
+      await dockerControl.restartRestreamer();
+      const verification = await restreamer.verifyAfterRestart({
+        timeoutMs: 30000,
+        intervalMs: 1000
+      });
+
+      await journal.append({
+        kind: "operator_action",
+        severity: verification.coreOnline && verification.uiOnline ? "info" : "warning",
+        source: "docker-control",
+        title: verification.coreOnline && verification.uiOnline
+          ? "Restart Restreamer vérifié"
+          : "Restart Restreamer à vérifier",
+        detail: verification.coreOnline && verification.uiOnline
+          ? "Core et Web UI sont revenus en ligne après le redémarrage."
+          : "Le redémarrage a été envoyé mais le retour complet Core/Web UI n'a pas été confirmé dans le délai.",
+        actor,
+        action: "restart_restreamer",
+        status: verification.coreOnline && verification.uiOnline ? "verified" : "verification_timeout"
+      });
+
+      try { await refreshStatus(); } catch {}
+
+      return sendJson(res, 200, {
+        status:"completed",
+        verification: {
+          coreOnline:Boolean(verification.coreOnline),
+          uiOnline:Boolean(verification.uiOnline),
+          uiHttpStatus:verification.uiHttpStatus ?? null,
+          waitedMs:Number(verification.waitedMs || 0)
+        }
+      });
+    } catch {
+      await journal.append({
+        kind: "operator_action",
+        severity: "warning",
+        source: "docker-control",
+        title: "Restart Restreamer échoué",
+        detail: "Le helper Docker n'a pas pu redémarrer le conteneur Restreamer.",
+        actor,
+        action: "restart_restreamer",
+        status: "failed"
+      });
+      return sendJson(res, 502, { status:"error", code:"restreamer_restart_failed" });
+    } finally {
+      restreamerRestartInFlight = false;
+    }
   }
 
   if (req.method === "GET" && url.pathname === "/api/incidents") {

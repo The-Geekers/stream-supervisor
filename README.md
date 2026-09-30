@@ -15,9 +15,9 @@ Le premier moteur ciblé est **Restreamer**. L'architecture reste volontairement
 
 ## État actuel
 
-`0.1.0-alpha.17`
+`0.1.0-alpha.18`
 
-Alpha.17 affine l'UI d'alpha.16. Son déploiement sur le VPS réel reste à effectuer avant validation visuelle finale.
+Alpha.18 ajoute une recovery manuelle exceptionnelle réservée à Admin. Son déploiement sur le VPS réel reste à effectuer avant validation opérationnelle.
 
 - navigation compacte mobile vers les cinq vues, dont **SYSTEM**, avec sidebar conservée sur tablette/desktop ;
 - modales accessibles au clavier : focus initial, Tab/Shift+Tab confinés, Escape et retour au déclencheur ;
@@ -41,6 +41,9 @@ Alpha.17 affine l'UI d'alpha.16. Son déploiement sur le VPS réel reste à effe
 - sessions serveur avec cookie HttpOnly + SameSite=Strict et bouton **LOG OUT** ;
 - interface ouverte = monitoring uniquement si aucune authentification n'est configurée ;
 - une fois authentifié, Admin et Technician peuvent démarrer/arrêter une destination Restreamer existante ;
+- **Admin uniquement** dispose sur SYSTEM d'un `RESTART RESTREAMER` manuel de dernier recours ; la confirmation avertit explicitement que tous les streams actifs seront interrompus ;
+- ce restart passe par un helper Docker séparé, non exposé au navigateur ni à l'hôte, connecté uniquement à un réseau Docker interne et codé pour la cible fixe `restreamer` ;
+- après restart, Supervisor vérifie pendant une fenêtre bornée le retour de Restreamer Core et de la Web UI, journalise le résultat et demande une vérification manuelle des ingests/destinations ;
 - le bouton START/STOP suit désormais la consigne Restreamer `state.order`, indépendamment de l'état observé ;
 - une destination en `ERROR` mais toujours configurée `START` reste donc arrêtable depuis Supervisor et peut afficher son délai de reconnexion ;
 - aucune modification de clé, URL, configuration de process ou channel n'est exposée ;
@@ -80,7 +83,7 @@ npm run check
 npm run visual
 ```
 
-Les tests navigateur démarrent leur propre serveur de démonstration sur `127.0.0.1:18090`, sans lire ni modifier de `.env` et sans joindre un moteur de production. Ils couvrent les cinq vues à 320, 390, 759, 760, 761, 1024 et 1600 px, les rôles Admin/Technician, les modales, logout/expiration/reconnexion, les commandes simulées et l'export diagnostic. Alpha.16 ajoute les contrôles Light ; alpha.17 vérifie en plus le Light par défaut lors d'une première visite, la persistance d'un choix explicite, le titre channel à 13 px et le vert LIVE dédié. Les captures et traces sont publiées par le workflow `visual`.
+Les tests navigateur démarrent leur propre serveur de démonstration sur `127.0.0.1:18090`, sans lire ni modifier de `.env` et sans joindre un moteur de production. Ils couvrent les cinq vues à 320, 390, 759, 760, 761, 1024 et 1600 px, les rôles Admin/Technician, les modales, logout/expiration/reconnexion, les commandes simulées et l'export diagnostic. Alpha.16 ajoute les contrôles Light ; alpha.17 vérifie le Light par défaut, le titre channel à 13 px et le vert LIVE dédié ; alpha.18 ajoute les tests de visibilité Admin/Technician et du workflow de confirmation du restart Restreamer. Les captures et traces sont publiées par le workflow `visual`.
 
 L'export conserve `GET /api/diagnostics?download=1`. Le test attend l'événement de téléchargement **avant** le clic, vérifie sa terminaison et teste séparément le statut HTTP, `Content-Disposition` et les indicateurs de sanitisation. Un timeout d'automation isolé ne démontre pas une lenteur backend ; aucune modification de l'architecture d'export n'est incluse.
 
@@ -116,7 +119,7 @@ Supervisor adopte donc la stratégie suivante :
 - si l'UI est dégradée mais l'API Core reste disponible, aucune relance Core n'est faite ;
 - l'exploitation peut continuer via Supervisor et l'API ;
 - le reload de configuration Core n'est pas utilisé comme récupération UI, car il redémarre Core ;
-- un éventuel restart complet du conteneur restera un dernier recours futur du watchdog.
+- un restart complet du conteneur est disponible uniquement comme action **manuelle Admin** de dernier recours ; il n'est jamais déclenché par le watchdog.
 
 ## Workflow
 
