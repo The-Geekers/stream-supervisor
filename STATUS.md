@@ -1,7 +1,7 @@
 # Project Status
 
-**Version :** 0.2.0-alpha.1
-**Phase :** 0.2 Monitoring & exploitation — historique incidents minimal
+**Version :** 0.2.0-alpha.2
+**Phase :** 0.2 Monitoring & exploitation — incidents lisibles / vue opérateur
 
 | Domaine | État |
 |---|---|
@@ -43,9 +43,11 @@
 | CI GitHub qualité | Intégrée |
 | Diagnostics | Intégrés, safe export JSON |
 | Incidents actifs | Intégrés |
-| Historique incidents TODAY | 0.2 alpha.1 : occurrences, résolus, temps cumulé, plus long, durée par incident |
-| Période TODAY | Minuit local du navigateur → maintenant |
-| Journal événements | Intégré, persistant ; fenêtre mémoire portée à 5000 événements |
+| Historique incidents | 0.2 alpha.2 : 1H par défaut, TODAY / 24H, 20 lignes max visibles |
+| Temps incident | `Affected time` = union temporelle, pas somme des incidents parallèles |
+| Groupement causal | Egress entièrement couvert par perte ingest du même channel regroupé dans la vue opérateur |
+| Journal événements | Intégré, persistant ; fenêtre mémoire 5000, UI brute repliée et limitée aux 20 récents |
+| Retour haut de page | Bouton `↑ TOP` discret après scroll |
 | Actions opérateur dans le journal | Intégrées, y compris restart Restreamer Admin |
 | Restart Restreamer manuel | Alpha 18 : Admin uniquement, confirmation forte, helper Docker cible fixe, vérification Core/UI |
 | Docker control helper | Réseau interne uniquement, aucun port hôte, socket absent du frontend/Supervisor Web |
@@ -75,11 +77,17 @@ Avec authentification :
 
 ## Prochaine étape
 
-Le tag `v0.1.0-alpha.18` fige la stabilisation 0.1.
+Le déploiement réel de 0.2 alpha.1 a montré la limite de la première approche : plusieurs incidents parallèles pouvaient produire des centaines de lignes et un « temps cumulé » très supérieur au temps réellement affecté.
 
-0.2 alpha.1 démarre sans digression : **historique incidents uniquement**. La page INCIDENTS calcule désormais, pour la journée locale du navigateur, le nombre d'occurrences, le nombre résolu, le temps cumulé, l'incident le plus long et la durée de chaque occurrence à partir du journal persistant existant.
+0.2 alpha.2 corrige cette lecture sans supprimer l'information brute :
+- période 1H par défaut, avec TODAY et 24H ;
+- 20 incidents racine maximum visibles ;
+- `Affected time` calculé comme temps murale avec au moins un incident ;
+- erreurs egress downstream regroupées lorsqu'elles sont entièrement couvertes par une perte ingest du même channel ;
+- journal brut conservé mais replié et limité visuellement à 20 événements ;
+- bouton `↑ TOP` après scroll.
 
-Aucune base de métriques, aucun graphique, aucune alerte externe et aucune nouvelle automatisation ne sont ajoutés dans ce lot. La PR #24 est fusionnée avec les workflows `quality` et `visual` verts. Prochaine action : déployer `0.2.0-alpha.1` sur le VPS et valider l'historique avec les incidents réels avant d'ouvrir le bloc 0.2 suivant.
+Aucun incident n'est effacé et le modèle interne/watchdog n'est pas modifié. Après CI/fusion : déployer alpha.2 et vérifier sur les données réelles que les épisodes de perte de signal deviennent lisibles avant d'ouvrir une autre brique 0.2.
 
 Point connu non bloquant : les channels 8 et 9 ont déjà montré des oscillations serveur `INCIDENT OPEN → RESOLVED → OPEN` lorsqu'ils sont sans source. La cause n'est pas démontrée ; ne pas modifier cette logique sans investigation dédiée.
 
