@@ -85,7 +85,7 @@ test("0.2 daily incident history renders count and durations", async ({ page }) 
   await login(page);
   await navigate(page, "incidents");
   await expect(page.locator("#historyIncidentCount")).not.toHaveText("--");
-  await expect(page.locator("#historyCumulative")).toMatchText(/\d+[smh]/);
+  await expect(page.locator("#historyCumulative")).toHaveText(/\d+[smh]/);
   await expect(page.locator("#incidentHistory")).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1)).toBe(true);
 });
