@@ -1,0 +1,174 @@
+import { test, expect } from "@playwright/test";
+
+const views = ["channels", "system", "incidents", "diagnostics", "watchdog"];
+async function login(page, role = "admin") {
+  await page.locator("#loginUsername").fill(`visual-${role}`);
+  await page.locator("#loginPassword").fill(role === "admin" ? "visual-pass" : "visual-tech-pass");
+  await page.getByRole("button", { name: "SIGN IN", exact: true }).click();
+  await expect(page.locator("#loginGate")).not.toBeVisible();
+  await expect(page.locator("#channels")).toContainText("Agora");
+  await expect(page.locator("#apiDetail")).toContainText("0.1.0-alpha.15");
+}
+async function navigate(page, view) {
+  if (await page.locator("#mobileView").isVisible()) await page.locator("#mobileView").selectOption(view);
+  else await page.locator(`.nav-item[data-view="${view}"]`).click();
+  await expect(page.locator(".view.active")).toHaveAttribute("id", `view${view[0].toUpperCase()}${view.slice(1)}`);
+}
+
+for (const width of [320, 390, 759, 760, 761, 1024, 1600]) {
+  test(`all five views at ${width}px without horizontal overflow`, async ({ page }, testInfo) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/");
+    await login(page);
+    await expect(page.getByText("SETTINGS", { exact: true })).toHaveCount(0);
+    for (const view of views) {
+      await navigate(page, view);
+      if (view === "diagnostics") await expect(page.locator("#diagnosticChecks .diag-row").first()).toBeVisible();
+      if (view === "system") await expect(page.locator("#dockerContainers .docker-row").first()).toBeVisible();
+      if (view === "incidents") await expect(page.locator("#journalStorage")).not.toHaveText("--");
+      if (view === "watchdog") await expect(page.locator("#watchdogMode")).not.toHaveText("--");
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1)).toBe(true);
+      await expect(page.locator(`.nav-item[data-view="${view}"]`)).toHaveAttribute("aria-current", "page");
+      if (width <= 760) {
+        await expect(page.locator("#mobileView")).toHaveValue(view);
+        expect((await page.locator("#mobileView").boundingBox()).height).toBeGreaterThanOrEqual(44);
+      }
+      await page.screenshot({ path: testInfo.outputPath(`${view}-${width}.png`), fullPage: true });
+    }
+  });
+}
+
+for (const role of ["admin", "tech"]) {
+  test(`${role}: modal focus, alpha14 ERROR/STOP, commands and logout/relogin`, async ({ page }) => {
+    await page.goto("/");
+    await login(page, role);
+    const output = page.locator('.output').filter({ hasText: "Facebook — Sommet" });
+    await expect(output).toContainText("ERROR");
+    await expect(output).toContainText("RETRY 9s");
+    const trigger = output.getByRole("button", { name: "STOP", exact: true });
+    await trigger.click();
+    const modal = page.getByRole("dialog");
+    await expect(modal).toHaveAttribute("aria-modal", "true");
+    await expect(page.locator("#modalCancel")).toBeFocused();
+    await expect(page.locator("#appShell")).toHaveAttribute("inert", "");
+    await page.keyboard.press("Shift+Tab");
+    await expect(page.locator("#modalConfirm")).toBeFocused();
+    await page.keyboard.press("Tab");
+    await expect(page.locator("#modalCancel")).toBeFocused();
+    // A real SSE update must not discard the dialog's trigger or focus restoration.
+    await page.waitForTimeout(1200);
+    await page.keyboard.press("Escape");
+    await expect(modal).not.toBeVisible();
+    await expect(trigger).toBeFocused();
+    let commands = [];
+    await page.route("**/api/restreamer/output-command", async route => {
+      commands.push(route.request().postDataJSON());
+      await route.fulfill({ json: { status: "accepted" } });
+    });
+    await trigger.click();
+    await page.locator("#modalCancel").click();
+    expect(commands).toEqual([]);
+    await trigger.click();
+    await page.locator("#modalConfirm").click();
+    await expect.poll(() => commands.length).toBe(1);
+    expect(commands[0]).toEqual({ outputId: "demo-fb", command: "stop" });
+    const start = page.locator('button[data-output-id="demo-yt3"]');
+    await expect(start).toBeEnabled();
+    await start.click();
+    await page.locator("#modalConfirm").click();
+    await expect.poll(() => commands.length).toBe(2);
+    expect(commands[1]).toEqual({ outputId: "demo-yt3", command: "start" });
+    await navigate(page, "diagnostics");
+    await expect(page.locator("#diagnosticChecks .diag-row").first()).toBeVisible();
+    await page.locator("#logoutButton").click();
+    await page.locator("#modalConfirm").click();
+    await expect(page.locator("#loginGate")).toBeVisible();
+    await expect(page.locator("#appShell")).toHaveAttribute("aria-hidden", "true");
+    await expect(page.locator("#appShell")).toHaveAttribute("inert", "");
+    await expect(page.locator("#appShell")).not.toContainText("Agora");
+    await expect(page.locator("#diagnosticChecks .diag-row")).toHaveCount(0);
+    await expect(page.locator("#hostCpu")).toHaveText("--");
+    let backgroundRequests = 0;
+    page.on("request", req => { if (/\/api\/(status|events|incidents|diagnostics|watchdog)/.test(req.url())) backgroundRequests++; });
+    await page.waitForTimeout(5500);
+    expect(backgroundRequests).toBe(0);
+    await login(page, role);
+    await expect(page.locator("#diagnosticChecks .diag-row").first()).toBeVisible();
+  });
+}
+
+test("session expiry discards a delayed response and reconnects normally", async ({ page, context }) => {
+  await page.goto("/");
+  await login(page);
+  let release;
+  const gate = new Promise(resolve => { release = resolve; });
+  let captured = false;
+  await page.route("**/api/diagnostics", async route => {
+    const response = await route.fetch();
+    captured = true;
+    await gate;
+    await route.fulfill({ response }).catch(() => {});
+  });
+  await navigate(page, "diagnostics");
+  await expect.poll(() => captured).toBe(true);
+  await context.clearCookies();
+  await navigate(page, "incidents");
+  await expect(page.locator("#loginGate")).toBeVisible();
+  release();
+  await page.unroute("**/api/diagnostics");
+  await page.waitForTimeout(500);
+  await expect(page.locator("#diagnosticChecks .diag-row")).toHaveCount(0);
+  await expect(page.locator("#channels")).not.toContainText("Agora");
+  await login(page);
+  await expect(page.locator("#appShell")).toHaveAttribute("aria-hidden", "false");
+});
+
+test("diagnostics attachment completes and the backend response is sanitized", async ({ page }, testInfo) => {
+  await page.goto("/");
+  await login(page);
+  await navigate(page, "diagnostics");
+  const start = Date.now();
+  const [download] = await Promise.all([
+    page.waitForEvent("download"),
+    page.locator("#downloadDiagnostics").click()
+  ]);
+  expect(await download.failure()).toBeNull();
+  expect(download.suggestedFilename()).toBe("stream-supervisor-diagnostics.json");
+  const response = await page.request.get("/api/diagnostics?download=1");
+  expect(response.ok()).toBe(true);
+  expect(response.headers()["content-disposition"]).toContain("attachment");
+  const data = await response.json();
+  expect(data.security.streamKeysIncluded).toBe(false);
+  expect(data.security.credentialsIncluded).toBe(false);
+  expect(data.security.rawEnginePayloadIncluded).toBe(false);
+  await testInfo.attach("diagnostic-timing", { body: `Download and HTTP verification: ${Date.now() - start} ms`, contentType: "text/plain" });
+});
+
+test("mobile notice traps a single button and polling fallback stops on logout", async ({ page }, testInfo) => {
+  await page.setViewportSize({ width: 390, height: 600 });
+  await page.addInitScript(() => { delete window.EventSource; });
+  let snapshots = 0;
+  page.on("request", request => { if (new URL(request.url()).pathname === "/api/status") snapshots++; });
+  await page.goto("/");
+  await login(page);
+  const initialSnapshots = snapshots;
+  await expect.poll(() => snapshots, { timeout: 7000 }).toBeGreaterThan(initialSnapshots);
+  await page.route("**/api/restreamer/output-command", route => route.fulfill({ status: 503, json: { status: "unavailable" } }));
+  await page.locator('button[data-output-id="demo-fb"]').click();
+  await page.locator("#modalConfirm").click();
+  await expect(page.locator("#modalTitle")).toHaveText("COMMAND FAILED");
+  await expect(page.locator("#modalConfirm")).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(page.locator("#modalConfirm")).toBeFocused();
+  await page.keyboard.press("Shift+Tab");
+  await expect(page.locator("#modalConfirm")).toBeFocused();
+  await page.screenshot({ path: testInfo.outputPath("mobile-command-notice.png") });
+  await page.keyboard.press("Escape");
+  await page.locator("#logoutButton").click();
+  await page.locator("#modalConfirm").click();
+  await expect(page.locator("#loginGate")).toBeVisible();
+  const signedOutSnapshots = snapshots;
+  await page.waitForTimeout(5500);
+  expect(snapshots).toBe(signedOutSnapshots);
+  await page.screenshot({ path: testInfo.outputPath("mobile-logged-out.png") });
+});

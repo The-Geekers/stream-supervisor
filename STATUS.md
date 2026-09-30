@@ -1,13 +1,16 @@
 # Project Status
 
-**Version :** 0.1.0-alpha.14  
+**Version :** 0.1.0-alpha.15
 **Phase :** supervision complète + premières actions opérateur sécurisées
 
 | Domaine | État |
 |---|---|
 | Dépôt GitHub / workflow GitHub → VPS | OK |
 | Application Docker | OK |
-| Interface monitoring | Alpha 14 |
+| Interface monitoring | Alpha 15, cinq vues responsive |
+| Navigation mobile | Sélecteur compact, SYSTEM conservé, SETTINGS masqué |
+| Accessibilité modales | Focus confiné, fond inerte, Escape et retour au déclencheur |
+| Fin de session frontend | Données purgées, requêtes annulées, réponses tardives ignorées |
 | Restreamer Core 16 | Intégré |
 | Channels / outputs / métriques | Intégrés |
 | Monitoring SSE quasi temps réel | Intégré, 1 s par défaut |
@@ -62,6 +65,8 @@ Avec authentification :
 
 ## Prochaine étape
 
-Alpha.14 corrige la sémantique opérateur des destinations : le bouton suit maintenant la consigne Restreamer réelle et non le seul état observé. Après validation VPS, la passe suivante traite l'interface responsive mobile et l'accessibilité clavier des modales, puis la phase 0.2 Monitoring & exploitation.
+Alpha.14 a été validée en conditions réelles : ERROR avec consigne START conserve STOP et RETRY ; watchdog observe sans tentative et retour propre à LIVE. Cette logique reste inchangée dans alpha.15.
+
+Alpha.15 ajoute navigation mobile, vues responsive, gestion du focus des modales et purge de fin de session. Validation locale sur sept largeurs, tests Admin/Technician et export diagnostic réussi ; le timeout navigateur de 15 s n'est pas reproduit localement et n'est pas attribué au backend. Le workflow visual exécute les tests et conserve les captures. Déploiement VPS à effectuer ensuite avec `deployment/update.sh`, puis phase 0.2 Monitoring & exploitation.
 
 Alpha.12 validée sur le VPS réel en modes observe et recover : un egress RTMP volontairement invalide avec ingest LIVE est devenu recovery candidate, a déclenché une unique commande START ciblée, puis une vérification après délai. La recovery non confirmée a été journalisée, la limite d'une tentative a conduit l'état à MANUAL, sans restart Core/conteneur ni action sur les autres flux. Les ingests absents restent exclus des recovery candidates. Correction alpha.12.1 : pendant la fenêtre de vérification watchdog, l'incident egress reste maintenu ouvert afin d'éviter le bruit RESOLVED → OPEN provoqué par un état transitoire après START.

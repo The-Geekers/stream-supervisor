@@ -16,6 +16,7 @@ try {
 }
 
 const requiredIds = [
+  "appShell","mobileView",
   "viewChannels","viewSystem","pageTitle","dockerEngine","dockerRunning",
   "dockerUnhealthy","dockerAge","dockerContainers","dockerDot","modeBadge","authBadge",
   "viewIncidents","incidentActiveCount","incidentCriticalCount","incidentWarningCount",

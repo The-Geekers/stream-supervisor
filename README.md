@@ -15,7 +15,11 @@ Le premier moteur ciblé est **Restreamer**. L'architecture reste volontairement
 
 ## État actuel
 
-`0.1.0-alpha.14`
+`0.1.0-alpha.15`
+
+- navigation compacte mobile vers les cinq vues, dont **SYSTEM**, avec sidebar conservée sur tablette/desktop ;
+- modales accessibles au clavier : focus initial, Tab/Shift+Tab confinés, Escape et retour au déclencheur ;
+- purge des données opérationnelles après logout/expiration, fond inerte et masqué aux technologies d'assistance ; les réponses tardives ne repeuplent pas une session fermée ;
 
 - adapter Restreamer Core 16 avec monitoring et contrôle limité des destinations ;
 - channels, destinations et métriques de streaming en pseudo temps réel SSE ;
@@ -50,6 +54,19 @@ Le premier moteur ciblé est **Restreamer**. L'architecture reste volontairement
 - tests anti-fuite de secrets, smoke tests Docker/auth/incidents/diagnostics/watchdog et captures visuelles CI.
 
 ## Authentification
+
+### Vérification UI locale
+
+```bash
+npm ci
+npx playwright install chromium
+npm run check
+npm run visual
+```
+
+Les tests navigateur démarrent leur propre serveur de démonstration sur `127.0.0.1:18090`, sans lire ni modifier de `.env` et sans joindre un moteur de production. Ils couvrent les cinq vues à 320, 390, 759, 760, 761, 1024 et 1600 px, les rôles Admin/Technician, les modales, logout/expiration/reconnexion, les commandes simulées et l'export diagnostic. Les captures et traces sont publiées par le workflow `visual`.
+
+L'export conserve `GET /api/diagnostics?download=1`. Le test attend l'événement de téléchargement **avant** le clic, vérifie sa terminaison et teste séparément le statut HTTP, `Content-Disposition` et les indicateurs de sanitisation. Un timeout d'automation isolé ne démontre pas une lenteur backend ; aucune modification de l'architecture d'export n'est incluse.
 
 `SUPERVISOR_USERNAME` / `SUPERVISOR_PASSWORD` définissent le compte Admin.
 

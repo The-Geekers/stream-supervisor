@@ -6,7 +6,7 @@ Socle applicatif, authentification, rôles Admin/Technicien, état système et D
 
 ### Stabilisation 0.1 actuelle
 
-Alpha.14 sépare l'état observé d'un egress de sa consigne Restreamer afin de fiabiliser les commandes opérateur pendant les reconnexions. La prochaine passe 0.1 porte sur la navigation mobile et l'accessibilité des modales.
+Alpha.14 sépare l'état observé d'un egress de sa consigne Restreamer et a été validée en conditions réelles. Alpha.15 conserve cette logique et livre la navigation mobile des cinq vues, le responsive, l'accessibilité des modales et la purge frontend en fin de session. Prochaine étape : validation de déploiement alpha.15, puis phase 0.2.
 
 ## 0.2 — Monitoring & exploitation
 

@@ -14,52 +14,23 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Node 24
         uses: actions/setup-node@v4
         with:
           node-version: "24"
-
-      - name: Build demo image
-        run: docker build -t stream-supervisor-visual .
-
-      - name: Start demo Supervisor
-        run: |
-          docker run -d --name stream-supervisor-visual             -e DEMO_MODE=true             -p 8090:8090 stream-supervisor-visual
-          for i in $(seq 1 20); do
-            if curl -fsS http://127.0.0.1:8090/health >/dev/null; then
-              exit 0
-            fi
-            sleep 1
-          done
-          docker logs stream-supervisor-visual
-          exit 1
-
+          cache: npm
+      - name: Install test dependencies
+        run: npm ci
       - name: Install Chromium
-        run: npx --yes playwright@1.55.0 install --with-deps chromium
-
-      - name: Capture monitor views
-        run: |
-          mkdir -p artifacts
-          npx --yes playwright@1.55.0 screenshot             --browser=chromium             --viewport-size="1600,1000"             --wait-for-timeout=2000             --full-page             http://127.0.0.1:8090             artifacts/channel-monitor.png
-          npx --yes playwright@1.55.0 screenshot             --browser=chromium             --viewport-size="1600,1000"             --wait-for-timeout=2000             --full-page             'http://127.0.0.1:8090/?view=system'             artifacts/system-monitor.png
-          npx --yes playwright@1.55.0 screenshot             --browser=chromium             --viewport-size="1600,1000"             --wait-for-timeout=7000             --full-page             'http://127.0.0.1:8090/?view=incidents'             artifacts/incidents-monitor.png
-          npx --yes playwright@1.55.0 screenshot             --browser=chromium             --viewport-size="1600,1000"             --wait-for-timeout=2500             --full-page             'http://127.0.0.1:8090/?view=diagnostics'             artifacts/diagnostics-monitor.png
-          npx --yes playwright@1.55.0 screenshot             --browser=chromium             --viewport-size="1600,1000"             --wait-for-timeout=2500             --full-page             'http://127.0.0.1:8090/?view=watchdog'             artifacts/watchdog-monitor.png
-
-          docker rm -f stream-supervisor-visual
-          docker run -d --name stream-supervisor-visual             -e DEMO_MODE=true             -e SUPERVISOR_USERNAME=visual-admin             -e SUPERVISOR_PASSWORD=visual-pass             -p 8090:8090 stream-supervisor-visual
-          for i in $(seq 1 20); do
-            if curl -fsS http://127.0.0.1:8090/health >/dev/null; then
-              break
-            fi
-            sleep 1
-          done
-          npx --yes playwright@1.55.0 screenshot             --browser=chromium             --viewport-size="1600,1000"             --wait-for-timeout=1500             --full-page             http://127.0.0.1:8090             artifacts/login-screen.png
-
-      - name: Upload visual artifact
+        run: npx playwright install --with-deps chromium
+      - name: Responsive, accessibility and session acceptance tests
+        run: npm run visual
+      - name: Upload visual artifacts and test report
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: stream-supervisor-ui-preview
-          path: artifacts/*.png
+          path: |
+            test-results/
+            playwright-report/
           if-no-files-found: error
