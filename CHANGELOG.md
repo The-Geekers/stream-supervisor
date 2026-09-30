@@ -2,6 +2,28 @@
 
 ## [Unreleased]
 
+## [0.1.0-alpha.18] - 2026-09-30
+
+### Added
+- Section **ADMIN ONLY · MANUAL RECOVERY** sur SYSTEM avec bouton `RESTART RESTREAMER`, visible uniquement pour le rôle Admin.
+- Confirmation destructive explicite : tous les streams actifs seront momentanément interrompus et devront être vérifiés après redémarrage.
+- Endpoint `POST /api/admin/restart-restreamer` protégé par authentification Admin, en-tête d'action same-origin et verrou anti-double restart.
+- Helper Docker séparé `stream-supervisor-docker-control`, sans port hôte, sur réseau interne uniquement, avec cible de restart fixée à `restreamer`.
+- Vérification bornée après restart du retour de Restreamer Core et de la Web UI ; résultat allow-listé renvoyé au frontend.
+- Journalisation de la demande, du résultat vérifié / à vérifier, ou de l'échec avec l'acteur Admin.
+
+### Security
+- Le frontend et le backend Web Supervisor ne montent toujours jamais le socket Docker.
+- Le socket Docker en écriture est limité au helper interne dédié ; son API n'expose qu'un inspect de la cible fixe puis un restart de cette même cible.
+- Technician ne peut ni voir le contrôle dans l'UI ni appeler l'endpoint serveur.
+- Aucun restart Restreamer n'est ajouté au watchdog ; aucune relance automatique globale n'est introduite.
+
+### Validation
+- Tests unitaires du helper : cible fixe running, refus cible arrêtée et refus sans en-tête interne.
+- CI vérifie le rôle Admin, l'en-tête d'action et le refus Technician.
+- Playwright couvre cancel/confirm, message destructif, endpoint POST et retour de vérification.
+
+
 ## [0.1.0-alpha.17] - 2026-09-30
 
 ### Changed
