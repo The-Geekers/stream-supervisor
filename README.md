@@ -15,16 +15,17 @@ Le premier moteur ciblé est **Restreamer**. L'architecture reste volontairement
 
 ## État actuel
 
-`0.1.0-alpha.16`
+`0.1.0-alpha.17`
 
-Alpha.16 est fusionnée sur `main`. Son déploiement sur le VPS réel reste à effectuer avant de considérer la validation visuelle Light terminée en production.
+Alpha.17 affine l'UI d'alpha.16. Son déploiement sur le VPS réel reste à effectuer avant validation visuelle finale.
 
 - navigation compacte mobile vers les cinq vues, dont **SYSTEM**, avec sidebar conservée sur tablette/desktop ;
 - modales accessibles au clavier : focus initial, Tab/Shift+Tab confinés, Escape et retour au déclencheur ;
 - purge des données opérationnelles après logout/expiration, fond inerte et masqué aux technologies d'assistance ; les réponses tardives ne repeuplent pas une session fermée ;
-- thème **Dark** d'alpha.15 conservé comme référence visuelle par défaut, sans modification de géométrie ;
+- thème **Dark** d'alpha.15 conservé comme référence visuelle, sans modification de géométrie ;
 - thème **Light** aligné sur l'identité du portail Distillerie v1.0.3 : noir `#191919`, fond doux `#f5f3ef`, blanc, lignes `#dedbd5` et accent orange `#e9471d` ;
-- sélection Dark/Light disponible au login, sur desktop et sur mobile ; préférence stockée uniquement dans le `localStorage` du navigateur, sans donnée opérationnelle ni authentification ;
+- **Light est le thème par défaut lors de la première visite** ; dès que l'utilisateur choisit Dark ou Light, cette préférence est stockée uniquement dans le `localStorage` du navigateur ;
+- alpha.17 réduit légèrement le nom des channels de 14 à 13 px et introduit un vert `LIVE` dédié, plus soutenu, sans modifier les autres états positifs ;
 - familles de polices et métriques conservées : le portail utilise déjà Arial/Helvetica et une police monospace compatible, ce qui évite de modifier les proportions validées ;
 - le socle alpha.15 a été déployé sur le VPS réel le 30/09/2026 et son rendu desktop/mobile de base a été vérifié en production ;
 
@@ -62,11 +63,11 @@ Alpha.16 est fusionnée sur `main`. Son déploiement sur le VPS réel reste à e
 
 ## Thèmes UI
 
-Le thème **Dark** reste le comportement par défaut afin de préserver exactement la direction visuelle validée jusqu'à alpha.15.
+Le thème **Light** est utilisé par défaut lorsqu'aucune préférence n'existe encore dans le navigateur. Le thème **Dark** reste disponible et conserve la direction visuelle validée jusqu'à alpha.15.
 
 Le thème **Light** reprend la palette du portail Distillerie sans reprendre sa mise en page : mêmes dimensions, mêmes grilles, mêmes tailles de texte et mêmes règles responsive que Supervisor. Les couleurs d'état opérationnel conservent leur sémantique ; des variantes de texte plus sombres sont utilisées lorsque nécessaire pour garder un contraste lisible sur fond clair.
 
-La préférence est locale au navigateur sous la clé `stream-supervisor-theme`. Elle n'est pas envoyée au serveur et n'affecte ni les sessions, ni les rôles, ni les commandes Restreamer.
+La préférence est locale au navigateur sous la clé `stream-supervisor-theme`. Une première visite sans cette clé démarre en Light ; un choix explicite Dark ou Light est ensuite conservé. Cette donnée n'est pas envoyée au serveur et n'affecte ni les sessions, ni les rôles, ni les commandes Restreamer.
 
 ## Authentification
 
@@ -79,7 +80,7 @@ npm run check
 npm run visual
 ```
 
-Les tests navigateur démarrent leur propre serveur de démonstration sur `127.0.0.1:18090`, sans lire ni modifier de `.env` et sans joindre un moteur de production. Ils couvrent les cinq vues à 320, 390, 759, 760, 761, 1024 et 1600 px, les rôles Admin/Technician, les modales, logout/expiration/reconnexion, les commandes simulées et l'export diagnostic. Alpha.16 ajoute des contrôles Light à 390 et 1600 px, la persistance locale du thème et le retour au Dark de référence. Les captures et traces sont publiées par le workflow `visual`.
+Les tests navigateur démarrent leur propre serveur de démonstration sur `127.0.0.1:18090`, sans lire ni modifier de `.env` et sans joindre un moteur de production. Ils couvrent les cinq vues à 320, 390, 759, 760, 761, 1024 et 1600 px, les rôles Admin/Technician, les modales, logout/expiration/reconnexion, les commandes simulées et l'export diagnostic. Alpha.16 ajoute les contrôles Light ; alpha.17 vérifie en plus le Light par défaut lors d'une première visite, la persistance d'un choix explicite, le titre channel à 13 px et le vert LIVE dédié. Les captures et traces sont publiées par le workflow `visual`.
 
 L'export conserve `GET /api/diagnostics?download=1`. Le test attend l'événement de téléchargement **avant** le clic, vérifie sa terminaison et teste séparément le statut HTTP, `Content-Disposition` et les indicateurs de sanitisation. Un timeout d'automation isolé ne démontre pas une lenteur backend ; aucune modification de l'architecture d'export n'est incluse.
 

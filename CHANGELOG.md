@@ -2,6 +2,21 @@
 
 ## [Unreleased]
 
+## [0.1.0-alpha.17] - 2026-09-30
+
+### Changed
+- Le thème **Light** devient le thème par défaut lorsqu'aucune préférence n'est encore enregistrée dans le navigateur.
+- Un choix explicite Dark ou Light continue d'être persisté localement sous `stream-supervisor-theme`.
+- Taille du nom des channels réduite de 14 à 13 px, sans changement de police, graisse, grille ou responsive.
+- Ajout d'un token `--live` dédié : vert plus soutenu pour les signaux et libellés LIVE, sans modifier le vert générique utilisé par les autres états positifs.
+
+### Validation
+- Le jeu responsive Dark sur sept largeurs reste couvert en forçant explicitement la préférence Dark dans les tests.
+- Le Light est testé comme comportement de première visite à 390 et 1600 px sur les cinq vues.
+- Persistance Dark/Light, taille 13 px et token LIVE dédiés couverts par Playwright.
+- Aucune modification des adaptateurs, de l'API, de l'authentification, du watchdog ou des commandes Restreamer.
+
+
 ## [0.1.0-alpha.16] - 2026-09-30
 
 ### Added

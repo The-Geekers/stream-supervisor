@@ -40,8 +40,12 @@ for (const id of requiredIds) {
   }
 }
 
-if (!html.includes('stream-supervisor-theme') || !html.includes('data-theme="light"')) {
-  console.error("UI CHECK FAILED: theme system wiring is missing");
+if (!html.includes('stream-supervisor-theme') || !html.includes('<html lang="fr" data-theme="light">')) {
+  console.error("UI CHECK FAILED: light default theme wiring is missing");
+  process.exit(1);
+}
+if (!html.includes("--live:#39e56f") || !html.includes(".channel-name{font-size:13px")) {
+  console.error("UI CHECK FAILED: alpha.17 channel/LIVE polish is missing");
   process.exit(1);
 }
 if (!html.includes("/api/restreamer/output-command")) {

@@ -1,16 +1,18 @@
 # Project Status
 
-**Version :** 0.1.0-alpha.16
-**Phase :** socle 0.1 fonctionnel + harmonisation visuelle Distillerie
+**Version :** 0.1.0-alpha.17
+**Phase :** socle 0.1 fonctionnel + polish UI avant recovery Admin
 
 | Domaine | État |
 |---|---|
 | Dépôt GitHub / workflow GitHub → VPS | OK |
 | Application Docker | OK |
-| Interface monitoring | Alpha 16, cinq vues responsive + thèmes Dark/Light |
-| Thème Dark | Référence alpha.15 conservée par défaut |
-| Thème Light | Palette Distillerie Portal v1.0.3, sans changement de géométrie |
-| Préférence thème | Locale au navigateur uniquement (`localStorage`) |
+| Interface monitoring | Alpha 17, cinq vues responsive + thèmes Dark/Light |
+| Thème Dark | Référence alpha.15 conservée et sélectionnable |
+| Thème Light | Palette Distillerie Portal v1.0.3, thème par défaut à la première visite |
+| Préférence thème | Locale au navigateur uniquement (`localStorage`), choix explicite persistant |
+| Hiérarchie channels | Nom channel réduit de 14 à 13 px |
+| État LIVE | Vert dédié plus soutenu, indépendant du vert générique |
 | Déploiement alpha.15 | Validé sur VPS réel le 30/09/2026 ; desktop et mobile vérifiés |
 | Navigation mobile | Sélecteur compact, SYSTEM conservé, SETTINGS masqué |
 | Accessibilité modales | Focus confiné, fond inerte, Escape et retour au déclencheur |
@@ -73,7 +75,9 @@ Alpha.14 a été validée en conditions réelles : ERROR avec consigne START con
 
 Alpha.15 a été déployée sur le VPS réel le 30/09/2026. Les cinq vues desktop ont été vérifiées, puis la navigation et le rendu mobile ont été contrôlés sur l'instance réelle. Les points d'accessibilité clavier restent couverts par les tests navigateur automatisés.
 
-Alpha.16 est fusionnée sur `main` (PR #19, workflows `quality` et `visual` verts). C'est une évolution **strictement UI** : le Dark d'alpha.15 reste la référence par défaut et un Light reprend la palette du portail Distillerie v1.0.3. Les tailles, grilles, métriques typographiques, règles responsive, adaptateurs, API, sécurité, watchdog et actions opérateur restent inchangés. Prochaine action : déployer avec `deployment/update.sh`, vérifier Dark + Light sur desktop/mobile, puis ouvrir la phase 0.2 Monitoring & exploitation.
+Alpha.16 est fusionnée sur `main` (PR #19, workflows `quality` et `visual` verts). Alpha.17 ajoute trois ajustements UI seulement : Light par défaut à la première visite, nom des channels à 13 px, vert LIVE dédié plus soutenu. Les grilles, règles responsive, adaptateurs, API, sécurité, watchdog et actions opérateur restent inchangés. Après CI/fusion : déployer alpha.17 avec `deployment/update.sh` et vérifier Dark + Light sur desktop/mobile.
+
+Étape prévue ensuite : alpha.18 doit étudier puis implémenter un **restart manuel du conteneur Restreamer réservé au rôle Admin**, avec confirmation forte, journalisation, vérification de retour en ligne et helper Docker strictement limité. Aucun restart automatique ni accès Docker arbitraire au frontend.
 
 Point connu non bloquant : les channels 8 et 9 ont déjà montré des oscillations serveur `INCIDENT OPEN → RESOLVED → OPEN` lorsqu'ils sont sans source. La cause n'est pas démontrée ; ne pas modifier cette logique sans investigation dédiée.
 
