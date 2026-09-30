@@ -7,7 +7,7 @@ async function login(page, role = "admin") {
   await page.getByRole("button", { name: "SIGN IN", exact: true }).click();
   await expect(page.locator("#loginGate")).not.toBeVisible();
   await expect(page.locator("#channels")).toContainText("Agora");
-  await expect(page.locator("#apiDetail")).toContainText("0.1.0-alpha.16");
+  await expect(page.locator("#apiDetail")).toContainText("0.1.0-alpha.17");
 }
 async function navigate(page, view) {
   if (await page.locator("#mobileView").isVisible()) await page.locator("#mobileView").selectOption(view);
@@ -18,6 +18,7 @@ async function navigate(page, view) {
 for (const width of [320, 390, 759, 760, 761, 1024, 1600]) {
   test(`all five views at ${width}px without horizontal overflow`, async ({ page }, testInfo) => {
     await page.setViewportSize({ width, height: 900 });
+    await page.addInitScript(() => localStorage.setItem("stream-supervisor-theme", "dark"));
     await page.goto("/");
     await login(page);
     await expect(page.getByText("SETTINGS", { exact: true })).toHaveCount(0);
@@ -43,11 +44,9 @@ for (const width of [390, 1600]) {
   test(`Distillerie light theme at ${width}px keeps every view usable`, async ({ page }, testInfo) => {
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/");
-    await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
-    const loginToggle = page.locator("#loginThemeToggle");
-    await expect(loginToggle).toHaveText("LIGHT");
-    await loginToggle.click();
     await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+    expect(await page.evaluate(() => localStorage.getItem("stream-supervisor-theme"))).toBeNull();
+    const loginToggle = page.locator("#loginThemeToggle");
     await expect(loginToggle).toHaveText("DARK");
     expect(await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue("--bg").trim())).toBe("#f5f3ef");
     expect(await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue("--cyan").trim())).toBe("#e9471d");
@@ -62,20 +61,34 @@ for (const width of [390, 1600]) {
   });
 }
 
-test("theme preference persists locally and can return to the alpha15 dark reference", async ({ page }) => {
+test("first visit defaults to light and explicit theme preference persists locally", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 700 });
   await page.goto("/");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  expect(await page.evaluate(() => localStorage.getItem("stream-supervisor-theme"))).toBeNull();
   await page.locator("#loginThemeToggle").click();
-  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
-  expect(await page.evaluate(() => localStorage.getItem("stream-supervisor-theme"))).toBe("light");
-  await login(page);
-  await page.reload();
-  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
-  await expect(page.locator("#mobileThemeToggle")).toHaveText("DARK");
-  await page.locator("#mobileThemeToggle").click();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
   expect(await page.evaluate(() => localStorage.getItem("stream-supervisor-theme"))).toBe("dark");
+  await login(page);
+  await page.reload();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  await expect(page.locator("#mobileThemeToggle")).toHaveText("LIGHT");
   expect(await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue("--bg").trim())).toBe("#07090b");
+  await page.locator("#mobileThemeToggle").click();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  expect(await page.evaluate(() => localStorage.getItem("stream-supervisor-theme"))).toBe("light");
+  expect(await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue("--bg").trim())).toBe("#f5f3ef");
+});
+
+test("channel title and LIVE emphasis use alpha17 polish tokens", async ({ page }) => {
+  await page.goto("/");
+  await login(page);
+  const channelName = page.locator(".channel-name").first();
+  expect(await channelName.evaluate(el => getComputedStyle(el).fontSize)).toBe("13px");
+  expect(await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue("--live").trim())).toBe("#2f7a50");
+  const liveState = page.locator(".state.live").first();
+  await expect(liveState).toBeVisible();
+  expect(await liveState.evaluate(el => getComputedStyle(el).color)).not.toBe("rgb(68, 116, 91)");
 });
 
 for (const role of ["admin", "tech"]) {
