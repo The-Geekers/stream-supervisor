@@ -181,7 +181,9 @@ async function collectStatus() {
       pollDurationMs
     };
     status.generatedAt = new Date().toISOString();
-    status.incidents = await incidentTracker.update(status);
+    status.incidents = await incidentTracker.update(status, {
+      holdResolutionIds: watchdog.incidentHolds()
+    });
     status.watchdog = await watchdog.evaluate(status);
     return status;
   }
@@ -200,7 +202,9 @@ async function collectStatus() {
     docker: dockerStatus,
     generatedAt: new Date().toISOString()
   };
-  status.incidents = await incidentTracker.update(status);
+  status.incidents = await incidentTracker.update(status, {
+    holdResolutionIds: watchdog.incidentHolds()
+  });
   status.watchdog = await watchdog.evaluate(status);
   return status;
 }
