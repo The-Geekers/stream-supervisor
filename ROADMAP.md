@@ -8,7 +8,7 @@ Socle applicatif, authentification, rôles Admin/Technicien, état système et D
 
 Le périmètre fonctionnel 0.1 est atteint. Alpha.14 a validé en conditions réelles la séparation entre état observé et consigne egress. Alpha.15 a livré le responsive, la navigation mobile, l'accessibilité des modales et la purge frontend ; elle a été déployée et vérifiée sur le VPS réel le 30/09/2026.
 
-Alpha.16 a introduit les thèmes Dark/Light. Alpha.17 finalise le polish : Light par défaut, nom des channels légèrement réduit et vert LIVE plus soutenu. Alpha.18 ajoute l'action exceptionnelle de restart Restreamer réservée à Admin : manuelle, confirmée, journalisée, via helper Docker à cible fixe, avec vérification Core/UI et aucun restart automatique. Après validation réelle d'alpha.18, la stabilisation 0.1 peut être considérée terminée et la phase 0.2 commence.
+Alpha.16 a introduit les thèmes Dark/Light. Alpha.17 finalise le polish : Light par défaut, nom des channels légèrement réduit et vert LIVE plus soutenu. Alpha.18, désormais fusionnée sur `main` via la PR #22, ajoute l'action exceptionnelle de restart Restreamer réservée à Admin : manuelle, confirmée, journalisée, via helper Docker à cible fixe, avec vérification Core/UI et aucun restart automatique. Après déploiement et validation réelle d'alpha.18, la stabilisation 0.1 peut être considérée terminée et la phase 0.2 commence.
 
 ## 0.2 — Monitoring & exploitation
 
