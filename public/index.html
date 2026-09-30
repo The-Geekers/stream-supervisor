@@ -1,12 +1,9 @@
 <!doctype html>
-<html lang="fr">
+<html lang="fr" data-theme="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Stream Supervisor</title>
-<script>
-(()=>{try{const value=localStorage.getItem("stream-supervisor-theme");document.documentElement.dataset.theme=value==="light"?"light":"dark"}catch{document.documentElement.dataset.theme="dark"}})();
-</script>
 <style>
 :root{color-scheme:dark;--bg:#07090b;--side:#050708;--panel:#0b0f12;--line:#263039;--line-soft:#182027;--text:#e9eef2;--muted:#7d8a95;--cyan:#43c7f4;--green:#5cdb7c;--amber:#f0b64d;--red:#ff6464;--off:#606b74;font-family:Arial,Helvetica,sans-serif}
 *{box-sizing:border-box}html{overflow-y:scroll;scrollbar-gutter:stable}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text)}body{font-size:13px}button{font:inherit}
@@ -405,7 +402,10 @@ function applyTheme(value,{persist=false}={}){
 function toggleTheme(){
   applyTheme(document.documentElement.dataset.theme==="light"?"dark":"light",{persist:true});
 }
-applyTheme(document.documentElement.dataset.theme||"dark");
+function storedTheme(){
+  try{return localStorage.getItem(THEME_KEY)==="light"?"light":"dark"}catch{return "dark"}
+}
+applyTheme(storedTheme());
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
 const fmtTime=s=>{s=Math.max(0,Math.floor(Number(s)||0));const d=Math.floor(s/86400);s%=86400;const h=Math.floor(s/3600);s%=3600;const m=Math.floor(s/60);return[d?d+"d":null,h?h+"h":null,m+"m"].filter(Boolean).join(" ")||"<1m"};
 const fmtBitrate=k=>{k=Number(k)||0;return k>=1000?(k/1000).toFixed(2)+" Mb/s":Math.round(k)+" kb/s"};
