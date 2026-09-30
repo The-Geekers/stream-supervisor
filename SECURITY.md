@@ -46,6 +46,12 @@ SUPERVISOR_TECH_PASSWORD=
 
 `SUPERVISOR_USERNAME` correspond au rôle Admin. Le compte Technician est optionnel.
 
+Quand l'authentification est configurée, le navigateur utilise l'écran de connexion intégré. Les credentials servent uniquement à ouvrir une session côté serveur. Le navigateur reçoit un cookie de session HttpOnly / SameSite=Strict ; il n'a pas accès au token via JavaScript. Le bouton LOG OUT invalide la session côté serveur et efface le cookie.
+
+Les sessions expirent après une durée configurable (`SUPERVISOR_SESSION_TTL_MS`, 8 h par défaut). Le cookie reçoit `Secure` lorsque la requête arrive via HTTPS derrière le reverse proxy, ou lorsque `SUPERVISOR_COOKIE_SECURE=true` est forcé.
+
+Les échecs de connexion sont limités par fenêtre temporelle afin de réduire les tentatives répétées.
+
 Sans compte configuré, le monitoring reste accessible mais toutes les écritures sont verrouillées.
 
 ## Web UI Restreamer
