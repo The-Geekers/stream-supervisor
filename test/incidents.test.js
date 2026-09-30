@@ -105,3 +105,57 @@ test("transient waiting ingest is debounced", async () => {
   const snapshot = await tracker.update(status);
   assert.equal(snapshot.summary.active, 0);
 });
+
+
+test("active egress incident stays open while watchdog verification holds resolution", async () => {
+  const dir = await mkdtemp(join(tmpdir(), "stream-supervisor-incident-hold-"));
+  try {
+    const journal = new EventJournal({ filePath:join(dir, "events.jsonl") });
+    await journal.init();
+    const tracker = new IncidentTracker({
+      journal,
+      stateFile:join(dir, "incidents-state.json")
+    });
+    await tracker.init();
+
+    const outputId = "restreamer-ui:egress:rtmp:11111111-1111-1111-1111-111111111111";
+    const incidentId = `output:${outputId}:error`;
+    const status = healthyStatus();
+    status.restreamer.channels = [{
+      id:"channel-demo",
+      name:"Demo",
+      status:"live",
+      outputs:[{
+        id:outputId,
+        name:"RTMP Test",
+        provider:"rtmp",
+        status:"error"
+      }]
+    }];
+
+    await tracker.update(status);
+    tracker.pending.set(incidentId, Date.now() - 4000);
+    let snapshot = await tracker.update(status);
+    assert.equal(snapshot.summary.active, 1);
+
+    status.restreamer.channels[0].outputs[0].status = "connecting";
+    snapshot = await tracker.update(status, {
+      holdResolutionIds:new Set([incidentId])
+    });
+
+    assert.equal(snapshot.summary.active, 1);
+    assert.equal(
+      journal.list(20).some((event) => event.kind === "incident_resolved" && event.incidentId === incidentId),
+      false
+    );
+
+    snapshot = await tracker.update(status);
+    assert.equal(snapshot.summary.active, 0);
+    assert.equal(
+      journal.list(20).some((event) => event.kind === "incident_resolved" && event.incidentId === incidentId),
+      true
+    );
+  } finally {
+    await rm(dir, { recursive:true, force:true });
+  }
+});
