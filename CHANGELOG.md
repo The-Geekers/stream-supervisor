@@ -2,6 +2,26 @@
 
 ## [Unreleased]
 
+## [0.2.0-alpha.2] - 2026-09-30
+
+### Changed
+- Historique INCIDENTS limité visuellement à 20 incidents racine et **1H par défaut**, avec sélecteurs 1H / TODAY / 24H.
+- Remplacement du « Cumulated time » par **Affected time** : union des intervalles où au moins un incident est actif, sans double comptage des incidents simultanés.
+- Les erreurs egress entièrement couvertes par une perte ingest du même channel sont regroupées sous l'incident ingest dans la vue opérateur.
+- Une erreur egress qui dépasse la durée de la perte ingest reste visible comme incident autonome.
+- Les incidents actifs utilisent le même principe de regroupement visuel, sans modifier le tracker interne ni les règles watchdog.
+- Le journal brut reste persistant mais devient replié par défaut et limité aux 20 événements récents dans l'UI.
+
+### Added
+- Bouton discret `↑ TOP` qui apparaît après scroll ; positionné dans la zone latérale sur desktop et en bas à droite sur mobile.
+- Tests unitaires du temps affecté, des incidents simultanés, du regroupement ingest→egress et de la limite d'affichage.
+- Tests navigateur des filtres 1H/TODAY, du nombre de lignes borné et du retour en haut.
+
+### Scope
+- Aucun effacement automatique ou bouton « clear » destructif : la lisibilité est obtenue par regroupement, période et limites d'affichage.
+- Aucun changement de la détection brute des incidents, du watchdog, des commandes opérateur ou du stockage persistant.
+
+
 ## [0.2.0-alpha.1] - 2026-09-30
 
 ### Added
