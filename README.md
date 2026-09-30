@@ -17,7 +17,7 @@ Le premier moteur ciblé est **Restreamer**. L'architecture reste volontairement
 
 `0.1.0-alpha.18`
 
-Alpha.18 ajoute une recovery manuelle exceptionnelle réservée à Admin. Son déploiement sur le VPS réel reste à effectuer avant validation opérationnelle.
+Alpha.18 est fusionnée sur `main` (PR #22, workflows `quality` et `visual` verts). Son déploiement sur le VPS réel reste à effectuer avant validation opérationnelle.
 
 - navigation compacte mobile vers les cinq vues, dont **SYSTEM**, avec sidebar conservée sur tablette/desktop ;
 - modales accessibles au clavier : focus initial, Tab/Shift+Tab confinés, Escape et retour au déclencheur ;
