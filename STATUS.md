@@ -58,4 +58,4 @@ Avec authentification :
 
 ## Prochaine étape
 
-Valider alpha.12 sur le VPS réel d'abord en mode observe. N'armer la recovery egress automatique qu'après validation d'un scénario réel ou contrôlé.
+Alpha.12 validée sur le VPS réel en mode observe : un egress RTMP volontairement en erreur avec ingest LIVE est passé de OBSERVING à ELIGIBLE, a généré l'incident et l'événement WATCHDOG CANDIDATE sans aucune commande automatique. Les ingests absents restent exclus des recovery candidates. Prochaine étape : test contrôlé du mode recover sur une destination jetable.
