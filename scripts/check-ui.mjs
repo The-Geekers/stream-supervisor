@@ -16,7 +16,7 @@ try {
 }
 
 const requiredIds = [
-  "appShell","mobileView","desktopThemeToggle","mobileThemeToggle","loginThemeToggle","adminRecovery","restartRestreamerButton",
+  "appShell","mobileView","desktopThemeToggle","mobileThemeToggle","loginThemeToggle","adminRecovery","restartRestreamerButton","historyIncidentCount","historyCumulative","historyLongest","historyActiveNow","incidentHistory",
   "viewChannels","viewSystem","pageTitle","dockerEngine","dockerRunning",
   "dockerUnhealthy","dockerAge","dockerContainers","dockerDot","modeBadge","authBadge",
   "viewIncidents","incidentActiveCount","incidentCriticalCount","incidentWarningCount",
@@ -46,6 +46,10 @@ if (!html.includes('stream-supervisor-theme') || !html.includes('<html lang="fr"
 }
 if (!html.includes("--live:#39e56f") || !html.includes(".channel-name{font-size:13px")) {
   console.error("UI CHECK FAILED: alpha.17 channel/LIVE polish is missing");
+  process.exit(1);
+}
+if (!html.includes("TODAY · INCIDENT HISTORY") || !html.includes("historyLimit")) {
+  console.error("UI CHECK FAILED: 0.2 incident history wiring is missing");
   process.exit(1);
 }
 if (!html.includes("/api/admin/restart-restreamer")) {
