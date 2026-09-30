@@ -17,7 +17,7 @@ Le premier moteur ciblé est **Restreamer**. L'architecture reste volontairement
 
 `0.2.0-alpha.2`
 
-`v0.1.0-alpha.18` reste le point de référence figé de la stabilisation 0.1. La série 0.2 travaille maintenant la lisibilité d'exploitation des incidents sans ajouter de stack de métriques.
+`v0.1.0-alpha.18` reste le point de référence figé de la stabilisation 0.1. `0.2.0-alpha.2` est fusionnée sur `main` via la PR #25 après validation `quality` et `visual` ; elle travaille la lisibilité d'exploitation des incidents sans ajouter de stack de métriques.
 
 - navigation compacte mobile vers les cinq vues, dont **SYSTEM**, avec sidebar conservée sur tablette/desktop ;
 - modales accessibles au clavier : focus initial, Tab/Shift+Tab confinés, Escape et retour au déclencheur ;
