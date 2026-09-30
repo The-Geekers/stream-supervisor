@@ -61,4 +61,6 @@ Avec authentification :
 
 ## Prochaine étape
 
+Alpha.13 ajoute une connexion intégrée, une vraie déconnexion, des confirmations cohérentes avec l'interface et un libellé watchdog plus explicite en mode OBSERVE. Après validation sur le VPS, reprise de la phase 0.2 Monitoring & exploitation.
+
 Alpha.12 validée sur le VPS réel en modes observe et recover : un egress RTMP volontairement invalide avec ingest LIVE est devenu recovery candidate, a déclenché une unique commande START ciblée, puis une vérification après délai. La recovery non confirmée a été journalisée, la limite d'une tentative a conduit l'état à MANUAL, sans restart Core/conteneur ni action sur les autres flux. Les ingests absents restent exclus des recovery candidates. Correction alpha.12.1 : pendant la fenêtre de vérification watchdog, l'incident egress reste maintenu ouvert afin d'éviter le bruit RESOLVED → OPEN provoqué par un état transitoire après START.
