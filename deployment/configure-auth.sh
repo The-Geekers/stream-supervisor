@@ -97,4 +97,4 @@ until curl -fsS http://127.0.0.1:8090/health >/dev/null; do
 done
 
 echo "OK: Supervisor authentication configured."
-echo "Reload the browser. It will request the configured credentials."
+echo "Reload the browser. Stream Supervisor will show its own secure sign-in screen."
