@@ -16,16 +16,21 @@ Phase active.
 
 ### 0.2 alpha.1 — Historique incidents minimal
 
-Premier lot volontairement limité :
-- historique journalier des incidents à partir du journal persistant existant ;
-- nombre d'incidents et nombre résolu ;
-- somme des durées d'incidents ;
-- incident le plus long ;
-- début, fin, source, sévérité et durée de chaque occurrence.
+Premier lot : historique dérivé du journal persistant, testé en production. La validation réelle a révélé une surcharge de lecture : événements parallèles additionnés et page trop longue.
 
-La période TODAY suit le jour local du navigateur. Aucun graphique, stockage de métriques haute fréquence, alerte externe ou enrichissement watchdog n'est inclus dans ce premier lot.
+### 0.2 alpha.2 — Vue opérateur incidents
 
-La PR #24 est fusionnée sur `main` avec les workflows `quality` et `visual` verts. Les étapes suivantes de 0.2 restent : métriques historiques utiles, alertes et historique de recovery, mais elles ne seront ouvertes qu'après validation réelle de ce premier bloc.
+Correction ciblée :
+- 1H par défaut, sélecteurs TODAY / 24H ;
+- 20 lignes d'historique maximum ;
+- `Affected time` calculé par union des intervalles pour ne pas multiplier le temps lors d'incidents parallèles ;
+- regroupement des erreurs egress entièrement couvertes par une perte ingest du même channel ;
+- journal brut replié et limité à 20 événements dans l'UI ;
+- bouton de retour en haut après scroll.
+
+Le journal persistant complet et les incidents techniques restent conservés. Aucun changement watchdog, aucune alerte externe, aucun graphique et aucune nouvelle base dans ce lot.
+
+Les étapes suivantes de 0.2 restent les métriques historiques utiles, les alertes et l'historique de recovery, mais une nouvelle brique ne sera ouverte qu'après validation réelle de cette vue opérateur.
 
 ## 0.3 — Multi-engine
 

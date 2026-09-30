@@ -16,7 +16,7 @@ try {
 }
 
 const requiredIds = [
-  "appShell","mobileView","desktopThemeToggle","mobileThemeToggle","loginThemeToggle","adminRecovery","restartRestreamerButton","historyIncidentCount","historyCumulative","historyLongest","historyActiveNow","incidentHistory",
+  "appShell","mobileView","desktopThemeToggle","mobileThemeToggle","loginThemeToggle","adminRecovery","restartRestreamerButton","backToTop","historyIncidentCount","historyResolvedCount","historyAffected","historyLongest","historyGrouped","historyScopeNote","incidentHistory",
   "viewChannels","viewSystem","pageTitle","dockerEngine","dockerRunning",
   "dockerUnhealthy","dockerAge","dockerContainers","dockerDot","modeBadge","authBadge",
   "viewIncidents","incidentActiveCount","incidentCriticalCount","incidentWarningCount",
@@ -48,8 +48,16 @@ if (!html.includes("--live:#39e56f") || !html.includes(".channel-name{font-size:
   console.error("UI CHECK FAILED: alpha.17 channel/LIVE polish is missing");
   process.exit(1);
 }
-if (!html.includes("TODAY · INCIDENT HISTORY") || !html.includes("historyLimit")) {
-  console.error("UI CHECK FAILED: 0.2 incident history wiring is missing");
+if (!html.includes("INCIDENT HISTORY") || !html.includes('data-history-range="1h"') || !html.includes('data-history-range="today"') || !html.includes('data-history-range="24h"') || !html.includes("historyLimit")) {
+  console.error("UI CHECK FAILED: bounded 0.2 incident history wiring is missing");
+  process.exit(1);
+}
+if (!html.includes("RAW EVENT JOURNAL · LAST 20") || !html.includes('limit:"20"') || !html.includes('historyLimit:"20"')) {
+  console.error("UI CHECK FAILED: incident page bounds are missing");
+  process.exit(1);
+}
+if (!html.includes("backToTop") || !html.includes("window.scrollY<420")) {
+  console.error("UI CHECK FAILED: back-to-top wiring is missing");
   process.exit(1);
 }
 if (!html.includes("/api/admin/restart-restreamer")) {

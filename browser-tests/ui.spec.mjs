@@ -7,7 +7,7 @@ async function login(page, role = "admin") {
   await page.getByRole("button", { name: "SIGN IN", exact: true }).click();
   await expect(page.locator("#loginGate")).not.toBeVisible();
   await expect(page.locator("#channels")).toContainText("Agora");
-  await expect(page.locator("#apiDetail")).toContainText("0.2.0-alpha.1");
+  await expect(page.locator("#apiDetail")).toContainText("0.2.0-alpha.2");
 }
 async function navigate(page, view) {
   if (await page.locator("#mobileView").isVisible()) await page.locator("#mobileView").selectOption(view);
@@ -80,14 +80,35 @@ test("first visit defaults to light and explicit theme preference persists local
   expect(await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue("--bg").trim())).toBe("#f5f3ef");
 });
 
-test("0.2 daily incident history renders count and durations", async ({ page }) => {
+test("0.2 incident view defaults to a bounded one-hour operator history", async ({ page }) => {
   await page.goto("/");
   await login(page);
   await navigate(page, "incidents");
+  await expect(page.locator('.range-button[data-history-range="1h"]')).toHaveClass(/active/);
+  await expect(page.locator("#historyScopeNote")).toHaveText("LAST HOUR");
   await expect(page.locator("#historyIncidentCount")).not.toHaveText("--");
-  await expect(page.locator("#historyCumulative")).toHaveText(/\d+[smh]/);
+  await expect(page.locator("#historyAffected")).toHaveText(/\d+[smh]/);
+  await expect(page.locator("#historyGrouped")).not.toHaveText("--");
   await expect(page.locator("#incidentHistory")).toBeVisible();
+  await expect(page.locator(".journal-details")).not.toHaveAttribute("open", "");
+  expect(await page.locator("#incidentHistory .history-row").count()).toBeLessThanOrEqual(20);
+
+  await page.locator('.range-button[data-history-range="today"]').click();
+  await expect(page.locator('.range-button[data-history-range="today"]')).toHaveClass(/active/);
+  await expect(page.locator("#historyScopeNote")).toHaveText("TODAY");
+
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1)).toBe(true);
+});
+
+test("back-to-top control appears only after scrolling and returns to page top", async ({ page }) => {
+  await page.goto("/");
+  await login(page);
+  await page.evaluate(() => { document.body.style.minHeight = "3000px"; });
+  await expect(page.locator("#backToTop")).toBeHidden();
+  await page.evaluate(() => window.scrollTo(0, 900));
+  await expect(page.locator("#backToTop")).toBeVisible();
+  await page.locator("#backToTop").click();
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeLessThan(10);
 });
 
 test("channel title and LIVE emphasis use alpha17 polish tokens", async ({ page }) => {
