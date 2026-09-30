@@ -17,7 +17,7 @@ Le premier moteur ciblé est **Restreamer**. L'architecture reste volontairement
 
 `0.2.0-alpha.1`
 
-`v0.1.0-alpha.18` reste le point de référence figé de la stabilisation 0.1. La branche 0.2 démarre avec un premier bloc volontairement limité à l'historique des incidents.
+`v0.1.0-alpha.18` reste le point de référence figé de la stabilisation 0.1. `main` est désormais en `0.2.0-alpha.1` avec un premier bloc volontairement limité à l'historique des incidents.
 
 - navigation compacte mobile vers les cinq vues, dont **SYSTEM**, avec sidebar conservée sur tablette/desktop ;
 - modales accessibles au clavier : focus initial, Tab/Shift+Tab confinés, Escape et retour au déclencheur ;
