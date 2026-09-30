@@ -130,3 +130,33 @@ test("watchdog refuses recovery when Core authentication is unavailable", async 
   assert.equal(snapshot.candidates.length, 0);
   assert.equal(calls.length, 0);
 });
+
+
+test("watchdog exposes incident hold while targeted recovery is being verified", async () => {
+  const { status, outputId } = statusFixture();
+  const watchdog = new Watchdog({
+    journal:fakeJournal(),
+    restreamer:{ async commandOutput() {} },
+    mode:"recover",
+    outputRecoveryEnabled:true,
+    errorThresholdMs:5000,
+    verifyAfterMs:5000,
+    maxAttempts:1
+  });
+
+  await watchdog.evaluate(status);
+  watchdog.firstSeen.set(outputId, Date.now() - 6000);
+  await watchdog.evaluate(status);
+
+  assert.deepEqual(
+    [...watchdog.incidentHolds()],
+    [`output:${outputId}:error`]
+  );
+
+  status.restreamer.channels[0].outputs[0].status = "live";
+  status.incidents.active = [];
+  status.incidents.summary = { active:0, critical:0, warning:0 };
+  await watchdog.evaluate(status);
+
+  assert.deepEqual([...watchdog.incidentHolds()], []);
+});
