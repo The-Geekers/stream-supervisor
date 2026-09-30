@@ -1,7 +1,7 @@
 # Project Status
 
-**Version :** 0.1.0-alpha.17
-**Phase :** socle 0.1 fonctionnel + polish UI avant recovery Admin
+**Version :** 0.1.0-alpha.18
+**Phase :** socle 0.1 fonctionnel + recovery Admin manuelle de dernier recours
 
 | Domaine | État |
 |---|---|
@@ -44,7 +44,9 @@
 | Diagnostics | Intégrés, safe export JSON |
 | Incidents actifs | Intégrés |
 | Journal événements | Intégré, persistant |
-| Actions opérateur dans le journal | Intégrées |
+| Actions opérateur dans le journal | Intégrées, y compris restart Restreamer Admin |
+| Restart Restreamer manuel | Alpha 18 : Admin uniquement, confirmation forte, helper Docker cible fixe, vérification Core/UI |
+| Docker control helper | Réseau interne uniquement, aucun port hôte, socket absent du frontend/Supervisor Web |
 | Watchdog gradué | Intégré, mode observe par défaut |
 | Recovery egress ciblée | Intégrée mais désarmée par défaut |
 | Restart automatique Restreamer | Interdit en alpha.12 |
@@ -67,7 +69,7 @@ Sans compte Supervisor configuré, l'interface reste accessible en monitoring ma
 
 Avec authentification :
 - **Technician** : start/stop des destinations existantes ;
-- **Admin** : mêmes actions dans alpha.9, rôle réservé aux futures opérations plus sensibles.
+- **Admin** : start/stop des destinations et restart manuel du conteneur Restreamer en dernier recours.
 
 ## Prochaine étape
 
@@ -75,9 +77,9 @@ Alpha.14 a été validée en conditions réelles : ERROR avec consigne START con
 
 Alpha.15 a été déployée sur le VPS réel le 30/09/2026. Les cinq vues desktop ont été vérifiées, puis la navigation et le rendu mobile ont été contrôlés sur l'instance réelle. Les points d'accessibilité clavier restent couverts par les tests navigateur automatisés.
 
-Alpha.16 est fusionnée sur `main` (PR #19, workflows `quality` et `visual` verts). Alpha.17 ajoute trois ajustements UI seulement : Light par défaut à la première visite, nom des channels à 13 px, vert LIVE dédié plus soutenu. Les grilles, règles responsive, adaptateurs, API, sécurité, watchdog et actions opérateur restent inchangés. Après CI/fusion : déployer alpha.17 avec `deployment/update.sh` et vérifier Dark + Light sur desktop/mobile.
+Alpha.17 est fusionnée sur `main` après workflows `quality` et `visual` verts. Elle finalise le polish UI : Light par défaut, nom des channels à 13 px et vert LIVE dédié.
 
-Étape prévue ensuite : alpha.18 doit étudier puis implémenter un **restart manuel du conteneur Restreamer réservé au rôle Admin**, avec confirmation forte, journalisation, vérification de retour en ligne et helper Docker strictement limité. Aucun restart automatique ni accès Docker arbitraire au frontend.
+Alpha.18 implémente le **restart manuel du conteneur Restreamer réservé à Admin**. L'action exige une confirmation destructive, passe par un helper Docker séparé et interne dont la cible est fixée à `restreamer`, journalise demande/résultat, puis vérifie le retour de Core et de la Web UI. Technician ne reçoit pas ce contrôle. Aucun restart automatique n'est ajouté au watchdog et le frontend n'accède jamais au socket Docker. Après CI/fusion : déployer alpha.18, valider le contrôle de rôle puis effectuer un test réel uniquement dans une fenêtre où une interruption de tous les streams est acceptable.
 
 Point connu non bloquant : les channels 8 et 9 ont déjà montré des oscillations serveur `INCIDENT OPEN → RESOLVED → OPEN` lorsqu'ils sont sans source. La cause n'est pas démontrée ; ne pas modifier cette logique sans investigation dédiée.
 
