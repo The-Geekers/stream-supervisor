@@ -1,11 +1,11 @@
 <!doctype html>
-<html lang="fr" data-theme="dark">
+<html lang="fr" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Stream Supervisor</title>
 <style>
-:root{color-scheme:dark;--bg:#07090b;--side:#050708;--panel:#0b0f12;--line:#263039;--line-soft:#182027;--text:#e9eef2;--muted:#7d8a95;--cyan:#43c7f4;--green:#5cdb7c;--amber:#f0b64d;--red:#ff6464;--off:#606b74;font-family:Arial,Helvetica,sans-serif}
+:root{color-scheme:dark;--bg:#07090b;--side:#050708;--panel:#0b0f12;--line:#263039;--line-soft:#182027;--text:#e9eef2;--muted:#7d8a95;--cyan:#43c7f4;--green:#5cdb7c;--live:#39e56f;--amber:#f0b64d;--red:#ff6464;--off:#606b74;font-family:Arial,Helvetica,sans-serif}
 *{box-sizing:border-box}html{overflow-y:scroll;scrollbar-gutter:stable}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text)}body{font-size:13px}button{font:inherit}
 .shell{min-height:100vh;display:grid;grid-template-columns:190px minmax(0,1fr)}.sidebar{background:var(--side);border-right:1px solid var(--line);padding:18px 12px;display:flex;flex-direction:column}
 .brand{padding:3px 8px 18px;font-size:14px;font-weight:800;letter-spacing:.12em;border-bottom:1px solid var(--line)}.brand small{display:block;margin-top:6px;color:var(--muted);font:10px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.08em}
@@ -18,8 +18,8 @@
 .toolbar{min-height:42px;display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid var(--line);border-bottom:0;background:#090c0f;padding:6px 10px}.toolbar-title{font-size:10px;font-weight:800;letter-spacing:.11em}.toolbar-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.filters{display:flex;gap:5px}.control-label{align-self:center;color:var(--muted);font:9px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.08em}.filter{border:1px solid var(--line);background:#080b0d;color:var(--muted);padding:5px 8px;font:10px ui-monospace,SFMono-Regular,Consolas,monospace;cursor:pointer}.filter.active{color:#fff;border-color:#46535d;background:#11171c}
 .table{border:1px solid var(--line);background:var(--panel)}.table-head,.channel{display:grid;grid-template-columns:minmax(230px,2.1fr) 100px 160px 145px 120px 92px minmax(280px,2fr)}.table-head{background:#0c1014;border-bottom:1px solid var(--line);color:var(--muted);font-size:9px;font-weight:800;letter-spacing:.09em;text-transform:uppercase}.sort-head{appearance:none;border:0;border-right:1px solid var(--line-soft);background:transparent;color:var(--muted);padding:8px 9px;text-align:left;font:inherit;letter-spacing:inherit;text-transform:inherit;cursor:pointer;white-space:nowrap}.sort-head:hover,.sort-head:focus-visible{color:var(--text);background:#11171c;outline:none}.sort-head.active{color:var(--text)}.sort-arrow{display:inline-block;min-width:10px;margin-left:4px;color:var(--cyan)}
 .channel{min-height:80px;border-bottom:1px solid var(--line-soft);background:#0a0e11}.channel:last-child{border-bottom:0}.channel:hover{background:#0d1216}.cell{padding:9px;border-right:1px solid var(--line-soft);min-width:0;display:flex;align-items:center}.cell:last-child{border-right:0}
-.identity{display:grid;grid-template-columns:6px minmax(0,1fr);gap:10px;width:100%;align-items:stretch}.signal{width:6px;min-height:54px;background:var(--off)}.signal.live{background:var(--green)}.signal.connecting{background:var(--cyan)}.signal.waiting{background:var(--amber)}.signal.stopped{background:#3e4850}.channel-name{font-size:14px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.techline{margin-top:6px;color:var(--muted);font:10px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.state{font:800 10px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.05em}.state.live{color:var(--green)}.state.connecting{color:var(--cyan)}.state.waiting{color:var(--amber)}.state.error{color:var(--red)}.state.stopped,.state.idle{color:var(--off)}.spec{font:11px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}.spec small{display:block;color:var(--muted);font-size:9px}
+.identity{display:grid;grid-template-columns:6px minmax(0,1fr);gap:10px;width:100%;align-items:stretch}.signal{width:6px;min-height:54px;background:var(--off)}.signal.live{background:var(--live)}.signal.connecting{background:var(--cyan)}.signal.waiting{background:var(--amber)}.signal.stopped{background:#3e4850}.channel-name{font-size:13px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.techline{margin-top:6px;color:var(--muted);font:10px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.state{font:800 10px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.05em}.state.live{color:var(--live)}.state.connecting{color:var(--cyan)}.state.waiting{color:var(--amber)}.state.error{color:var(--red)}.state.stopped,.state.idle{color:var(--off)}.spec{font:11px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}.spec small{display:block;color:var(--muted);font-size:9px}
 .outputs{display:flex;flex-direction:column;gap:5px;width:100%}.output{display:grid;grid-template-columns:minmax(0,1fr) 74px 52px;gap:8px;padding-bottom:4px;border-bottom:1px dotted #222a31;align-items:center}.output:last-child{border:0;padding-bottom:0}.output-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:11px}.output-meta{margin-top:2px;color:var(--muted);font:9px ui-monospace,SFMono-Regular,Consolas,monospace}.output-state{text-align:right}.output-action{border:1px solid var(--line);background:#090d10;color:var(--muted);padding:4px 5px;font:800 9px ui-monospace,SFMono-Regular,Consolas,monospace;cursor:pointer}.output-action:hover{color:var(--text);border-color:#4d5a64}.output-action.start{color:var(--green)}.output-action.stop{color:var(--amber)}.output-action:disabled{opacity:.35;cursor:not-allowed}
 .empty{padding:30px 12px;color:var(--muted);font:11px ui-monospace,SFMono-Regular,Consolas,monospace}.footerline{display:flex;gap:18px;flex-wrap:wrap;margin-top:9px;color:var(--muted);font:10px ui-monospace,SFMono-Regular,Consolas,monospace}.dot{display:inline-block;width:6px;height:6px;margin-right:6px;background:var(--off)}.dot.ok{background:var(--green)}.dot.warn{background:var(--amber)}.dot.bad{background:var(--red)}
 .alert-note{display:none;margin-bottom:12px;border:1px solid #614a20;background:#151106;color:#e8c16f;padding:9px 11px;font:10px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace}.alert-note.show{display:block}.docker-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--line);background:var(--panel);margin-bottom:12px}.docker-summary .metric:nth-child(4){border-right:0}.docker-table{border:1px solid var(--line);background:var(--panel)}.docker-head,.docker-row{display:grid;grid-template-columns:minmax(170px,1.5fr) minmax(220px,2fr) 100px 100px 110px 120px 110px}.docker-head{background:#0c1014;color:var(--muted);font-size:9px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;border-bottom:1px solid var(--line)}.docker-head>div,.docker-cell{padding:9px 10px;border-right:1px solid var(--line-soft)}.docker-head>div:last-child,.docker-cell:last-child{border-right:0}.docker-row{min-height:54px;border-bottom:1px solid var(--line-soft)}.docker-row:last-child{border-bottom:0}.docker-name{font-weight:800}.docker-image{color:var(--muted);font:10px ui-monospace,SFMono-Regular,Consolas,monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.docker-note{margin-top:9px;color:var(--muted);font:9px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}
@@ -96,6 +96,7 @@
   --muted:#6d6d6d;
   --cyan:#e9471d;
   --green:#44745b;
+  --live:#2f7a50;
   --amber:#8c6112;
   --red:#aa2730;
   --off:#8a8175;
@@ -208,7 +209,7 @@
       <button type="button" class="nav-item" data-view="diagnostics" title="DIAGNOSTICS"><i class="nav-dot" aria-hidden="true"></i><span>DIAGNOSTICS</span></button>
       <button type="button" class="nav-item" data-view="watchdog" title="WATCHDOG"><i class="nav-dot" aria-hidden="true"></i><span>WATCHDOG</span></button>
     </nav>
-    <div class="side-foot">RESTREAMER / READ ONLY<br><span id="sideVersion">v0.1.0-alpha.16</span><button id="desktopThemeToggle" class="theme-toggle" type="button" aria-label="Switch to light theme">LIGHT</button></div>
+    <div class="side-foot">RESTREAMER / READ ONLY<br><span id="sideVersion">v0.1.0-alpha.17</span><button id="desktopThemeToggle" class="theme-toggle" type="button" aria-label="Switch to light theme">LIGHT</button></div>
   </aside>
 
   <main class="main">
@@ -403,7 +404,7 @@ function toggleTheme(){
   applyTheme(document.documentElement.dataset.theme==="light"?"dark":"light",{persist:true});
 }
 function storedTheme(){
-  try{return localStorage.getItem(THEME_KEY)==="light"?"light":"dark"}catch{return "dark"}
+  try{return localStorage.getItem(THEME_KEY)==="dark"?"dark":"light"}catch{return "light"}
 }
 applyTheme(storedTheme());
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
@@ -1033,7 +1034,7 @@ function applyStatus(x){
     $("outputErrors").textContent=s.outputErrors??0;
     $("outputErrors").style.color=(s.outputErrors??0)>0?"var(--red)":"var(--text)";
     $("supervisorVersion").textContent=x.supervisor?.version||"--";
-    $("sideVersion").textContent=x.supervisor?.version||"v0.1.0-alpha.16";
+    $("sideVersion").textContent=x.supervisor?.version||"v0.1.0-alpha.17";
     $("monitorTransport").textContent=(monitoring.transport||"poll").toUpperCase()+" · source "+(monitoring.sourcePollMs||"--")+" ms · core "+(monitoring.pollDurationMs??"--")+" ms";
     latestChannels=r.channels||[];
     latestIncidentState=x.incidents||{active:[],summary:{}};
