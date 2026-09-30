@@ -1,6 +1,6 @@
 # Restreamer Adapter
 
-**État : monitoring + contrôle egress limité dans `0.1.0-alpha.9`.**
+**État : monitoring + contrôle egress limité dans `0.1.0-alpha.14`.**
 
 ## Instance auditée
 
@@ -35,7 +35,16 @@ Le endpoint `/api/v3/config/reload` recharge la configuration mais déclenche un
 
 Si l'UI tombe alors que l'API reste disponible, Supervisor continue à monitorer et à piloter les destinations via l'API sans toucher aux flux.
 
-## Écriture alpha.9
+## État observé et consigne opérateur
+
+Supervisor conserve séparément :
+- l'état observé du process (`LIVE`, `CONNECTING`, `ERROR`, `STOPPED`) ;
+- la consigne Restreamer sanitizée depuis `state.order` (`start` / `stop`) ;
+- le délai de reconnexion `state.reconnect_seconds` lorsqu'il est disponible.
+
+Le bouton opérateur est calculé depuis la consigne et non depuis l'état observé. Une destination en `ERROR` avec `state.order=start` affiche donc **STOP**, car Restreamer continue ses tentatives de reconnexion tant que cette consigne reste active.
+
+## Écriture alpha.14
 
 Les seules commandes exposées sont `start` et `stop` sur un egress existant.
 
