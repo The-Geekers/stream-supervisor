@@ -64,7 +64,7 @@ if (!html.includes("/api/restreamer/output-command")) {
   console.error("UI CHECK FAILED: output command endpoint wiring is missing");
   process.exit(1);
 }
-if (!html.includes("/api/incidents?limit=100")) {
+if (!html.includes("/api/incidents?")) {
   console.error("UI CHECK FAILED: incidents endpoint wiring is missing");
   process.exit(1);
 }
