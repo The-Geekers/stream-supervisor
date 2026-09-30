@@ -36,6 +36,46 @@
 @media(max-width:1280px){.table-head,.channel{grid-template-columns:minmax(210px,2fr) 95px 150px 120px 105px minmax(240px,2fr)}.table-head>.sort-head:nth-child(6),.channel>.cell:nth-child(6){display:none}}
 @media(max-width:1200px){.host-strip{grid-template-columns:repeat(4,1fr)}.host-metric:nth-child(4n){border-right:0}.telemetry{grid-template-columns:repeat(4,1fr)}.metric:nth-child(4n){border-right:0}}@media(max-width:1050px){.shell{grid-template-columns:58px minmax(0,1fr)}.brand{font-size:0}.brand:before{content:"SS";font-size:14px}.brand small,.nav-item span{display:none}.nav-item{justify-content:center}.telemetry{grid-template-columns:repeat(4,1fr)}.metric:nth-child(4n){border-right:0}.service-strip{grid-template-columns:1fr}.service{border-right:0;border-bottom:1px solid var(--line)}.service:last-child{border-bottom:0}.table-head{display:none}.channel{grid-template-columns:minmax(200px,1.8fr) 90px 140px 110px minmax(220px,1.6fr)}.channel>.cell:nth-child(4),.channel>.cell:nth-child(6){display:none}}
 @media(max-width:760px){.host-strip{grid-template-columns:repeat(2,1fr)}.host-metric:nth-child(even){border-right:0}.shell{display:block}.sidebar{display:none}.topbar{padding:0 10px}.subtitle,.clock{display:none}.content{padding:10px}.telemetry{grid-template-columns:repeat(2,1fr)}.metric:nth-child(odd){border-right:1px solid var(--line)}.metric:nth-child(even){border-right:0}.channel{display:block;padding:9px}.cell{border:0;padding:5px 0}.identity{min-height:50px}.toolbar{height:auto;padding:8px;gap:10px;align-items:flex-start;flex-direction:column}}
+.nav-item{width:100%;background:transparent;border:0;border-left:2px solid transparent;text-align:left;font-family:inherit}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+.mobile-navigation{display:none}
+.title-wrap,.top-right,.metric,.host-metric{min-width:0}
+.topbar{height:auto;min-height:58px;gap:12px;flex-wrap:wrap;padding-top:10px;padding-bottom:10px}
+.top-right{flex-wrap:wrap}.badge{overflow-wrap:anywhere}
+.login-gate{overflow:auto;padding:16px}.login-panel{margin:auto;flex-shrink:0}
+.app-modal{max-height:calc(100dvh - 40px);overflow:auto}.modal-body{overflow-wrap:anywhere}
+.row-label{display:none}
+@media(max-width:1400px){
+  .table-head{display:none}.channel{grid-template-columns:minmax(0,1fr) minmax(240px,1fr)}
+  .channel>.cell{border:0}.channel>.cell:last-child{grid-column:2;grid-row:1 / span 6}
+  .docker-head,.incident-head,.event-head,.diag-head,.watchdog-head{display:none}
+  .docker-row,.incident-row,.event-row,.diag-row,.watchdog-row{grid-template-columns:repeat(2,minmax(0,1fr));padding:8px;gap:8px}
+  .docker-row>div,.incident-row>div,.event-row>div,.diag-row>div,.watchdog-row>div{border:0;padding:6px;overflow-wrap:anywhere;white-space:normal}
+  .row-label{display:block;margin-bottom:5px;color:var(--muted);font:800 9px ui-monospace,SFMono-Regular,Consolas,monospace;text-transform:uppercase}
+  .incident-detail,.docker-image{overflow-wrap:anywhere;white-space:normal}
+  .diag-actions{flex-wrap:wrap}
+}
+@media(min-width:761px) and (max-width:1050px){
+  .shell{grid-template-columns:150px minmax(0,1fr)}.brand{font-size:11px}.brand:before{content:none}
+  .nav-item{justify-content:flex-start;min-height:44px}.nav-item span{display:inline}
+}
+@media(max-width:1050px){
+  .docker-summary,.incident-summary,.diag-summary,.watchdog-summary,.watchdog-policy{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .metric-value{font-size:16px;overflow-wrap:anywhere}.metric-sub{overflow-wrap:anywhere}
+  .channel{display:block;padding:9px}.channel>.cell{padding:5px 0}
+  .channel-name,.techline{white-space:normal;overflow-wrap:anywhere}.filters{flex-wrap:wrap}
+  .toolbar{flex-wrap:wrap}.output-name,.output-meta{white-space:normal;overflow-wrap:anywhere}
+}
+@media(max-width:760px){
+  .mobile-navigation{display:flex;align-items:center;gap:12px;padding:10px;border-bottom:1px solid var(--line);background:var(--side)}
+  .mobile-navigation label{color:var(--muted);font:800 10px ui-monospace,SFMono-Regular,Consolas,monospace}
+  .mobile-navigation select{min-width:0;width:100%;min-height:44px;padding:8px 12px;background:var(--panel);border:1px solid var(--cyan);color:var(--text);font:800 12px ui-monospace,SFMono-Regular,Consolas,monospace}
+  .top-right{gap:6px}.title{font-size:13px}.badge{font-size:9px}
+  .output-action,.session-action,.modal-button,.filter,.diag-button{min-height:44px;min-width:44px}
+  .output{grid-template-columns:minmax(0,1fr) 74px 52px}
+  .docker-row,.incident-row,.event-row,.diag-row,.watchdog-row{grid-template-columns:minmax(0,1fr)}
+  .login-panel{padding:20px}.login-brand{font-size:16px}.modal-actions{flex-wrap:wrap}
+}
 </style>
 </head>
 
@@ -48,7 +88,7 @@
     <form id="loginForm">
       <label class="login-field"><span>Username</span><input id="loginUsername" name="username" autocomplete="username" spellcheck="false"></label>
       <label class="login-field"><span>Password</span><input id="loginPassword" name="password" type="password" autocomplete="current-password"></label>
-      <div id="loginError" class="login-error"></div>
+      <div id="loginError" class="login-error" role="alert"></div>
       <button id="loginSubmit" class="login-submit" type="submit">SIGN IN</button>
     </form>
     <div class="login-note">Authentication creates an HttpOnly same-site session. Credentials are never stored in the browser application.</div>
@@ -56,7 +96,7 @@
 </div>
 
 <div id="appModal" class="modal-backdrop" aria-hidden="true">
-  <div class="app-modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="app-modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalMessage modalDetail" tabindex="-1">
     <div id="modalTitle" class="modal-head">CONFIRM ACTION</div>
     <div class="modal-body"><div id="modalMessage"></div><div id="modalDetail" class="modal-detail"></div></div>
     <div class="modal-actions">
@@ -66,21 +106,27 @@
   </div>
 </div>
 
-<div class="shell">
+<div id="appShell" class="shell" inert aria-hidden="true">
   <aside class="sidebar">
     <div class="brand">STREAM SUPERVISOR<small>OPERATIONS CONSOLE</small></div>
-    <nav class="nav">
-      <div class="nav-item active" data-view="channels"><i class="nav-dot"></i><span>CHANNELS</span></div>
-      <div class="nav-item" data-view="system"><i class="nav-dot"></i><span>SYSTEM</span></div>
-      <div class="nav-item" data-view="incidents"><i class="nav-dot"></i><span>INCIDENTS</span></div>
-      <div class="nav-item" data-view="diagnostics"><i class="nav-dot"></i><span>DIAGNOSTICS</span></div>
-      <div class="nav-item" data-view="watchdog"><i class="nav-dot"></i><span>WATCHDOG</span></div>
-      <div class="nav-item disabled"><i class="nav-dot"></i><span>SETTINGS</span></div>
+    <nav class="nav" aria-label="Main navigation">
+      <button type="button" class="nav-item active" data-view="channels" aria-current="page" title="CHANNELS"><i class="nav-dot" aria-hidden="true"></i><span>CHANNELS</span></button>
+      <button type="button" class="nav-item" data-view="system" title="SYSTEM"><i class="nav-dot" aria-hidden="true"></i><span>SYSTEM</span></button>
+      <button type="button" class="nav-item" data-view="incidents" title="INCIDENTS"><i class="nav-dot" aria-hidden="true"></i><span>INCIDENTS</span></button>
+      <button type="button" class="nav-item" data-view="diagnostics" title="DIAGNOSTICS"><i class="nav-dot" aria-hidden="true"></i><span>DIAGNOSTICS</span></button>
+      <button type="button" class="nav-item" data-view="watchdog" title="WATCHDOG"><i class="nav-dot" aria-hidden="true"></i><span>WATCHDOG</span></button>
     </nav>
-    <div class="side-foot">RESTREAMER / READ ONLY<br><span id="sideVersion">v0.1.0-alpha.14</span></div>
+    <div class="side-foot">RESTREAMER / READ ONLY<br><span id="sideVersion">v0.1.0-alpha.15</span></div>
   </aside>
 
   <main class="main">
+    <div class="mobile-navigation">
+      <label for="mobileView">VIEW</label>
+      <select id="mobileView" aria-label="Navigation">
+        <option value="channels">CHANNELS</option><option value="system">SYSTEM</option>
+        <option value="incidents">INCIDENTS</option><option value="diagnostics">DIAGNOSTICS</option><option value="watchdog">WATCHDOG</option>
+      </select>
+    </div>
     <header class="topbar">
       <div class="title-wrap"><div id="pageTitle" class="title">CHANNEL MONITOR</div><div id="pageSubtitle" class="subtitle">LIVE OPERATIONS</div></div>
       <div class="top-right"><div id="clock" class="clock">--:--:--</div><div id="modeBadge" class="badge readonly">READ ONLY</div><div id="authBadge" class="badge open">ACCESS OPEN</div><button id="logoutButton" class="session-action" type="button" hidden>LOG OUT</button></div>
@@ -255,6 +301,47 @@ const stateLabel=s=>({live:"LIVE",connecting:"CONNECTING",waiting:"NO SOURCE",er
 const fmtDateTime=v=>{const d=new Date(v);return Number.isNaN(d.getTime())?"--":d.toLocaleString("fr-FR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false})};
 const statusClass=s=>["live","connecting","waiting","error","stopped","idle"].includes(s)?s:"idle";
 let lastRefresh=0,currentFilter="all",currentSort="name",currentDirection="asc",latestChannels=[],latestIncidentState={active:[],summary:{}},latestJournal=[],journalPersistent=null,latestDiagnostics=null,latestWatchdog=null,eventStream=null,pollFallbackTimer=null,currentView="channels",session={authenticated:false,authRequired:false,role:"viewer",username:null,actionsEnabled:false},actionBusy=false,modalResolver=null;
+let monitoringEnabled=false,sessionGeneration=0,requestController=new AbortController(),modalTrigger=null;
+// Keep the original neutral values, not a copy of operational data or credentials.
+const neutralContent=[...document.querySelectorAll(".content [id]")]
+  .filter(element=>!element.querySelector("[id]")&&element.tagName!=="BUTTON")
+  .map(element=>({element,html:element.innerHTML,className:element.className,style:element.getAttribute("style")}));
+
+function labelRows(containerId){
+  const container=$(containerId),head=container.previousElementSibling;
+  const labels=[...head.children].map(cell=>cell.textContent);
+  [...container.children].filter(row=>!row.classList.contains("empty")).forEach(row=>{
+    [...row.children].forEach((cell,index)=>{
+      const label=document.createElement("span");
+      label.className="row-label";
+      label.textContent=labels[index];
+      cell.prepend(label);
+    });
+  });
+}
+
+function syncInteraction(){
+  const blocked=!monitoringEnabled||Boolean(modalResolver);
+  $("appShell").inert=blocked;
+  $("appShell").setAttribute("aria-hidden",String(blocked));
+}
+
+function clearOperationalData(){
+  latestChannels=[];
+  latestIncidentState={active:[],summary:{}};
+  latestJournal=[];
+  journalPersistent=null;
+  latestDiagnostics=null;
+  latestWatchdog=null;
+  lastRefresh=0;
+  actionBusy=false;
+  neutralContent.forEach(({element,html,className,style})=>{
+    element.innerHTML=html;
+    element.className=className;
+    if(style===null)element.removeAttribute("style");else element.setAttribute("style",style);
+  });
+  ["modalMessage","modalDetail"].forEach(id=>$(id).textContent="");
+}
 
 function renderDocker(docker){
   const containers=Array.isArray(docker?.containers)?docker.containers:[];
@@ -282,11 +369,17 @@ function renderDocker(docker){
       '<div class="docker-cell spec">'+esc(fmtTime(item.uptimeSeconds||0))+'</div>'+
     '</div>';
   }).join(""):'<div class="empty">No monitored Docker services discovered.</div>';
+  labelRows("dockerContainers");
 }
 
 function switchView(view){
   currentView=["channels","system","incidents","diagnostics","watchdog"].includes(view)?view:"channels";
-  document.querySelectorAll(".nav-item[data-view]").forEach(item=>item.classList.toggle("active",item.dataset.view===currentView));
+  document.querySelectorAll(".nav-item[data-view]").forEach(item=>{
+    const active=item.dataset.view===currentView;
+    item.classList.toggle("active",active);
+    if(active)item.setAttribute("aria-current","page");else item.removeAttribute("aria-current");
+  });
+  $("mobileView").value=currentView;
   $("viewChannels").classList.toggle("active",currentView==="channels");
   $("viewSystem").classList.toggle("active",currentView==="system");
   $("viewIncidents").classList.toggle("active",currentView==="incidents");
@@ -345,19 +438,21 @@ function renderIncidents(){
       '<div class="incident-meta">'+esc(actor)+'</div>'+
     '</div>';
   }).join(""):'<div class="empty">No journal events yet.</div>';
+  labelRows("incidentActive");
+  labelRows("incidentEvents");
 }
 
 async function fetchIncidents(){
+  if(!monitoringEnabled)return;
+  const generation=sessionGeneration;
   try{
-    const response=await apiFetch("/api/incidents?limit=100",{cache:"no-store"});
-    if(!response.ok)throw new Error("incidents");
-    const data=await response.json();
+    const data=await apiJson("/api/incidents?limit=100");
     latestIncidentState={active:Array.isArray(data.active)?data.active:[],summary:data.summary||{}};
     latestJournal=Array.isArray(data.events)?data.events:[];
     journalPersistent=data.storage?.persistent??null;
     renderIncidents();
   }catch{
-    if(currentView==="incidents"){
+    if(generation===sessionGeneration&&monitoringEnabled&&currentView==="incidents"){
       $("incidentEvents").innerHTML='<div class="empty">Incident journal unavailable.</div>';
     }
   }
@@ -387,16 +482,17 @@ function renderDiagnostics(){
       '<div class="diag-text">'+esc(item.advice||"--")+'</div>'+
     '</div>';
   }).join(""):'<div class="empty">No diagnostic checks available.</div>';
+  labelRows("diagnosticChecks");
 }
 
 async function fetchDiagnostics(){
+  if(!monitoringEnabled)return;
+  const generation=sessionGeneration;
   try{
-    const response=await apiFetch("/api/diagnostics",{cache:"no-store"});
-    if(!response.ok)throw new Error("diagnostics");
-    latestDiagnostics=await response.json();
+    latestDiagnostics=await apiJson("/api/diagnostics");
     renderDiagnostics();
   }catch{
-    if(currentView==="diagnostics"){
+    if(generation===sessionGeneration&&monitoringEnabled&&currentView==="diagnostics"){
       $("diagnosticChecks").innerHTML='<div class="empty">Diagnostics unavailable.</div>';
     }
   }
@@ -435,16 +531,17 @@ function renderWatchdog(){
       '<div class="incident-meta">'+esc(nextAction)+'</div>'+
     '</div>';
   }).join(""):'<div class="empty">No recovery candidates.</div>';
+  labelRows("watchdogCandidates");
 }
 
 async function fetchWatchdog(){
+  if(!monitoringEnabled)return;
+  const generation=sessionGeneration;
   try{
-    const response=await apiFetch("/api/watchdog",{cache:"no-store"});
-    if(!response.ok)throw new Error("watchdog");
-    latestWatchdog=await response.json();
+    latestWatchdog=await apiJson("/api/watchdog");
     renderWatchdog();
   }catch{
-    if(currentView==="watchdog"){
+    if(generation===sessionGeneration&&monitoringEnabled&&currentView==="watchdog"){
       $("watchdogCandidates").innerHTML='<div class="empty">Watchdog state unavailable.</div>';
     }
   }
@@ -463,13 +560,19 @@ function updateSessionUi(){
 }
 
 function showLogin(message=""){
+  monitoringEnabled=false;
+  if(modalResolver)closeModal(false);
   $("loginError").textContent=message;
   $("loginGate").classList.add("show");
   $("loginGate").setAttribute("aria-hidden","false");
-  setTimeout(()=>$("loginUsername").focus(),0);
+  $("loginUsername").focus();
+  syncInteraction();
 }
 
 function hideLogin(){
+  monitoringEnabled=true;
+  syncInteraction();
+  $("mobileView").offsetParent?$("mobileView").focus():document.querySelector('.nav-item[aria-current="page"]').focus();
   $("loginGate").classList.remove("show");
   $("loginGate").setAttribute("aria-hidden","true");
   $("loginError").textContent="";
@@ -477,6 +580,10 @@ function hideLogin(){
 }
 
 function disconnectRealtime(){
+  monitoringEnabled=false;
+  sessionGeneration++;
+  requestController.abort();
+  requestController=new AbortController();
   if(eventStream){
     try{eventStream.close()}catch{}
     eventStream=null;
@@ -501,13 +608,18 @@ async function loadSession(){
 
 async function handleUnauthorized(message="Session expired. Sign in again."){
   disconnectRealtime();
+  if(modalResolver)closeModal(false);
+  clearOperationalData();
   session={authenticated:false,authRequired:true,role:"viewer",username:null,actionsEnabled:false};
   updateSessionUi();
   showLogin(message);
 }
 
 async function apiFetch(url,options={}){
-  const response=await fetch(url,options);
+  if(!monitoringEnabled)throw new Error("unauthorized");
+  const generation=sessionGeneration;
+  const response=await fetch(url,{...options,signal:requestController.signal});
+  if(generation!==sessionGeneration)throw new Error("stale session");
   if(response.status===401){
     await handleUnauthorized();
     throw new Error("unauthorized");
@@ -515,16 +627,33 @@ async function apiFetch(url,options={}){
   return response;
 }
 
+async function apiJson(url){
+  const generation=sessionGeneration;
+  const response=await apiFetch(url,{cache:"no-store"});
+  if(!response.ok)throw new Error("api");
+  const data=await response.json();
+  if(generation!==sessionGeneration||!monitoringEnabled)throw new Error("stale session");
+  return data;
+}
+
 function closeModal(result=false){
   $("appModal").classList.remove("show");
   $("appModal").setAttribute("aria-hidden","true");
   const resolver=modalResolver;
   modalResolver=null;
+  syncInteraction();
+  renderChannels();
+  // SSE replaces output buttons; recover the equivalent trigger by stable output ID.
+  const trigger=modalTrigger?.element?.isConnected?modalTrigger.element:
+    [...document.querySelectorAll(".output-action")].find(button=>button.dataset.outputId===modalTrigger?.outputId);
+  if(monitoringEnabled)(trigger&&!trigger.disabled?trigger:$("logoutButton")).focus();
+  modalTrigger=null;
   if(resolver)resolver(result);
 }
 
 function showDialog({title="CONFIRM ACTION",message="",detail="",confirmLabel="CONFIRM",tone="primary",cancel=true}={}){
   if(modalResolver)closeModal(false);
+  modalTrigger={element:document.activeElement,outputId:document.activeElement?.dataset.outputId};
   $("modalTitle").textContent=title;
   $("modalMessage").textContent=message;
   $("modalDetail").textContent=detail;
@@ -534,7 +663,11 @@ function showDialog({title="CONFIRM ACTION",message="",detail="",confirmLabel="C
   $("modalCancel").style.display=cancel?"inline-block":"none";
   $("appModal").classList.add("show");
   $("appModal").setAttribute("aria-hidden","false");
-  return new Promise(resolve=>{modalResolver=resolve});
+  return new Promise(resolve=>{
+    modalResolver=resolve;
+    (cancel?$("modalCancel"):$("modalConfirm")).focus();
+    syncInteraction();
+  });
 }
 
 async function showNotice(title,message,detail=""){
@@ -576,6 +709,7 @@ async function submitLogin(event){
     hideLogin();
     connectRealtime();
     await fetchSnapshot();
+    switchView(currentView);
   }catch{
     $("loginError").textContent="Supervisor authentication is unavailable.";
   }finally{
@@ -615,8 +749,9 @@ async function commandOutput(outputId, outputName, command){
     confirmLabel:verb,
     tone:command==="stop"?"warning":"primary"
   });
-  if(!confirmed)return;
+  if(!confirmed||!session.actionsEnabled||!monitoringEnabled)return;
 
+  const generation=sessionGeneration;
   actionBusy=true;
   renderChannels();
   try{
@@ -627,7 +762,7 @@ async function commandOutput(outputId, outputName, command){
     });
     if(!response.ok)throw new Error("command");
   }catch(error){
-    if(error.message!=="unauthorized"){
+    if(generation===sessionGeneration&&monitoringEnabled&&error.message!=="unauthorized"){
       await showNotice(
         "COMMAND FAILED",
         "The destination command could not be completed.",
@@ -635,8 +770,11 @@ async function commandOutput(outputId, outputName, command){
       );
     }
   }finally{
-    actionBusy=false;
-    setTimeout(fetchSnapshot,300);
+    if(generation===sessionGeneration&&monitoringEnabled){
+      actionBusy=false;
+      renderChannels();
+      setTimeout(()=>{if(generation===sessionGeneration)fetchSnapshot()},300);
+    }
   }
 }
 
@@ -715,6 +853,8 @@ function updateSortHeaders(){
   });
 }
 function renderChannels(){
+  if(modalResolver)return;
+  const focusedOutput=document.activeElement?.dataset.outputId;
   const channels=filteredChannels();
   $("channelCount").textContent=channels.length+" / "+latestChannels.length;
   updateSortHeaders();
@@ -734,6 +874,7 @@ function renderChannels(){
       '<div class="cell">'+renderOutputs(c.outputs)+'</div>'+
     '</div>';
   }).join(""):'<div class="empty">No channels match this view.</div>';
+  if(focusedOutput)[...document.querySelectorAll(".output-action")].find(button=>button.dataset.outputId===focusedOutput&&!button.disabled)?.focus({preventScroll:true});
 }
 function setService(id,state,detail,kind){
   $(id+"State").textContent=state;
@@ -746,6 +887,7 @@ function updateClock(){
   $("clock").textContent=new Date().toLocaleTimeString("fr-FR",{hour12:false});
 }
 function applyStatus(x){
+  if(!monitoringEnabled)return;
   try{
     const r=x.restreamer||{},core=r.core||{},ui=r.ui||{},s=r.summary||{},security=x.supervisor?.security||{},monitoring=x.supervisor?.monitoring||{},host=x.system||{},docker=x.docker||{};
     setService("api","ONLINE",(x.supervisor?.version||"--")+" · "+String(x.supervisor?.mode||"read-only").toUpperCase(),"ok");
@@ -777,7 +919,7 @@ function applyStatus(x){
     $("outputErrors").textContent=s.outputErrors??0;
     $("outputErrors").style.color=(s.outputErrors??0)>0?"var(--red)":"var(--text)";
     $("supervisorVersion").textContent=x.supervisor?.version||"--";
-    $("sideVersion").textContent=x.supervisor?.version||"v0.1.0-alpha.14";
+    $("sideVersion").textContent=x.supervisor?.version||"v0.1.0-alpha.15";
     $("monitorTransport").textContent=(monitoring.transport||"poll").toUpperCase()+" · source "+(monitoring.sourcePollMs||"--")+" ms · core "+(monitoring.pollDurationMs??"--")+" ms";
     latestChannels=r.channels||[];
     latestIncidentState=x.incidents||{active:[],summary:{}};
@@ -791,15 +933,17 @@ function applyStatus(x){
   }
 }
 async function fetchSnapshot(){
+  if(!monitoringEnabled)return;
+  const generation=sessionGeneration;
   try{
-    const response=await apiFetch("/api/status",{cache:"no-store"});
-    if(!response.ok)throw new Error("api");
-    applyStatus(await response.json());
+    applyStatus(await apiJson("/api/status"));
   }catch{
-    setService("api","NO DATA","Supervisor API unreachable","bad");
+    if(generation===sessionGeneration&&monitoringEnabled)setService("api","NO DATA","Supervisor API unreachable","bad");
   }
 }
 function connectRealtime(){
+  if(!monitoringEnabled)return;
+  const generation=sessionGeneration;
   if(eventStream||pollFallbackTimer)return;
   if(session.authRequired&&!session.authenticated)return;
   if(!("EventSource" in window)){
@@ -811,6 +955,7 @@ function connectRealtime(){
 
   eventStream=new EventSource("/api/events");
   eventStream.addEventListener("status",(event)=>{
+    if(generation!==sessionGeneration||!monitoringEnabled)return;
     try{
       applyStatus(JSON.parse(event.data));
     }catch{
@@ -818,25 +963,38 @@ function connectRealtime(){
     }
   });
   eventStream.onopen=()=>{
+    if(generation!==sessionGeneration||!monitoringEnabled)return;
     $("apiDot").className="dot ok";
   };
   eventStream.onerror=()=>{
+    if(generation!==sessionGeneration||!monitoringEnabled)return;
     $("apiDot").className="dot warn";
     $("monitorTransport").textContent="SSE RECONNECTING";
     fetch("/api/session",{cache:"no-store"}).then(r=>r.json()).then(data=>{
-      if(data.authRequired&&!data.authenticated)handleUnauthorized();
+      if(generation===sessionGeneration&&data.authRequired&&!data.authenticated)handleUnauthorized();
     }).catch(()=>{});
   };
 
   fetchSnapshot();
 }
 document.querySelectorAll(".nav-item[data-view]").forEach(item=>item.addEventListener("click",()=>switchView(item.dataset.view)));
+$("mobileView").addEventListener("change",event=>switchView(event.target.value));
 $("loginForm").addEventListener("submit",submitLogin);
 $("logoutButton").addEventListener("click",logout);
 $("modalCancel").addEventListener("click",()=>closeModal(false));
 $("modalConfirm").addEventListener("click",()=>closeModal(true));
 $("appModal").addEventListener("click",(event)=>{if(event.target===$("appModal"))closeModal(false)});
-document.addEventListener("keydown",(event)=>{if(event.key==="Escape"&&modalResolver)closeModal(false)});
+document.addEventListener("keydown",event=>{
+  if(!modalResolver)return;
+  if(event.key==="Escape"){event.preventDefault();closeModal(false);return}
+  if(event.key!=="Tab")return;
+  const buttons=[$("modalCancel"),$("modalConfirm")].filter(button=>button.offsetParent!==null&&!button.disabled);
+  const first=buttons[0],last=buttons[buttons.length-1];
+  if(!$("appModal").contains(document.activeElement)||(event.shiftKey&&document.activeElement===first)||(!event.shiftKey&&document.activeElement===last)){
+    event.preventDefault();
+    (event.shiftKey?last:first).focus();
+  }
+});
 $("downloadDiagnostics").addEventListener("click",()=>{window.location.href="/api/diagnostics?download=1"});
 $("channels").addEventListener("click",(event)=>{
   const button=event.target.closest(".output-action");
@@ -882,6 +1040,7 @@ if(["system","incidents","diagnostics","watchdog"].includes(initialView)) switch
   }
   hideLogin();
   connectRealtime();
+  switchView(currentView);
 })();
 </script>
 </body>

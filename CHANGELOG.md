@@ -2,6 +2,24 @@
 
 ## [Unreleased]
 
+## [0.1.0-alpha.15] - 2026-09-30
+
+### Added
+- Navigation mobile compacte vers CHANNELS, SYSTEM, INCIDENTS, DIAGNOSTICS et WATCHDOG ; état sélectionné explicite et commandes tactiles, sans SETTINGS désactivé.
+- Tests navigateur sur sept largeurs (320 à 1600 px, dont 759/760/761), captures des cinq vues et contrôles de sessions et de modales pour Admin/Technician.
+
+### Fixed
+- Fond des modales rendu inerte et masqué aux technologies d'assistance, focus initial et boucle Tab/Shift+Tab, restauration du déclencheur malgré les mises à jour SSE.
+- Données opérationnelles purgées après logout ou expiration ; arrêt des requêtes de monitoring et rejet des réponses de l'ancienne session, sans bloquer la reconnexion.
+- Tableaux de monitoring lisibles en cartes étiquetées sur les petits écrans, boutons accessibles et absence de débordement horizontal ; sidebar tablette/desktop et SYSTEM conservés.
+
+### Validation
+- Sémantique desiredState, STOP en ERROR et RETRY d'alpha.14 inchangée et testée.
+- Export diagnostic réussi localement avec attente de téléchargement avant clic et contrôle HTTP/sanitisation séparé. Le timeout d'automation antérieur n'est pas confirmé comme panne backend ; architecture d'export inchangée.
+- Adaptateurs, politiques watchdog, Docker observer, System Adapter, réseau et déploiement inchangés.
+
+## [0.1.0-alpha.14]
+
 ### Added
 - Écran de connexion Supervisor intégré à l'interface, sans popup Basic Auth navigateur.
 - Sessions serveur avec cookie HttpOnly / SameSite=Strict et bouton de déconnexion.
