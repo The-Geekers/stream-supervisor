@@ -8,7 +8,7 @@ Socle applicatif, authentification, rôles Admin/Technicien, état système et D
 
 Le périmètre fonctionnel 0.1 est atteint. Alpha.14 a validé en conditions réelles la séparation entre état observé et consigne egress. Alpha.15 a livré le responsive, la navigation mobile, l'accessibilité des modales et la purge frontend ; elle a été déployée et vérifiée sur le VPS réel le 30/09/2026.
 
-Alpha.16 constitue le dernier polish visuel avant 0.2 : le Dark alpha.15 reste inchangé et un thème Light reprend l'identité colorimétrique du portail Distillerie v1.0.3, sans modifier les proportions ni la logique opérationnelle. Alpha.16 est fusionnée sur `main` via la PR #19 après validation des workflows `quality` et `visual`. Étape suivante : déploiement alpha.16 et contrôle réel Dark/Light, puis passage à 0.2.
+Alpha.16 a introduit les thèmes Dark/Light sans modifier les proportions ni la logique opérationnelle. Alpha.17 finalise le polish : Light par défaut à la première visite, nom des channels légèrement réduit et vert LIVE plus soutenu. Après CI/fusion et validation réelle, alpha.18 est prévue pour une action exceptionnelle de restart Restreamer réservée à Admin, manuelle, confirmée et journalisée, sans aucun restart automatique. La phase 0.2 suivra.
 
 ## 0.2 — Monitoring & exploitation
 
