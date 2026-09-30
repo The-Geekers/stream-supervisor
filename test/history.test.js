@@ -109,6 +109,49 @@ test("egress error that outlives the ingest loss remains visible as a standalone
   assert.equal(history.summary.groupedDownstream, 0);
 });
 
+test("egress starting a few seconds before ingest detection is grouped", () => {
+  const history = buildIncidentHistory({
+    from:"2026-09-30T13:00:00.000Z",
+    to:"2026-09-30T14:00:00.000Z",
+    events:[
+      open("egress","2026-09-30T13:10:30.000Z",{channel:"Channel 1",output:"YouTube"}),
+      open("ingest","2026-09-30T13:10:38.000Z",{
+        source:"restreamer-ingest",
+        title:"Signal ingest absent",
+        channel:"Channel 1",
+        output:""
+      }),
+      resolved("egress","2026-09-30T13:11:42.000Z"),
+      resolved("ingest","2026-09-30T13:12:28.000Z")
+    ]
+  });
+
+  assert.equal(history.summary.rawIncidents, 2);
+  assert.equal(history.summary.incidents, 1);
+  assert.equal(history.summary.groupedDownstream, 1);
+  assert.equal(history.incidents[0].incidentId, "ingest");
+});
+
+test("egress persisting more than ten seconds after ingest recovery stays standalone", () => {
+  const history = buildIncidentHistory({
+    from:"2026-09-30T13:00:00.000Z",
+    to:"2026-09-30T14:00:00.000Z",
+    events:[
+      open("ingest","2026-09-30T13:10:38.000Z",{
+        source:"restreamer-ingest",
+        channel:"Channel 1",
+        output:""
+      }),
+      open("egress","2026-09-30T13:10:40.000Z",{channel:"Channel 1",output:"YouTube"}),
+      resolved("ingest","2026-09-30T13:12:28.000Z"),
+      resolved("egress","2026-09-30T13:12:39.000Z")
+    ]
+  });
+
+  assert.equal(history.summary.incidents, 2);
+  assert.equal(history.summary.groupedDownstream, 0);
+});
+
 test("history clips an incident duration to the requested period", () => {
   const history = buildIncidentHistory({
     from:"2026-09-30T08:00:00.000Z",
