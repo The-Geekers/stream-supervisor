@@ -87,7 +87,7 @@ Le déploiement réel de 0.2 alpha.1 a montré la limite de la première approch
 - journal brut conservé mais replié et limité visuellement à 20 événements ;
 - bouton `↑ TOP` après scroll.
 
-Aucun incident n'est effacé et le modèle interne/watchdog n'est pas modifié. La validation réelle d'alpha.2 a montré `GROUPED DOWNSTREAM = 0` malgré des épisodes egress manifestement liés à une perte ingest. Le correctif PR #27 est fusionné sur `main` après `quality` et `visual` verts : même channel + fenêtre ingest élargie de 10 s avant/après. Un egress qui dépasse cette marge reste autonome. Prochaine action : redéployer et vérifier que le compteur de regroupement augmente sur les mêmes données réelles.
+Aucun incident n'est effacé et le modèle interne/watchdog n'est pas modifié. La validation réelle d'alpha.2 a montré `GROUPED DOWNSTREAM = 0` malgré des épisodes egress manifestement liés à une perte ingest. Le correctif PR #27 est fusionné sur `main` après `quality` et `visual` verts : même channel + fenêtre ingest élargie de 10 s avant/après. Un egress qui dépasse cette marge reste autonome. Validation réelle confirmée après redéploiement : sur la fenêtre 1H, 40 root incidents avec 33 downstream regroupés ; sur TODAY/24H, 675 root incidents avec 38 downstream regroupés. Des lignes ingest affichent désormais explicitement `+12` et `+5 downstream egress errors grouped under ingest loss`. Le correctif de corrélation est donc considéré validé en production.
 
 Point connu non bloquant : les channels 8 et 9 ont déjà montré des oscillations serveur `INCIDENT OPEN → RESOLVED → OPEN` lorsqu'ils sont sans source. La cause n'est pas démontrée ; ne pas modifier cette logique sans investigation dédiée.
 
