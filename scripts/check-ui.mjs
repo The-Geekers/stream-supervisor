@@ -22,6 +22,9 @@ const requiredIds = [
   "journalStorage","incidentActive","incidentEvents",
   "viewDiagnostics","diagOverall","diagCheckCount","diagStreaming","diagGenerated",
   "diagnosticChecks","downloadDiagnostics",
+  "viewWatchdog","watchdogMode","watchdogRecovery","watchdogCandidatesCount",
+  "watchdogGlobalRestart","watchdogThreshold","watchdogVerify","watchdogCooldown",
+  "watchdogMaxAttempts","watchdogWindow","watchdogCandidates",
   "viewDiagnostics","diagOverall","diagCheckCount","diagStreaming","diagGenerated",
   "diagnosticChecks","downloadDiagnostics"
 ];
@@ -68,3 +71,6 @@ console.log("UI check: PASS");
 
 if (!html.includes("/api/diagnostics")) throw new Error("diagnostics API wiring missing");
 if (!html.includes('data-view="diagnostics"')) throw new Error("diagnostics navigation missing");
+
+if (!html.includes("/api/watchdog")) throw new Error("watchdog API wiring missing");
+if (!html.includes('data-view="watchdog"')) throw new Error("watchdog navigation missing");
