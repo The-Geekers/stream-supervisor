@@ -52,7 +52,7 @@ services:
       DOCKER_SOCKET: /var/run/docker.sock
       OUTPUT_FILE: /output/status.json
       OBSERVER_INTERVAL_MS: 2000
-      DOCKER_MONITOR_CONTAINERS: ${DOCKER_MONITOR_CONTAINERS:-restreamer,stream-supervisor}
+      DOCKER_MONITOR_CONTAINERS: ${DOCKER_MONITOR_CONTAINERS:-restreamer,stream-supervisor},stream-supervisor-docker-control
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - docker_status:/output
