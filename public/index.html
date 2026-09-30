@@ -27,7 +27,9 @@
 .admin-recovery[hidden]{display:none}.admin-recovery-title{color:var(--red);font-size:10px;font-weight:800;letter-spacing:.1em}.admin-recovery-copy{margin-top:6px;color:#d6b7b7;font:10px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace;max-width:920px}
 .danger-action{appearance:none;border:1px solid #8b3434;background:#210b0b;color:var(--red);padding:8px 11px;font:800 9px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.06em;cursor:pointer;white-space:nowrap}.danger-action:hover{border-color:var(--red)}.danger-action:disabled{opacity:.45;cursor:wait}
 .incident-summary,.history-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--line);background:var(--panel);margin-bottom:12px}.incident-summary .metric:nth-child(4),.history-summary .metric:nth-child(4){border-right:0}
-.incident-table{border:1px solid var(--line);background:var(--panel);margin-bottom:12px}.incident-head,.incident-row{display:grid;grid-template-columns:105px 150px minmax(220px,1.2fr) minmax(280px,2fr) 135px}.history-head,.history-row{display:grid;grid-template-columns:145px 145px 105px 145px minmax(260px,1.7fr) 120px}.event-head,.event-row{display:grid;grid-template-columns:150px 135px 145px minmax(220px,1.2fr) minmax(280px,2fr) 120px}.incident-head,.history-head,.event-head{background:#0c1014;color:var(--muted);font-size:9px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;border-bottom:1px solid var(--line)}.incident-head>div,.history-head>div,.event-head>div,.incident-row>div,.history-row>div,.event-row>div{padding:9px 10px;border-right:1px solid var(--line-soft);min-width:0}.incident-head>div:last-child,.history-head>div:last-child,.event-head>div:last-child,.incident-row>div:last-child,.history-row>div:last-child,.event-row>div:last-child{border-right:0}.incident-row,.history-row,.event-row{min-height:50px;border-bottom:1px solid var(--line-soft)}.incident-row:last-child,.history-row:last-child,.event-row:last-child{border-bottom:0}.severity{display:inline-block;padding:3px 6px;border:1px solid var(--line);font:800 9px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.05em}.severity.critical{color:var(--red);border-color:#6b3030}.severity.warning{color:var(--amber);border-color:#655126}.severity.info{color:var(--cyan);border-color:#245368}.incident-title{font-weight:800}.incident-detail{color:var(--muted);font:10px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace;overflow:hidden;text-overflow:ellipsis}.incident-meta{color:var(--muted);font:10px ui-monospace,SFMono-Regular,Consolas,monospace}
+.range-buttons{display:flex;gap:5px}.range-button{border:1px solid var(--line);background:#080b0d;color:var(--muted);padding:5px 9px;font:10px ui-monospace,SFMono-Regular,Consolas,monospace;cursor:pointer}.range-button.active{color:#fff;border-color:var(--cyan);background:#11171c}.history-scope{margin-left:8px;color:var(--muted);font:9px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.04em}
+.incident-table{border:1px solid var(--line);background:var(--panel);margin-bottom:12px}.incident-head,.incident-row{display:grid;grid-template-columns:105px 150px minmax(220px,1.2fr) minmax(280px,2fr) 135px}.history-head,.history-row{display:grid;grid-template-columns:145px 145px 105px 145px minmax(260px,1.7fr) 120px}.event-head,.event-row{display:grid;grid-template-columns:150px 135px 145px minmax(220px,1.2fr) minmax(280px,2fr) 120px}.incident-head,.history-head,.event-head{background:#0c1014;color:var(--muted);font-size:9px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;border-bottom:1px solid var(--line)}.incident-head>div,.history-head>div,.event-head>div,.incident-row>div,.history-row>div,.event-row>div{padding:9px 10px;border-right:1px solid var(--line-soft);min-width:0}.incident-head>div:last-child,.history-head>div:last-child,.event-head>div:last-child,.incident-row>div:last-child,.history-row>div:last-child,.event-row>div:last-child{border-right:0}.incident-row,.history-row,.event-row{min-height:50px;border-bottom:1px solid var(--line-soft)}.incident-row:last-child,.history-row:last-child,.event-row:last-child{border-bottom:0}.journal-details{margin-top:12px;border:1px solid var(--line);background:var(--panel)}.journal-details>summary{cursor:pointer;list-style:none;padding:12px;color:var(--muted);font:800 9px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.09em;text-transform:uppercase}.journal-details>summary::-webkit-details-marker{display:none}.journal-details>summary:before{content:"+";display:inline-block;width:16px;color:var(--cyan)}.journal-details[open]>summary:before{content:"−"}.journal-details .incident-table{margin:0;border:0;border-top:1px solid var(--line)}
+.back-to-top{position:fixed;z-index:40;left:24px;bottom:125px;width:142px;border:1px solid #46535d;background:#0b0f12;color:#aeb8c0;padding:8px 10px;font:800 9px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.08em;cursor:pointer}.back-to-top:hover{color:#fff;border-color:var(--cyan)}.back-to-top[hidden]{display:none}.severity{display:inline-block;padding:3px 6px;border:1px solid var(--line);font:800 9px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.05em}.severity.critical{color:var(--red);border-color:#6b3030}.severity.warning{color:var(--amber);border-color:#655126}.severity.info{color:var(--cyan);border-color:#245368}.incident-title{font-weight:800}.incident-detail{color:var(--muted);font:10px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace;overflow:hidden;text-overflow:ellipsis}.incident-meta{color:var(--muted);font:10px ui-monospace,SFMono-Regular,Consolas,monospace}
 .diag-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--line);background:var(--panel);margin-bottom:12px}.diag-summary .metric:nth-child(4){border-right:0}
 .diag-table{border:1px solid var(--line);background:var(--panel);margin-bottom:12px}.diag-head,.diag-row{display:grid;grid-template-columns:110px 190px minmax(260px,1.2fr) minmax(340px,1.8fr)}.diag-head{background:#0c1014;color:var(--muted);font-size:9px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;border-bottom:1px solid var(--line)}.diag-head>div,.diag-row>div{padding:10px;border-right:1px solid var(--line-soft);min-width:0}.diag-head>div:last-child,.diag-row>div:last-child{border-right:0}.diag-row{min-height:56px;border-bottom:1px solid var(--line-soft)}.diag-row:last-child{border-bottom:0}.diag-label{font-weight:800}.diag-text{color:var(--muted);font:10px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}.diag-actions{display:flex;align-items:center;justify-content:space-between;gap:16px;border:1px solid var(--line);background:var(--panel);padding:14px}.diag-actions-copy{max-width:900px}.diag-actions-title{font-weight:800;margin-bottom:5px}.diag-actions-note{color:var(--muted);font:10px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}.diag-button{appearance:none;border:1px solid #31566c;background:#0b1820;color:var(--cyan);padding:8px 12px;font:800 9px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.06em;cursor:pointer;white-space:nowrap}.diag-button:hover{border-color:var(--cyan)}
 .watchdog-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--line);background:var(--panel);margin-bottom:12px}.watchdog-summary .metric:nth-child(4){border-right:0}
@@ -74,9 +76,11 @@
   .mobile-navigation label{color:var(--muted);font:800 10px ui-monospace,SFMono-Regular,Consolas,monospace}
   .mobile-navigation select{min-width:0;width:100%;min-height:44px;padding:8px 12px;background:var(--panel);border:1px solid var(--cyan);color:var(--text);font:800 12px ui-monospace,SFMono-Regular,Consolas,monospace}
   .top-right{gap:6px}.title{font-size:13px}.badge{font-size:9px}
-  .output-action,.session-action,.modal-button,.filter,.diag-button,.danger-action{min-height:44px;min-width:44px}
+  .output-action,.session-action,.modal-button,.filter,.range-button,.diag-button,.danger-action{min-height:44px;min-width:44px}
   .output{grid-template-columns:minmax(0,1fr) 74px 52px}
   .docker-row,.incident-row,.history-row,.event-row,.diag-row,.watchdog-row{grid-template-columns:minmax(0,1fr)}
+  .back-to-top{left:auto;right:14px;bottom:14px;width:auto;min-width:70px}
+  .range-buttons{width:100%}.range-button{flex:1}
   .login-panel{padding:20px}.login-brand{font-size:16px}.modal-actions{flex-wrap:wrap}
 }
 
@@ -119,13 +123,16 @@
 :root[data-theme="light"] .service-detail{color:#4d4d4d}
 :root[data-theme="light"] .host-strip{background:#fff}
 :root[data-theme="light"] .toolbar{background:#fff}
-:root[data-theme="light"] .filter{background:#fff;color:#6d6d6d}
-:root[data-theme="light"] .filter.active{color:#191919;border-color:#e9471d;background:#f5f3ef}
+:root[data-theme="light"] .filter,
+:root[data-theme="light"] .range-button{background:#fff;color:#6d6d6d}
+:root[data-theme="light"] .filter.active,
+:root[data-theme="light"] .range-button.active{color:#191919;border-color:#e9471d;background:#f5f3ef}
 :root[data-theme="light"] .sort-head:hover,
 :root[data-theme="light"] .sort-head:focus-visible{background:#f0ede7}
 :root[data-theme="light"] .table-head,
 :root[data-theme="light"] .docker-head,
 :root[data-theme="light"] .incident-head,
+:root[data-theme="light"] .history-head,
 :root[data-theme="light"] .event-head,
 :root[data-theme="light"] .diag-head,
 :root[data-theme="light"] .watchdog-head{background:#f5f3ef}
@@ -171,6 +178,8 @@
 :root[data-theme="light"] .admin-recovery-title{color:#8c2028}
 :root[data-theme="light"] .admin-recovery-copy{color:#70464a}
 :root[data-theme="light"] .danger-action{border-color:#aa2730;background:#fff;color:#8c2028}
+:root[data-theme="light"] .journal-details{background:#fff}
+:root[data-theme="light"] .back-to-top{background:#191919;color:#ddd5be;border-color:#555}
 @media(max-width:760px){
   .mobile-navigation .theme-toggle{min-height:44px;min-width:58px;padding:8px 9px}
   .admin-recovery{flex-direction:column;align-items:stretch}
@@ -218,8 +227,9 @@
       <button type="button" class="nav-item" data-view="diagnostics" title="DIAGNOSTICS"><i class="nav-dot" aria-hidden="true"></i><span>DIAGNOSTICS</span></button>
       <button type="button" class="nav-item" data-view="watchdog" title="WATCHDOG"><i class="nav-dot" aria-hidden="true"></i><span>WATCHDOG</span></button>
     </nav>
-    <div class="side-foot">RESTREAMER / READ ONLY<br><span id="sideVersion">v0.2.0-alpha.1</span><button id="desktopThemeToggle" class="theme-toggle" type="button" aria-label="Switch to light theme">LIGHT</button></div>
+    <div class="side-foot">RESTREAMER / READ ONLY<br><span id="sideVersion">v0.2.0-alpha.2</span><button id="desktopThemeToggle" class="theme-toggle" type="button" aria-label="Switch to light theme">LIGHT</button></div>
   </aside>
+  <button id="backToTop" class="back-to-top" type="button" hidden aria-label="Back to top">↑ TOP</button>
 
   <main class="main">
     <div class="mobile-navigation">
@@ -318,7 +328,7 @@
 
       <div id="viewIncidents" class="view">
         <section class="incident-summary">
-          <div class="metric"><div class="metric-label">Active incidents</div><div id="incidentActiveCount" class="metric-value">--</div><div class="metric-sub">current operational state</div></div>
+          <div class="metric"><div class="metric-label">Active incidents</div><div id="incidentActiveCount" class="metric-value">--</div><div id="incidentActiveSub" class="metric-sub">operator view</div></div>
           <div class="metric"><div class="metric-label">Critical</div><div id="incidentCriticalCount" class="metric-value">--</div><div class="metric-sub">requires attention</div></div>
           <div class="metric"><div class="metric-label">Warnings</div><div id="incidentWarningCount" class="metric-value">--</div><div class="metric-sub">degraded conditions</div></div>
           <div class="metric"><div class="metric-label">Journal</div><div id="journalStorage" class="metric-value">--</div><div id="journalCount" class="metric-sub">--</div></div>
@@ -330,23 +340,32 @@
           <div id="incidentActive"><div class="empty">Waiting for incident state…</div></div>
         </section>
 
-        <div class="toolbar"><div class="toolbar-title">TODAY · INCIDENT HISTORY</div></div>
+        <div class="toolbar">
+          <div class="toolbar-title">INCIDENT HISTORY <span id="historyScopeNote" class="history-scope">LAST HOUR</span></div>
+          <div class="range-buttons" aria-label="Incident history period">
+            <button type="button" class="range-button active" data-history-range="1h">1H</button>
+            <button type="button" class="range-button" data-history-range="today">TODAY</button>
+            <button type="button" class="range-button" data-history-range="24h">24H</button>
+          </div>
+        </div>
         <section class="history-summary">
-          <div class="metric"><div class="metric-label">Incidents today</div><div id="historyIncidentCount" class="metric-value">--</div><div id="historyResolvedCount" class="metric-sub">--</div></div>
-          <div class="metric"><div class="metric-label">Cumulated time</div><div id="historyCumulative" class="metric-value">--</div><div class="metric-sub">sum of incident durations</div></div>
-          <div class="metric"><div class="metric-label">Longest</div><div id="historyLongest" class="metric-value">--</div><div class="metric-sub">single incident today</div></div>
-          <div class="metric"><div class="metric-label">Active now</div><div id="historyActiveNow" class="metric-value">--</div><div class="metric-sub">included in elapsed time</div></div>
+          <div class="metric"><div class="metric-label">Root incidents</div><div id="historyIncidentCount" class="metric-value">--</div><div id="historyResolvedCount" class="metric-sub">--</div></div>
+          <div class="metric"><div class="metric-label">Affected time</div><div id="historyAffected" class="metric-value">--</div><div class="metric-sub">wall-clock with ≥1 incident</div></div>
+          <div class="metric"><div class="metric-label">Longest</div><div id="historyLongest" class="metric-value">--</div><div class="metric-sub">single root incident</div></div>
+          <div class="metric"><div class="metric-label">Grouped downstream</div><div id="historyGrouped" class="metric-value">--</div><div class="metric-sub">egress errors covered by ingest loss</div></div>
         </section>
         <section class="incident-table">
           <div class="history-head"><div>Start</div><div>End</div><div>Severity</div><div>Source</div><div>Incident</div><div>Duration</div></div>
           <div id="incidentHistory"><div class="empty">Waiting for incident history…</div></div>
         </section>
 
-        <div class="toolbar"><div class="toolbar-title">EVENT JOURNAL</div></div>
-        <section class="incident-table">
-          <div class="event-head"><div>Time</div><div>Type</div><div>Source</div><div>Event</div><div>Detail</div><div>Actor</div></div>
-          <div id="incidentEvents"><div class="empty">Waiting for event journal…</div></div>
-        </section>
+        <details class="journal-details">
+          <summary>RAW EVENT JOURNAL · LAST 20</summary>
+          <section class="incident-table">
+            <div class="event-head"><div>Time</div><div>Type</div><div>Source</div><div>Event</div><div>Detail</div><div>Actor</div></div>
+            <div id="incidentEvents"><div class="empty">Waiting for event journal…</div></div>
+          </section>
+        </details>
       </div>
 
       <div id="viewDiagnostics" class="view">
@@ -443,9 +462,10 @@ const fmtRate=bps=>{bps=Number(bps)||0;const bits=bps*8;return bits>=1000000000?
 const stateLabel=s=>({live:"LIVE",connecting:"CONNECTING",waiting:"NO SOURCE",error:"ERROR",stopped:"STOPPED",idle:"IDLE"}[s]||String(s||"UNKNOWN").toUpperCase());
 const fmtDateTime=v=>{const d=new Date(v);return Number.isNaN(d.getTime())?"--":d.toLocaleString("fr-FR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false})};
 const fmtDuration=ms=>{let s=Math.max(0,Math.round((Number(ms)||0)/1000));const h=Math.floor(s/3600);s%=3600;const m=Math.floor(s/60);s%=60;return[h?h+"h":null,(h||m)?String(m).padStart(h?2:1,"0")+"m":null,String(s).padStart((h||m)?2:1,"0")+"s"].filter(Boolean).join(" ")};
-const todayRange=()=>{const now=new Date(),start=new Date(now);start.setHours(0,0,0,0);return{from:start.toISOString(),to:now.toISOString()}};
+const historyRange=preset=>{const now=new Date(),start=new Date(now);if(preset==="today")start.setHours(0,0,0,0);else start.setTime(now.getTime()-(preset==="24h"?24:1)*60*60*1000);return{from:start.toISOString(),to:now.toISOString()}};
+const historyScopeLabel=preset=>preset==="today"?"TODAY":preset==="24h"?"LAST 24 HOURS":"LAST HOUR";
 const statusClass=s=>["live","connecting","waiting","error","stopped","idle"].includes(s)?s:"idle";
-let lastRefresh=0,currentFilter="all",currentSort="name",currentDirection="asc",latestChannels=[],latestIncidentState={active:[],summary:{}},latestIncidentHistory={summary:{},incidents:[]},latestJournal=[],journalPersistent=null,latestDiagnostics=null,latestWatchdog=null,eventStream=null,pollFallbackTimer=null,currentView="channels",session={authenticated:false,authRequired:false,role:"viewer",username:null,actionsEnabled:false},actionBusy=false,modalResolver=null;
+let lastRefresh=0,currentFilter="all",currentSort="name",currentDirection="asc",historyPreset="1h",latestChannels=[],latestIncidentState={active:[],summary:{}},latestIncidentHistory={summary:{},incidents:[]},latestJournal=[],journalPersistent=null,latestDiagnostics=null,latestWatchdog=null,eventStream=null,pollFallbackTimer=null,currentView="channels",session={authenticated:false,authRequired:false,role:"viewer",username:null,actionsEnabled:false},actionBusy=false,modalResolver=null;
 let monitoringEnabled=false,sessionGeneration=0,requestController=new AbortController(),modalTrigger=null,adminRestartBusy=false;
 // Keep the original neutral values, not a copy of operational data or credentials.
 const neutralContent=[...document.querySelectorAll(".content [id]")]
@@ -547,25 +567,30 @@ function switchView(view){
 }
 
 function renderIncidents(){
-  const active=Array.isArray(latestIncidentState?.active)?latestIncidentState.active:[];
-  const summary=latestIncidentState?.summary||{};
-  $("incidentActiveCount").textContent=summary.active??active.length;
-  $("incidentCriticalCount").textContent=summary.critical??0;
-  $("incidentWarningCount").textContent=summary.warning??0;
-  $("incidentCriticalCount").style.color=(summary.critical??0)>0?"var(--red)":"var(--text)";
-  $("incidentWarningCount").style.color=(summary.warning??0)>0?"var(--amber)":"var(--text)";
+  const rawActive=Array.isArray(latestIncidentState?.active)?latestIncidentState.active:[];
+  const ingestChannels=new Set(rawActive.filter(item=>item.source==="restreamer-ingest"&&item.channel).map(item=>item.channel));
+  const groupedActive=rawActive.filter(item=>item.source==="restreamer-egress"&&item.channel&&ingestChannels.has(item.channel));
+  const active=rawActive.filter(item=>!groupedActive.includes(item));
+  const critical=active.filter(item=>item.severity==="critical").length;
+  const warnings=active.filter(item=>item.severity==="warning").length;
+  $("incidentActiveCount").textContent=active.length;
+  $("incidentActiveSub").textContent=groupedActive.length?groupedActive.length+" downstream grouped":"operator view";
+  $("incidentCriticalCount").textContent=critical;
+  $("incidentWarningCount").textContent=warnings;
+  $("incidentCriticalCount").style.color=critical>0?"var(--red)":"var(--text)";
+  $("incidentWarningCount").style.color=warnings>0?"var(--amber)":"var(--text)";
   $("journalStorage").textContent=journalPersistent===null?"--":journalPersistent?"PERSISTENT":"MEMORY";
   $("journalStorage").style.color=journalPersistent===false?"var(--amber)":"var(--text)";
-  $("journalCount").textContent=latestJournal.length+" recent events";
+  $("journalCount").textContent=latestJournal.length+" shown · raw journal";
 
   const historySummary=latestIncidentHistory?.summary||{};
   const historyRows=Array.isArray(latestIncidentHistory?.incidents)?latestIncidentHistory.incidents:[];
+  $("historyScopeNote").textContent=historyScopeLabel(historyPreset);
   $("historyIncidentCount").textContent=historySummary.incidents??0;
-  $("historyResolvedCount").textContent=(historySummary.resolved??0)+" resolved";
-  $("historyCumulative").textContent=fmtDuration(historySummary.cumulativeMs??0);
+  $("historyResolvedCount").textContent=(historySummary.resolved??0)+" resolved · "+(historySummary.displayed??historyRows.length)+" shown";
+  $("historyAffected").textContent=fmtDuration(historySummary.affectedMs??0);
   $("historyLongest").textContent=fmtDuration(historySummary.longestMs??0);
-  $("historyActiveNow").textContent=historySummary.active??0;
-  $("historyActiveNow").style.color=(historySummary.active??0)>0?"var(--amber)":"var(--text)";
+  $("historyGrouped").textContent=historySummary.groupedDownstream??0;
 
   $("incidentActive").innerHTML=active.length?active.map(item=>{
     const subject=[item.channel,item.output].filter(Boolean).join(" · ");
@@ -583,15 +608,16 @@ function renderIncidents(){
   $("incidentHistory").innerHTML=historyRows.length?historyRows.map(item=>{
     const subject=[item.channel,item.output].filter(Boolean).join(" · ");
     const title=subject?(String(item.title||"Incident")+" · "+subject):String(item.title||"Incident");
+    const grouped=(item.groupedDownstream??0)>0?('<div class="incident-meta">+'+esc(item.groupedDownstream)+' downstream egress error'+((item.groupedDownstream??0)>1?"s":"")+' grouped under ingest loss</div>'):"";
     return '<div class="history-row">'+
       '<div class="incident-meta">'+esc(fmtDateTime(item.startedAt))+'</div>'+
       '<div class="incident-meta">'+esc(item.endedAt?fmtDateTime(item.endedAt):"ACTIVE")+'</div>'+
       '<div><span class="severity '+esc(item.severity||"info")+'">'+esc(String(item.severity||"info").toUpperCase())+'</span></div>'+
       '<div class="incident-meta">'+esc(item.source||"--")+'</div>'+
-      '<div><div class="incident-title">'+esc(title)+'</div><div class="incident-detail">'+esc(item.detail||"--")+'</div></div>'+
+      '<div><div class="incident-title">'+esc(title)+'</div><div class="incident-detail">'+esc(item.detail||"--")+'</div>'+grouped+'</div>'+
       '<div class="incident-meta">'+esc(fmtDuration(item.periodDurationMs??item.durationMs??0))+'</div>'+
     '</div>';
-  }).join(""):'<div class="empty">No incidents recorded today.</div>';
+  }).join(""):'<div class="empty">No operator incidents in this period.</div>';
 
   $("incidentEvents").innerHTML=latestJournal.length?latestJournal.map(item=>{
     const subject=[item.channel,item.output].filter(Boolean).join(" · ");
@@ -616,8 +642,8 @@ async function fetchIncidents(){
   if(!monitoringEnabled)return;
   const generation=sessionGeneration;
   try{
-    const range=todayRange();
-    const params=new URLSearchParams({limit:"100",historyLimit:"100",from:range.from,to:range.to});
+    const range=historyRange(historyPreset);
+    const params=new URLSearchParams({limit:"20",historyLimit:"20",from:range.from,to:range.to});
     const data=await apiJson("/api/incidents?"+params.toString());
     latestIncidentState={active:Array.isArray(data.active)?data.active:[],summary:data.summary||{}};
     latestIncidentHistory={summary:data.history?.summary||{},incidents:Array.isArray(data.history?.incidents)?data.history.incidents:[]};
@@ -1160,7 +1186,7 @@ function applyStatus(x){
     $("outputErrors").textContent=s.outputErrors??0;
     $("outputErrors").style.color=(s.outputErrors??0)>0?"var(--red)":"var(--text)";
     $("supervisorVersion").textContent=x.supervisor?.version||"--";
-    $("sideVersion").textContent=x.supervisor?.version||"v0.2.0-alpha.1";
+    $("sideVersion").textContent=x.supervisor?.version||"v0.2.0-alpha.2";
     $("monitorTransport").textContent=(monitoring.transport||"poll").toUpperCase()+" · source "+(monitoring.sourcePollMs||"--")+" ms · core "+(monitoring.pollDurationMs??"--")+" ms";
     latestChannels=r.channels||[];
     latestIncidentState=x.incidents||{active:[],summary:{}};
@@ -1224,6 +1250,15 @@ document.querySelectorAll(".theme-toggle").forEach(button=>button.addEventListen
 $("loginForm").addEventListener("submit",submitLogin);
 $("logoutButton").addEventListener("click",logout);
 $("restartRestreamerButton").addEventListener("click",restartRestreamer);
+document.querySelectorAll(".range-button").forEach(button=>button.addEventListener("click",()=>{
+  historyPreset=button.dataset.historyRange||"1h";
+  document.querySelectorAll(".range-button").forEach(item=>item.classList.toggle("active",item===button));
+  fetchIncidents();
+}));
+$("backToTop").addEventListener("click",()=>window.scrollTo({top:0,behavior:"smooth"}));
+window.addEventListener("scroll",()=>{
+  $("backToTop").hidden=window.scrollY<420;
+},{passive:true});
 $("modalCancel").addEventListener("click",()=>closeModal(false));
 $("modalConfirm").addEventListener("click",()=>closeModal(true));
 $("appModal").addEventListener("click",(event)=>{if(event.target===$("appModal"))closeModal(false)});
