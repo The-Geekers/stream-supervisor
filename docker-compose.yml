@@ -18,6 +18,7 @@ services:
       SYSTEM_NETWORK_ROOT: /host/net
       SYSTEM_NETWORK_INTERFACE: ${SYSTEM_NETWORK_INTERFACE:-ens3}
       DOCKER_STATUS_FILE: /runtime/docker-status/status.json
+      DOCKER_CONTROL_URL: http://docker-control:8181
       EVENTS_FILE: /data/events.jsonl
       INCIDENT_STATE_FILE: /data/incidents-state.json
       WATCHDOG_STATE_FILE: /data/watchdog-state.json
@@ -38,6 +39,7 @@ services:
     networks:
       - default
       - web-proxy
+      - control
 
   docker-observer:
     build:
@@ -60,6 +62,26 @@ services:
     cap_drop:
       - ALL
 
+  docker-control:
+    build:
+      context: ./docker-control
+      dockerfile: Dockerfile
+    container_name: stream-supervisor-docker-control
+    restart: unless-stopped
+    environment:
+      DOCKER_SOCKET: /var/run/docker.sock
+      CONTROL_PORT: 8181
+      DOCKER_RESTART_CONTAINER: restreamer
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    networks:
+      - control
+
 volumes:
   docker_status:
   supervisor_data:
@@ -67,3 +89,5 @@ volumes:
 networks:
   web-proxy:
     external: true
+  control:
+    internal: true
