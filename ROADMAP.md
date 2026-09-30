@@ -4,6 +4,10 @@
 
 Socle applicatif, authentification, rôles Admin/Technicien, état système et Docker, adaptateur Restreamer, channels/entrées/sorties, start/stop sécurisé, diagnostics et premières règles de watchdog.
 
+### Stabilisation 0.1 actuelle
+
+Alpha.14 sépare l'état observé d'un egress de sa consigne Restreamer afin de fiabiliser les commandes opérateur pendant les reconnexions. La prochaine passe 0.1 porte sur la navigation mobile et l'accessibilité des modales.
+
 ## 0.2 — Monitoring & exploitation
 
 Historique incidents, métriques avancées, alertes, historique des récupérations et watchdog enrichi.
