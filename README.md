@@ -15,7 +15,7 @@ Le premier moteur ciblé est **Restreamer**. L'architecture reste volontairement
 
 ## État actuel
 
-`0.1.0-alpha.11`
+`0.1.0-alpha.12`
 
 - adapter Restreamer Core 16 avec monitoring et contrôle limité des destinations ;
 - channels, destinations et métriques de streaming en pseudo temps réel SSE ;
@@ -38,7 +38,12 @@ Le premier moteur ciblé est **Restreamer**. L'architecture reste volontairement
 - page **DIAGNOSTICS** avec checks opérateur dérivés de données déjà sanitizées ;
 - recommandations de première action sans récupération automatique ;
 - export JSON de diagnostic strictement allow-listé, sans payload moteur brut ;
-- tests anti-fuite de secrets, smoke tests Docker/auth/incidents/diagnostics et captures visuelles CI.
+- page **WATCHDOG** avec politique de récupération graduée et état des candidats ;
+- mode watchdog par défaut `observe` : détection et journalisation uniquement, aucune commande automatique ;
+- recovery egress optionnelle et explicitement armée : uniquement une commande `start` ciblée sur une destination déjà en erreur, avec ingest LIVE et incident actif ;
+- temporisation, vérification post-action, cooldown et limite de tentatives ;
+- aucun restart automatique Restreamer Core/conteneur et aucun config reload ;
+- tests anti-fuite de secrets, smoke tests Docker/auth/incidents/diagnostics/watchdog et captures visuelles CI.
 
 ## Authentification
 
@@ -85,3 +90,26 @@ sh deployment/update.sh
 Les secrets restent dans `.env` sur le VPS et ne sont jamais versionnés.
 
 Voir `STATUS.md`, `ROADMAP.md`, `SECURITY.md`, `docs/ADMIN_VPS.md` et `docs/`.
+
+## Watchdog gradué
+
+Le watchdog est volontairement conservateur.
+
+Par défaut :
+
+```text
+WATCHDOG_MODE=observe
+WATCHDOG_OUTPUT_RECOVERY=false
+```
+
+Dans ce mode, il identifie uniquement les destinations qui pourraient être récupérées et les journalise. Il ne commande rien.
+
+Une destination ne peut devenir éligible à une recovery automatique que si :
+- son ingest est `LIVE` ;
+- la destination est réellement en `ERROR` alors qu'elle était configurée pour démarrer ;
+- l'incident correspondant est déjà actif ;
+- l'erreur persiste au-delà du seuil configuré ;
+- aucune autre action sur cette destination n'est en cours ;
+- le cooldown et la limite de tentatives l'autorisent.
+
+Même en mode recovery, alpha.12 ne redémarre jamais automatiquement Restreamer Core ou son conteneur.
