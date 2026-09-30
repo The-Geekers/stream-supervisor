@@ -14,24 +14,29 @@ Supervisor applique une allow-list backend avant toute exposition au frontend. L
 
 ### Actions opérateur
 
-Les seules écritures Restreamer disponibles sont :
+Les écritures normales Restreamer restent limitées à :
 - `start` d'une destination egress existante ;
 - `stop` d'une destination egress existante.
 
-Le backend :
-- exige une authentification Supervisor ;
-- exige le rôle Admin ou Technician ;
-- exige un en-tête d'action same-origin ;
-- refuse les commandes autres que `start` / `stop` ;
-- refuse les process IDs autres que les IDs egress au format attendu ;
-- refuse les IDs qui ne sont pas présents dans le snapshot sanitizé courant ;
-- ne permet ni restart Core, ni config reload, ni modification de process.
+Le backend exige une authentification Supervisor, un en-tête d'action same-origin, valide les IDs egress depuis le snapshot sanitizé et refuse toute commande arbitraire.
+
+Alpha.18 ajoute une seule action globale exceptionnelle : **restart manuel du conteneur Restreamer**, uniquement pour le rôle Admin. Elle ne passe pas par une commande Core générique et n'autorise ni config reload, ni modification de process, ni restart d'un autre conteneur. Technician reste limité aux start/stop egress.
 
 ## Docker
 
-Le backend Web Supervisor ne reçoit pas le socket Docker.
+Le backend Web Supervisor et le frontend ne reçoivent jamais le socket Docker.
 
-Le composant `docker-observer` est isolé : aucun port, aucun réseau, filesystem read-only hors volume de sortie, `no-new-privileges`, capabilities supprimées.
+Le composant `docker-observer` reste strictement read-only : socket monté en lecture seule, aucun port, aucun réseau, filesystem read-only hors volume de sortie, `no-new-privileges`, capabilities supprimées.
+
+Alpha.18 ajoute `docker-control`, séparé de l'observer. Ce helper :
+- est le seul composant Supervisor avec le socket Docker monté en écriture ;
+- n'a aucun port publié sur l'hôte et n'appartient pas au réseau public `web-proxy` ;
+- est joignable uniquement par Supervisor sur un réseau Docker `internal` dédié ;
+- n'expose qu'une route de restart avec une cible fixée à `restreamer` ;
+- inspecte d'abord la cible et refuse de transformer le restart en start si le conteneur est arrêté ;
+- ne propose aucun proxy Docker générique, exec, stop, remove, create ou accès arbitraire à un autre conteneur.
+
+Le montage du socket Docker reste une capacité sensible : le helper est donc volontairement minimal, dédié et non exposé. Toute extension de ses possibilités doit être traitée comme une évolution de sécurité.
 
 ## Accès Supervisor
 
@@ -58,7 +63,7 @@ Sans compte configuré, le monitoring reste accessible mais toutes les écriture
 
 La UI statique est servie par le même Core que l'API. Aucun bouton « restart UI » serveur n'est exposé car il n'existe pas de service UI séparé.
 
-Le reload de configuration Core n'est pas utilisé comme mécanisme de récupération UI car il redémarre Core.
+Le reload de configuration Core n'est pas utilisé comme mécanisme de récupération UI car il redémarre Core. En dernier recours, un Admin peut déclencher le restart manuel du conteneur avec avertissement explicite et journalisation.
 
 ## Incidents et journal d'événements
 
