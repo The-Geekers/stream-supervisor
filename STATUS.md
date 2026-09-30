@@ -58,4 +58,4 @@ Avec authentification :
 
 ## Prochaine étape
 
-Alpha.12 validée sur le VPS réel en mode observe : un egress RTMP volontairement en erreur avec ingest LIVE est passé de OBSERVING à ELIGIBLE, a généré l'incident et l'événement WATCHDOG CANDIDATE sans aucune commande automatique. Les ingests absents restent exclus des recovery candidates. Prochaine étape : test contrôlé du mode recover sur une destination jetable.
+Alpha.12 validée sur le VPS réel en modes observe et recover : un egress RTMP volontairement invalide avec ingest LIVE est devenu recovery candidate, a déclenché une unique commande START ciblée, puis une vérification après délai. La recovery non confirmée a été journalisée, la limite d'une tentative a conduit l'état à MANUAL, sans restart Core/conteneur ni action sur les autres flux. Les ingests absents restent exclus des recovery candidates. Observation à améliorer : pendant la tentative, l'egress peut brièvement quitter ERROR, ce qui génère un INCIDENT RESOLVED puis un nouvel INCIDENT OPEN si l'erreur revient.
