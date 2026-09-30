@@ -25,7 +25,7 @@ Premier lot volontairement limité :
 
 La période TODAY suit le jour local du navigateur. Aucun graphique, stockage de métriques haute fréquence, alerte externe ou enrichissement watchdog n'est inclus dans ce premier lot.
 
-Les étapes suivantes de 0.2 restent : métriques historiques utiles, alertes et historique de recovery, mais elles ne seront ouvertes qu'après validation de ce premier bloc.
+La PR #24 est fusionnée sur `main` avec les workflows `quality` et `visual` verts. Les étapes suivantes de 0.2 restent : métriques historiques utiles, alertes et historique de recovery, mais elles ne seront ouvertes qu'après validation réelle de ce premier bloc.
 
 ## 0.3 — Multi-engine
 
