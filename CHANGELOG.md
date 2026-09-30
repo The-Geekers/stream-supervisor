@@ -33,12 +33,16 @@
 - Test unitaire réel de la commande Restreamer avec login JWT et endpoint process command.
 
 ### Fixed
+- Les commandes START/STOP d'une destination utilisent désormais la consigne Restreamer `state.order` au lieu de déduire l'action depuis le seul statut observé ; une destination `ERROR` encore configurée `START` reste donc arrêtable.
+- Le délai de reconnexion d'un egress est conservé dans le modèle sanitizé et affiché pendant `ERROR` / `CONNECTING` lorsqu'il est fourni par Restreamer.
+- Le détail INCIDENTS n'ajoute plus une seconde fois le couple channel/destination quand le journal le contient déjà.
+- Le texte WATCHDOG ne référence plus une ancienne version alpha pour la politique de sécurité.
 - Le mode WATCHDOG `observe` affiche désormais clairement qu'aucune action automatique n'est envoyée.
 - Pendant une recovery watchdog, l'incident egress reste ouvert pendant la fenêtre de vérification afin d'éviter un faux `INCIDENT RESOLVED` suivi d'un nouvel `INCIDENT OPEN` sur un état transitoire.
 - Le CPU des conteneurs Docker n'est plus affiché en pourcentage multi-cœur (`175%`). Il est affiché en équivalent de cœurs (`1.75`).
 
 ### Changed
-- Passage à `0.1.0-alpha.13`.
+- Passage à `0.1.0-alpha.14`.
 - Mode ouvert : monitoring uniquement.
 - Mode authentifié : `OUTPUT CONTROL` pour Admin/Technician.
 - Le statut de la Web UI est désormais basé sur la vraie route statique `/ui/`.
