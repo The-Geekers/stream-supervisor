@@ -9,13 +9,14 @@ import { buildDiagnostics } from "./lib/diagnostics.js";
 import { EventJournal, IncidentTracker } from "./lib/incidents.js";
 import { RestreamerAdapter } from "./lib/restreamer.js";
 import { SystemAdapter } from "./lib/system.js";
+import { Watchdog } from "./lib/watchdog.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const HOST = process.env.HOST || "0.0.0.0";
 const PORT = Number(process.env.PORT || 8090);
-const VERSION = "0.1.0-alpha.11";
+const VERSION = "0.1.0-alpha.12";
 const DEMO_MODE = process.env.DEMO_MODE === "true";
 const requestedMonitorInterval = Number(process.env.MONITOR_INTERVAL_MS || 1000);
 const MONITOR_INTERVAL_MS = Math.min(
@@ -56,14 +57,28 @@ const incidentTracker = new IncidentTracker({
   journal,
   stateFile: process.env.INCIDENT_STATE_FILE || "/data/incidents-state.json"
 });
+const outputActionsInFlight = new Set();
+const watchdog = new Watchdog({
+  journal,
+  restreamer,
+  actionLocks: outputActionsInFlight,
+  stateFile: process.env.WATCHDOG_STATE_FILE || "/data/watchdog-state.json",
+  mode: String(process.env.WATCHDOG_MODE || "observe").toLowerCase(),
+  outputRecoveryEnabled: String(process.env.WATCHDOG_OUTPUT_RECOVERY || "").toLowerCase() === "true",
+  errorThresholdMs: Number(process.env.WATCHDOG_OUTPUT_ERROR_THRESHOLD_MS || 20000),
+  verifyAfterMs: Number(process.env.WATCHDOG_VERIFY_AFTER_MS || 10000),
+  cooldownMs: Number(process.env.WATCHDOG_COOLDOWN_MS || 300000),
+  maxAttempts: Number(process.env.WATCHDOG_MAX_ATTEMPTS || 1),
+  attemptWindowMs: Number(process.env.WATCHDOG_ATTEMPT_WINDOW_MS || 900000)
+});
 await journal.init();
 await incidentTracker.init();
+await watchdog.init();
 
 const sseClients = new Set();
 let latestStatus = null;
 let refreshPromise = null;
 let monitorTimer = null;
-const outputActionsInFlight = new Set();
 
 function securityHeaders(extra = {}) {
   return {
@@ -167,6 +182,7 @@ async function collectStatus() {
     };
     status.generatedAt = new Date().toISOString();
     status.incidents = await incidentTracker.update(status);
+    status.watchdog = await watchdog.evaluate(status);
     return status;
   }
 
@@ -185,6 +201,7 @@ async function collectStatus() {
     generatedAt: new Date().toISOString()
   };
   status.incidents = await incidentTracker.update(status);
+  status.watchdog = await watchdog.evaluate(status);
   return status;
 }
 
@@ -290,6 +307,14 @@ const server = http.createServer(async (req, res) => {
         persistent: journal.persistent
       }
     });
+  }
+
+  if (req.method === "GET" && url.pathname === "/api/watchdog") {
+    let status = latestStatus;
+    if (!status) {
+      try { status = await refreshStatus(); } catch {}
+    }
+    return sendJson(res, 200, status?.watchdog || watchdog.snapshot(status || {}));
   }
 
   if (req.method === "GET" && url.pathname === "/api/diagnostics") {

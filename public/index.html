@@ -27,6 +27,9 @@
 .incident-table{border:1px solid var(--line);background:var(--panel);margin-bottom:12px}.incident-head,.incident-row{display:grid;grid-template-columns:105px 150px minmax(220px,1.2fr) minmax(280px,2fr) 135px}.event-head,.event-row{display:grid;grid-template-columns:150px 135px 145px minmax(220px,1.2fr) minmax(280px,2fr) 120px}.incident-head,.event-head{background:#0c1014;color:var(--muted);font-size:9px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;border-bottom:1px solid var(--line)}.incident-head>div,.event-head>div,.incident-row>div,.event-row>div{padding:9px 10px;border-right:1px solid var(--line-soft);min-width:0}.incident-head>div:last-child,.event-head>div:last-child,.incident-row>div:last-child,.event-row>div:last-child{border-right:0}.incident-row,.event-row{min-height:50px;border-bottom:1px solid var(--line-soft)}.incident-row:last-child,.event-row:last-child{border-bottom:0}.severity{display:inline-block;padding:3px 6px;border:1px solid var(--line);font:800 9px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.05em}.severity.critical{color:var(--red);border-color:#6b3030}.severity.warning{color:var(--amber);border-color:#655126}.severity.info{color:var(--cyan);border-color:#245368}.incident-title{font-weight:800}.incident-detail{color:var(--muted);font:10px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace;overflow:hidden;text-overflow:ellipsis}.incident-meta{color:var(--muted);font:10px ui-monospace,SFMono-Regular,Consolas,monospace}
 .diag-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--line);background:var(--panel);margin-bottom:12px}.diag-summary .metric:nth-child(4){border-right:0}
 .diag-table{border:1px solid var(--line);background:var(--panel);margin-bottom:12px}.diag-head,.diag-row{display:grid;grid-template-columns:110px 190px minmax(260px,1.2fr) minmax(340px,1.8fr)}.diag-head{background:#0c1014;color:var(--muted);font-size:9px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;border-bottom:1px solid var(--line)}.diag-head>div,.diag-row>div{padding:10px;border-right:1px solid var(--line-soft);min-width:0}.diag-head>div:last-child,.diag-row>div:last-child{border-right:0}.diag-row{min-height:56px;border-bottom:1px solid var(--line-soft)}.diag-row:last-child{border-bottom:0}.diag-label{font-weight:800}.diag-text{color:var(--muted);font:10px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}.diag-actions{display:flex;align-items:center;justify-content:space-between;gap:16px;border:1px solid var(--line);background:var(--panel);padding:14px}.diag-actions-copy{max-width:900px}.diag-actions-title{font-weight:800;margin-bottom:5px}.diag-actions-note{color:var(--muted);font:10px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}.diag-button{appearance:none;border:1px solid #31566c;background:#0b1820;color:var(--cyan);padding:8px 12px;font:800 9px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.06em;cursor:pointer;white-space:nowrap}.diag-button:hover{border-color:var(--cyan)}
+.watchdog-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--line);background:var(--panel);margin-bottom:12px}.watchdog-summary .metric:nth-child(4){border-right:0}
+.watchdog-policy{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border:1px solid var(--line);background:var(--panel);margin-bottom:12px}.watchdog-policy .metric:nth-child(5){border-right:0}
+.watchdog-table{border:1px solid var(--line);background:var(--panel);margin-bottom:12px}.watchdog-head,.watchdog-row{display:grid;grid-template-columns:110px minmax(180px,1fr) minmax(220px,1.3fr) 120px 110px 150px}.watchdog-head{background:#0c1014;color:var(--muted);font-size:9px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;border-bottom:1px solid var(--line)}.watchdog-head>div,.watchdog-row>div{padding:10px;border-right:1px solid var(--line-soft);min-width:0}.watchdog-head>div:last-child,.watchdog-row>div:last-child{border-right:0}.watchdog-row{min-height:52px;border-bottom:1px solid var(--line-soft)}.watchdog-row:last-child{border-bottom:0}.watchdog-note{border:1px solid #604f24;background:#151107;color:#e6c370;padding:12px;font:10px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace}
 @media(max-width:1280px){.table-head,.channel{grid-template-columns:minmax(210px,2fr) 95px 150px 120px 105px minmax(240px,2fr)}.table-head>.sort-head:nth-child(6),.channel>.cell:nth-child(6){display:none}}
 @media(max-width:1200px){.host-strip{grid-template-columns:repeat(4,1fr)}.host-metric:nth-child(4n){border-right:0}.telemetry{grid-template-columns:repeat(4,1fr)}.metric:nth-child(4n){border-right:0}}@media(max-width:1050px){.shell{grid-template-columns:58px minmax(0,1fr)}.brand{font-size:0}.brand:before{content:"SS";font-size:14px}.brand small,.nav-item span{display:none}.nav-item{justify-content:center}.telemetry{grid-template-columns:repeat(4,1fr)}.metric:nth-child(4n){border-right:0}.service-strip{grid-template-columns:1fr}.service{border-right:0;border-bottom:1px solid var(--line)}.service:last-child{border-bottom:0}.table-head{display:none}.channel{grid-template-columns:minmax(200px,1.8fr) 90px 140px 110px minmax(220px,1.6fr)}.channel>.cell:nth-child(4),.channel>.cell:nth-child(6){display:none}}
 @media(max-width:760px){.host-strip{grid-template-columns:repeat(2,1fr)}.host-metric:nth-child(even){border-right:0}.shell{display:block}.sidebar{display:none}.topbar{padding:0 10px}.subtitle,.clock{display:none}.content{padding:10px}.telemetry{grid-template-columns:repeat(2,1fr)}.metric:nth-child(odd){border-right:1px solid var(--line)}.metric:nth-child(even){border-right:0}.channel{display:block;padding:9px}.cell{border:0;padding:5px 0}.identity{min-height:50px}.toolbar{height:auto;padding:8px;gap:10px;align-items:flex-start;flex-direction:column}}
@@ -42,9 +45,10 @@
       <div class="nav-item" data-view="system"><i class="nav-dot"></i><span>SYSTEM</span></div>
       <div class="nav-item" data-view="incidents"><i class="nav-dot"></i><span>INCIDENTS</span></div>
       <div class="nav-item" data-view="diagnostics"><i class="nav-dot"></i><span>DIAGNOSTICS</span></div>
+      <div class="nav-item" data-view="watchdog"><i class="nav-dot"></i><span>WATCHDOG</span></div>
       <div class="nav-item disabled"><i class="nav-dot"></i><span>SETTINGS</span></div>
     </nav>
-    <div class="side-foot">RESTREAMER / READ ONLY<br><span id="sideVersion">v0.1.0-alpha.11</span></div>
+    <div class="side-foot">RESTREAMER / READ ONLY<br><span id="sideVersion">v0.1.0-alpha.12</span></div>
   </aside>
 
   <main class="main">
@@ -171,6 +175,31 @@
         </section>
       </div>
 
+      <div id="viewWatchdog" class="view">
+        <section class="watchdog-summary">
+          <div class="metric"><div class="metric-label">Mode</div><div id="watchdogMode" class="metric-value">--</div><div class="metric-sub">runtime policy</div></div>
+          <div class="metric"><div class="metric-label">Output recovery</div><div id="watchdogRecovery" class="metric-value">--</div><div class="metric-sub">targeted egress START only</div></div>
+          <div class="metric"><div class="metric-label">Candidates</div><div id="watchdogCandidatesCount" class="metric-value">--</div><div id="watchdogPending" class="metric-sub">--</div></div>
+          <div class="metric"><div class="metric-label">Global restart</div><div id="watchdogGlobalRestart" class="metric-value">DISABLED</div><div class="metric-sub">Core/container restart prohibited</div></div>
+        </section>
+
+        <section class="watchdog-policy">
+          <div class="metric"><div class="metric-label">Error threshold</div><div id="watchdogThreshold" class="metric-value">--</div><div class="metric-sub">before eligibility</div></div>
+          <div class="metric"><div class="metric-label">Verify after</div><div id="watchdogVerify" class="metric-value">--</div><div class="metric-sub">post recovery check</div></div>
+          <div class="metric"><div class="metric-label">Cooldown</div><div id="watchdogCooldown" class="metric-value">--</div><div class="metric-sub">between attempts</div></div>
+          <div class="metric"><div class="metric-label">Max attempts</div><div id="watchdogMaxAttempts" class="metric-value">--</div><div class="metric-sub">per window</div></div>
+          <div class="metric"><div class="metric-label">Attempt window</div><div id="watchdogWindow" class="metric-value">--</div><div class="metric-sub">automatic limit</div></div>
+        </section>
+
+        <div class="toolbar"><div class="toolbar-title">RECOVERY CANDIDATES</div></div>
+        <section class="watchdog-table">
+          <div class="watchdog-head"><div>State</div><div>Channel</div><div>Destination</div><div>Error age</div><div>Attempts</div><div>Next action</div></div>
+          <div id="watchdogCandidates"><div class="empty">Waiting for watchdog state…</div></div>
+        </section>
+
+        <div class="watchdog-note">Safety policy: only an egress already configured to START, currently in ERROR, with its ingest LIVE and an active incident can become a recovery candidate. Alpha 12 never restarts Restreamer Core or the Restreamer container. OBSERVE mode never sends a command.</div>
+      </div>
+
       <div class="footerline">
         <span><i id="apiDot" class="dot"></i>Supervisor</span>
         <span><i id="coreDot" class="dot"></i>Core</span>
@@ -196,7 +225,7 @@ const fmtRate=bps=>{bps=Number(bps)||0;const bits=bps*8;return bits>=1000000000?
 const stateLabel=s=>({live:"LIVE",connecting:"CONNECTING",waiting:"NO SOURCE",error:"ERROR",stopped:"STOPPED",idle:"IDLE"}[s]||String(s||"UNKNOWN").toUpperCase());
 const fmtDateTime=v=>{const d=new Date(v);return Number.isNaN(d.getTime())?"--":d.toLocaleString("fr-FR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false})};
 const statusClass=s=>["live","connecting","waiting","error","stopped","idle"].includes(s)?s:"idle";
-let lastRefresh=0,currentFilter="all",currentSort="name",currentDirection="asc",latestChannels=[],latestIncidentState={active:[],summary:{}},latestJournal=[],journalPersistent=null,latestDiagnostics=null,eventStream=null,currentView="channels",session={authenticated:false,role:"viewer",username:null,actionsEnabled:false},actionBusy=false;
+let lastRefresh=0,currentFilter="all",currentSort="name",currentDirection="asc",latestChannels=[],latestIncidentState={active:[],summary:{}},latestJournal=[],journalPersistent=null,latestDiagnostics=null,latestWatchdog=null,eventStream=null,currentView="channels",session={authenticated:false,role:"viewer",username:null,actionsEnabled:false},actionBusy=false;
 
 function renderDocker(docker){
   const containers=Array.isArray(docker?.containers)?docker.containers:[];
@@ -227,22 +256,25 @@ function renderDocker(docker){
 }
 
 function switchView(view){
-  currentView=["channels","system","incidents","diagnostics"].includes(view)?view:"channels";
+  currentView=["channels","system","incidents","diagnostics","watchdog"].includes(view)?view:"channels";
   document.querySelectorAll(".nav-item[data-view]").forEach(item=>item.classList.toggle("active",item.dataset.view===currentView));
   $("viewChannels").classList.toggle("active",currentView==="channels");
   $("viewSystem").classList.toggle("active",currentView==="system");
   $("viewIncidents").classList.toggle("active",currentView==="incidents");
   $("viewDiagnostics").classList.toggle("active",currentView==="diagnostics");
+  $("viewWatchdog").classList.toggle("active",currentView==="watchdog");
   const titles={
     channels:["CHANNEL MONITOR","LIVE OPERATIONS"],
     system:["SYSTEM MONITOR","HOST + DOCKER SERVICES"],
     incidents:["INCIDENTS","ACTIVE STATE + EVENT JOURNAL"],
-    diagnostics:["DIAGNOSTICS","SAFE OPERATOR CHECKS"]
+    diagnostics:["DIAGNOSTICS","SAFE OPERATOR CHECKS"],
+    watchdog:["WATCHDOG","GRADUATED RECOVERY POLICY"]
   };
   $("pageTitle").textContent=titles[currentView][0];
   $("pageSubtitle").textContent=titles[currentView][1];
   if(currentView==="incidents")fetchIncidents();
   if(currentView==="diagnostics")fetchDiagnostics();
+  if(currentView==="watchdog")fetchWatchdog();
 }
 
 function renderIncidents(){
@@ -335,6 +367,52 @@ async function fetchDiagnostics(){
   }catch{
     if(currentView==="diagnostics"){
       $("diagnosticChecks").innerHTML='<div class="empty">Diagnostics unavailable.</div>';
+    }
+  }
+}
+
+function renderWatchdog(){
+  const data=latestWatchdog;
+  if(!data)return;
+  const candidates=Array.isArray(data.candidates)?data.candidates:[];
+  const mode=String(data.mode||"off").toUpperCase();
+  $("watchdogMode").textContent=mode;
+  $("watchdogMode").style.color=data.mode==="recover"?"var(--amber)":data.mode==="observe"?"var(--cyan)":"var(--off)";
+  $("watchdogRecovery").textContent=data.outputRecoveryEnabled?"ARMED":"LOCKED";
+  $("watchdogRecovery").style.color=data.outputRecoveryEnabled?"var(--amber)":"var(--green)";
+  $("watchdogCandidatesCount").textContent=candidates.length;
+  $("watchdogPending").textContent=(data.pending??0)+" verifying";
+  $("watchdogGlobalRestart").textContent=data.globalRestartEnabled?"ENABLED":"DISABLED";
+  $("watchdogGlobalRestart").style.color=data.globalRestartEnabled?"var(--red)":"var(--green)";
+  $("watchdogThreshold").textContent=(data.policy?.outputErrorThresholdSeconds??0)+"s";
+  $("watchdogVerify").textContent=(data.policy?.verifyAfterSeconds??0)+"s";
+  $("watchdogCooldown").textContent=fmtTime(data.policy?.cooldownSeconds??0);
+  $("watchdogMaxAttempts").textContent=data.policy?.maxAttempts??0;
+  $("watchdogWindow").textContent=fmtTime(data.policy?.attemptWindowSeconds??0);
+
+  $("watchdogCandidates").innerHTML=candidates.length?candidates.map(item=>{
+    const state=String(item.state||"observing").toUpperCase();
+    const severity=item.state==="manual"?"critical":item.state==="eligible"||item.state==="verifying"?"warning":"info";
+    return '<div class="watchdog-row">'+
+      '<div><span class="severity '+severity+'">'+esc(state)+'</span></div>'+
+      '<div class="incident-title">'+esc(item.channel||"--")+'</div>'+
+      '<div><div class="incident-title">'+esc(item.output||"--")+'</div><div class="incident-meta">'+esc(String(item.provider||"").toUpperCase())+'</div></div>'+
+      '<div class="incident-meta">'+esc((item.errorAgeSeconds??0)+"s")+'</div>'+
+      '<div class="incident-meta">'+esc(String(item.attemptsInWindow??0))+'</div>'+
+      '<div class="incident-meta">'+esc(String(item.nextAction||"--").toUpperCase())+'</div>'+
+    '</div>';
+  }).join(""):'<div class="empty">No recovery candidates.</div>';
+}
+
+async function fetchWatchdog(){
+  try{
+    const response=await fetch("/api/watchdog",{cache:"no-store"});
+    if(!response.ok)throw new Error("watchdog");
+    latestWatchdog=await response.json();
+    renderWatchdog();
+  }catch{
+    if(currentView==="watchdog"){
+      $("watchdogCandidates").innerHTML='<div class="empty">Watchdog state unavailable.</div>';
     }
   }
 }
@@ -515,12 +593,14 @@ function applyStatus(x){
     $("outputErrors").textContent=s.outputErrors??0;
     $("outputErrors").style.color=(s.outputErrors??0)>0?"var(--red)":"var(--text)";
     $("supervisorVersion").textContent=x.supervisor?.version||"--";
-    $("sideVersion").textContent=x.supervisor?.version||"v0.1.0-alpha.11";
+    $("sideVersion").textContent=x.supervisor?.version||"v0.1.0-alpha.12";
     $("monitorTransport").textContent=(monitoring.transport||"poll").toUpperCase()+" · source "+(monitoring.sourcePollMs||"--")+" ms · core "+(monitoring.pollDurationMs??"--")+" ms";
     latestChannels=r.channels||[];
     latestIncidentState=x.incidents||{active:[],summary:{}};
+    latestWatchdog=x.watchdog||latestWatchdog;
     renderChannels();
     renderIncidents();
+    renderWatchdog();
     lastRefresh=Date.now();
   }catch{
     setService("api","NO DATA","Invalid monitoring snapshot","bad");
@@ -594,11 +674,11 @@ document.querySelectorAll(".sort-head").forEach(head=>{
   });
 });
 setInterval(()=>{$("refreshAge").textContent=lastRefresh?Math.max(0,Math.floor((Date.now()-lastRefresh)/1000))+"s":"--"},1000);
-setInterval(()=>{if(currentView==="incidents")fetchIncidents();if(currentView==="diagnostics")fetchDiagnostics()},5000);
+setInterval(()=>{if(currentView==="incidents")fetchIncidents();if(currentView==="diagnostics")fetchDiagnostics();if(currentView==="watchdog")fetchWatchdog()},5000);
 setInterval(updateClock,1000);
 updateClock();
 const initialView=new URLSearchParams(window.location.search).get("view");
-if(["system","incidents","diagnostics"].includes(initialView)) switchView(initialView);
+if(["system","incidents","diagnostics","watchdog"].includes(initialView)) switchView(initialView);
 loadSession();
 connectRealtime();
 </script>

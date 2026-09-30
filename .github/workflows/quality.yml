@@ -72,6 +72,18 @@ jobs:
               if (!["ok","warning","critical"].includes(data.overall)) process.exit(1);
             });
           '
+          curl -fsS http://127.0.0.1:8090/api/watchdog | node -e '
+            let raw="";
+            process.stdin.on("data", c => raw += c);
+            process.stdin.on("end", () => {
+              const data=JSON.parse(raw);
+              if (data.mode !== "observe") process.exit(1);
+              if (data.outputRecoveryEnabled !== false) process.exit(1);
+              if (data.globalRestartEnabled !== false) process.exit(1);
+              if (data.coreReloadEnabled !== false) process.exit(1);
+              if (!Array.isArray(data.candidates)) process.exit(1);
+            });
+          '
           curl -Ns --max-time 3 http://127.0.0.1:8090/api/events > /tmp/sse-events.txt || true
           grep -q "event: status" /tmp/sse-events.txt
 

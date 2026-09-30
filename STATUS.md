@@ -1,13 +1,13 @@
 # Project Status
 
-**Version :** 0.1.0-alpha.11  
+**Version :** 0.1.0-alpha.12  
 **Phase :** supervision complète + premières actions opérateur sécurisées
 
 | Domaine | État |
 |---|---|
 | Dépôt GitHub / workflow GitHub → VPS | OK |
 | Application Docker | OK |
-| Interface monitoring | Alpha 11 |
+| Interface monitoring | Alpha 12 |
 | Restreamer Core 16 | Intégré |
 | Channels / outputs / métriques | Intégrés |
 | Monitoring SSE quasi temps réel | Intégré, 1 s par défaut |
@@ -32,7 +32,9 @@
 | Incidents actifs | Intégrés |
 | Journal événements | Intégré, persistant |
 | Actions opérateur dans le journal | Intégrées |
-| Watchdog gradué | À faire |
+| Watchdog gradué | Intégré, mode observe par défaut |
+| Recovery egress ciblée | Intégrée mais désarmée par défaut |
+| Restart automatique Restreamer | Interdit en alpha.12 |
 
 ## Politique de récupération Web UI
 
@@ -56,4 +58,4 @@ Avec authentification :
 
 ## Prochaine étape
 
-Valider alpha.11 sur le VPS réel, puis définir la première politique de watchdog gradué à partir des diagnostics et incidents déjà observés.
+Valider alpha.12 sur le VPS réel d'abord en mode observe. N'armer la recovery egress automatique qu'après validation d'un scénario réel ou contrôlé.

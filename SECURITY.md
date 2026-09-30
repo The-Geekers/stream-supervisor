@@ -76,6 +76,29 @@ L'export exclut explicitement :
 
 Les diagnostics sont read-only et n'exécutent aucune action corrective.
 
+## Watchdog gradué
+
+Le watchdog est désarmé par défaut pour les écritures automatiques :
+
+```text
+WATCHDOG_MODE=observe
+WATCHDOG_OUTPUT_RECOVERY=false
+```
+
+En alpha.12, la seule recovery automatisable est une commande `start` ciblée sur un egress déjà classé `ERROR`, avec ingest `LIVE` et incident actif. Le watchdog applique un seuil de persistance, un cooldown, une limite de tentatives et une vérification post-action.
+
+Le verrou d'action egress est partagé avec les commandes opérateur afin d'éviter deux écritures concurrentes sur la même destination.
+
+Sont explicitement interdits en automatique :
+- restart de Restreamer Core ;
+- restart du conteneur Restreamer ;
+- config reload Core ;
+- modification de clé, URL ou configuration de process ;
+- action sur un ingest ;
+- action sur une destination simplement `STOPPED`.
+
+Les événements watchdog passent par le même journal allow-listé que les incidents et actions opérateur.
+
 ## Signalement
 
 Ne jamais publier de secrets ou détails exploitables dans une issue publique.
