@@ -19,6 +19,9 @@
 | CPU Docker | Affiché en équivalent de cœurs |
 | Page SYSTEM | Intégrée |
 | Rôles Admin / Technician | Intégrés |
+| Login intégré Supervisor | Intégré |
+| Sessions navigateur + logout | Intégrés |
+| Confirmations actions | Modales UI intégrées |
 | Monitoring ouvert sans auth | Autorisé, read-only |
 | Start/stop destinations Restreamer | Intégré, auth obligatoire |
 | Contrôle ingest | Non exposé |
