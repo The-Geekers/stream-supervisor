@@ -15,9 +15,9 @@ Le premier moteur ciblé est **Restreamer**. L'architecture reste volontairement
 
 ## État actuel
 
-`0.1.0-alpha.18`
+`0.2.0-alpha.1`
 
-Alpha.18 est fusionnée sur `main` (PR #22, workflows `quality` et `visual` verts). Son déploiement sur le VPS réel reste à effectuer avant validation opérationnelle.
+`v0.1.0-alpha.18` reste le point de référence figé de la stabilisation 0.1. La branche 0.2 démarre avec un premier bloc volontairement limité à l'historique des incidents.
 
 - navigation compacte mobile vers les cinq vues, dont **SYSTEM**, avec sidebar conservée sur tablette/desktop ;
 - modales accessibles au clavier : focus initial, Tab/Shift+Tab confinés, Escape et retour au déclencheur ;
@@ -51,6 +51,9 @@ Alpha.18 est fusionnée sur `main` (PR #22, workflows `quality` et `visual` vert
 - anti-CSRF par en-tête d'action same-origin ;
 - validation serveur stricte : seules les IDs egress déjà découvertes et les commandes `start` / `stop` sont acceptées ;
 - page **INCIDENTS** avec état actif et journal d'événements persistant ;
+- 0.2 alpha.1 ajoute un historique **TODAY** dérivé de ce journal : nombre d'incidents, incidents résolus, temps cumulé, incident le plus long et durée de chaque occurrence ;
+- la période TODAY suit le fuseau horaire du navigateur : le frontend envoie simplement les bornes ISO de minuit local à maintenant, le backend reste indépendant du fuseau du VPS ;
+- le temps cumulé signifie la **somme des durées d'incidents**, pas une mesure de disponibilité globale lorsque plusieurs incidents se chevauchent ;
 - détection d'incidents Core, Web UI, Docker, ingest et egress avec temporisation anti-bruit ;
 - journal des ouvertures/résolutions d'incidents et des actions opérateur start/stop ;
 - persistance dédiée dans un volume Docker Supervisor, sans payload Restreamer brut ;
@@ -63,6 +66,19 @@ Alpha.18 est fusionnée sur `main` (PR #22, workflows `quality` et `visual` vert
 - temporisation, vérification post-action, cooldown et limite de tentatives ;
 - aucun restart automatique Restreamer Core/conteneur et aucun config reload ;
 - tests anti-fuite de secrets, smoke tests Docker/auth/incidents/diagnostics/watchdog et captures visuelles CI.
+
+## Historique d'exploitation 0.2
+
+Le premier bloc 0.2 reste volontairement limité. Supervisor réutilise le journal d'incidents déjà persistant au lieu d'ajouter immédiatement une nouvelle base ou une stack de métriques.
+
+Dans **INCIDENTS**, la section `TODAY · INCIDENT HISTORY` affiche :
+- le nombre d'incidents ayant affecté la journée ;
+- le nombre résolu ;
+- la somme des durées d'incidents sur la période ;
+- la durée de l'incident le plus long ;
+- l'historique détaillé avec début, fin, sévérité, source et durée.
+
+Les durées actives continuent à évoluer jusqu'au moment de la requête. Les intervalles qui chevauchent minuit sont tronqués à la période affichée pour le calcul du total journalier.
 
 ## Thèmes UI
 
