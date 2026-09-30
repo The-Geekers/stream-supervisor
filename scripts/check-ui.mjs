@@ -16,7 +16,7 @@ try {
 }
 
 const requiredIds = [
-  "appShell","mobileView",
+  "appShell","mobileView","desktopThemeToggle","mobileThemeToggle","loginThemeToggle",
   "viewChannels","viewSystem","pageTitle","dockerEngine","dockerRunning",
   "dockerUnhealthy","dockerAge","dockerContainers","dockerDot","modeBadge","authBadge",
   "viewIncidents","incidentActiveCount","incidentCriticalCount","incidentWarningCount",
@@ -40,6 +40,10 @@ for (const id of requiredIds) {
   }
 }
 
+if (!html.includes('stream-supervisor-theme') || !html.includes('data-theme="light"')) {
+  console.error("UI CHECK FAILED: theme system wiring is missing");
+  process.exit(1);
+}
 if (!html.includes("/api/restreamer/output-command")) {
   console.error("UI CHECK FAILED: output command endpoint wiring is missing");
   process.exit(1);
