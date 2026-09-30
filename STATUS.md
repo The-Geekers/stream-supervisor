@@ -82,7 +82,7 @@ Le déploiement réel de 0.2 alpha.1 a montré la limite de la première approch
 0.2 alpha.2 corrige cette lecture sans supprimer l'information brute :
 - période 1H par défaut, avec TODAY et 24H ;
 - 20 incidents racine maximum visibles ;
-- `Affected time` calculé comme temps murale avec au moins un incident ;
+- `Affected time` calculé comme temps mural avec au moins un incident ;
 - erreurs egress downstream regroupées lorsqu'elles sont entièrement couvertes par une perte ingest du même channel ;
 - journal brut conservé mais replié et limité visuellement à 20 événements ;
 - bouton `↑ TOP` après scroll.
