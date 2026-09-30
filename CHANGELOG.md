@@ -2,6 +2,24 @@
 
 ## [Unreleased]
 
+## [0.1.0-alpha.16] - 2026-09-30
+
+### Added
+- Système de thèmes Dark/Light avec sélection disponible sur l'écran de connexion, la sidebar desktop et la navigation mobile.
+- Thème Light dérivé de la palette Distillerie Portal v1.0.3 : noir `#191919`, blanc, fond doux `#f5f3ef`, ligne `#dedbd5`, orange `#e9471d`, vert `#44745b` et rouge `#aa2730`.
+- Persistance locale de la préférence visuelle via `localStorage`, sans donnée opérationnelle ni impact sur les sessions.
+- Tests navigateur Light à 390 et 1600 px sur les cinq vues, plus test de persistance et retour au Dark.
+
+### Changed
+- Le Dark d'alpha.15 reste le thème par défaut et sa palette existante est conservée.
+- Aucune modification des dimensions, grilles, tailles de police ou règles responsive. Les familles Arial/Helvetica et monospace existantes sont conservées car elles correspondent déjà à celles du portail.
+- Alpha.15 est documentée comme déployée et vérifiée sur l'instance réelle le 30/09/2026.
+
+### Validation
+- Les tests responsive alpha.15 sur sept largeurs restent en place.
+- La logique ERROR / STOP / RETRY, les adaptateurs, l'API, l'authentification, le watchdog et les commandes opérateur ne sont pas modifiés par alpha.16.
+
+
 ## [0.1.0-alpha.15] - 2026-09-30
 
 ### Added

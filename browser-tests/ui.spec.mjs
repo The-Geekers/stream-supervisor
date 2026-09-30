@@ -7,7 +7,7 @@ async function login(page, role = "admin") {
   await page.getByRole("button", { name: "SIGN IN", exact: true }).click();
   await expect(page.locator("#loginGate")).not.toBeVisible();
   await expect(page.locator("#channels")).toContainText("Agora");
-  await expect(page.locator("#apiDetail")).toContainText("0.1.0-alpha.15");
+  await expect(page.locator("#apiDetail")).toContainText("0.1.0-alpha.16");
 }
 async function navigate(page, view) {
   if (await page.locator("#mobileView").isVisible()) await page.locator("#mobileView").selectOption(view);
@@ -37,6 +37,46 @@ for (const width of [320, 390, 759, 760, 761, 1024, 1600]) {
     }
   });
 }
+
+
+for (const width of [390, 1600]) {
+  test(`Distillerie light theme at ${width}px keeps every view usable`, async ({ page }, testInfo) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/");
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+    const loginToggle = page.locator("#loginThemeToggle");
+    await expect(loginToggle).toHaveText("LIGHT");
+    await loginToggle.click();
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+    await expect(loginToggle).toHaveText("DARK");
+    expect(await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue("--bg").trim())).toBe("#f5f3ef");
+    expect(await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue("--cyan").trim())).toBe("#e9471d");
+    await login(page);
+    const themeToggle = width <= 760 ? page.locator("#mobileThemeToggle") : page.locator("#desktopThemeToggle");
+    await expect(themeToggle).toHaveText("DARK");
+    for (const view of views) {
+      await navigate(page, view);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1)).toBe(true);
+      await page.screenshot({ path: testInfo.outputPath(`light-${view}-${width}.png`), fullPage: true });
+    }
+  });
+}
+
+test("theme preference persists locally and can return to the alpha15 dark reference", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 700 });
+  await page.goto("/");
+  await page.locator("#loginThemeToggle").click();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  expect(await page.evaluate(() => localStorage.getItem("stream-supervisor-theme"))).toBe("light");
+  await login(page);
+  await page.reload();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  await expect(page.locator("#mobileThemeToggle")).toHaveText("DARK");
+  await page.locator("#mobileThemeToggle").click();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  expect(await page.evaluate(() => localStorage.getItem("stream-supervisor-theme"))).toBe("dark");
+  expect(await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue("--bg").trim())).toBe("#07090b");
+});
 
 for (const role of ["admin", "tech"]) {
   test(`${role}: modal focus, alpha14 ERROR/STOP, commands and logout/relogin`, async ({ page }) => {

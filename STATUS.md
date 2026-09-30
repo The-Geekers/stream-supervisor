@@ -1,13 +1,17 @@
 # Project Status
 
-**Version :** 0.1.0-alpha.15
-**Phase :** supervision complète + premières actions opérateur sécurisées
+**Version :** 0.1.0-alpha.16
+**Phase :** socle 0.1 fonctionnel + harmonisation visuelle Distillerie
 
 | Domaine | État |
 |---|---|
 | Dépôt GitHub / workflow GitHub → VPS | OK |
 | Application Docker | OK |
-| Interface monitoring | Alpha 15, cinq vues responsive |
+| Interface monitoring | Alpha 16, cinq vues responsive + thèmes Dark/Light |
+| Thème Dark | Référence alpha.15 conservée par défaut |
+| Thème Light | Palette Distillerie Portal v1.0.3, sans changement de géométrie |
+| Préférence thème | Locale au navigateur uniquement (`localStorage`) |
+| Déploiement alpha.15 | Validé sur VPS réel le 30/09/2026 ; desktop et mobile vérifiés |
 | Navigation mobile | Sélecteur compact, SYSTEM conservé, SETTINGS masqué |
 | Accessibilité modales | Focus confiné, fond inerte, Escape et retour au déclencheur |
 | Fin de session frontend | Données purgées, requêtes annulées, réponses tardives ignorées |
@@ -65,8 +69,12 @@ Avec authentification :
 
 ## Prochaine étape
 
-Alpha.14 a été validée en conditions réelles : ERROR avec consigne START conserve STOP et RETRY ; watchdog observe sans tentative et retour propre à LIVE. Cette logique reste inchangée dans alpha.15.
+Alpha.14 a été validée en conditions réelles : ERROR avec consigne START conserve STOP et RETRY ; watchdog observe sans tentative et retour propre à LIVE. Cette logique reste inchangée.
 
-Alpha.15 ajoute navigation mobile, vues responsive, gestion du focus des modales et purge de fin de session. Validation locale sur sept largeurs, tests Admin/Technician et export diagnostic réussi ; le timeout navigateur de 15 s n'est pas reproduit localement et n'est pas attribué au backend. Le workflow visual exécute les tests et conserve les captures. Déploiement VPS à effectuer ensuite avec `deployment/update.sh`, puis phase 0.2 Monitoring & exploitation.
+Alpha.15 a été déployée sur le VPS réel le 30/09/2026. Les cinq vues desktop ont été vérifiées, puis la navigation et le rendu mobile ont été contrôlés sur l'instance réelle. Les points d'accessibilité clavier restent couverts par les tests navigateur automatisés.
+
+Alpha.16 est une évolution **strictement UI** : le Dark d'alpha.15 reste la référence par défaut et un Light reprend la palette du portail Distillerie v1.0.3. Les tailles, grilles, métriques typographiques, règles responsive, adaptateurs, API, sécurité, watchdog et actions opérateur restent inchangés. Après CI verte et fusion, déployer avec `deployment/update.sh`, vérifier Dark + Light sur desktop/mobile, puis ouvrir la phase 0.2 Monitoring & exploitation.
+
+Point connu non bloquant : les channels 8 et 9 ont déjà montré des oscillations serveur `INCIDENT OPEN → RESOLVED → OPEN` lorsqu'ils sont sans source. La cause n'est pas démontrée ; ne pas modifier cette logique sans investigation dédiée.
 
 Alpha.12 validée sur le VPS réel en modes observe et recover : un egress RTMP volontairement invalide avec ingest LIVE est devenu recovery candidate, a déclenché une unique commande START ciblée, puis une vérification après délai. La recovery non confirmée a été journalisée, la limite d'une tentative a conduit l'état à MANUAL, sans restart Core/conteneur ni action sur les autres flux. Les ingests absents restent exclus des recovery candidates. Correction alpha.12.1 : pendant la fenêtre de vérification watchdog, l'incident egress reste maintenu ouvert afin d'éviter le bruit RESOLVED → OPEN provoqué par un état transitoire après START.

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fr">
+<html lang="fr" data-theme="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -76,12 +76,104 @@
   .docker-row,.incident-row,.event-row,.diag-row,.watchdog-row{grid-template-columns:minmax(0,1fr)}
   .login-panel{padding:20px}.login-brand{font-size:16px}.modal-actions{flex-wrap:wrap}
 }
+
+/* alpha.16 — theme system. Dark stays the alpha.15 reference; light follows Distillerie Portal v1.0.3. */
+.theme-toggle{appearance:none;border:1px solid #46535d;background:#080b0d;color:#aeb8c0;padding:6px 8px;font:800 9px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.06em;cursor:pointer;white-space:nowrap}
+.theme-toggle:hover{color:var(--text);border-color:var(--cyan)}
+.side-foot .theme-toggle{display:block;width:100%;margin-top:10px}
+.login-panel{position:relative}
+.login-theme-toggle{position:absolute;top:14px;right:14px}
+.mobile-navigation .theme-toggle{flex:0 0 auto}
+
+:root[data-theme="light"]{
+  color-scheme:light;
+  --bg:#f5f3ef;
+  --side:#191919;
+  --panel:#ffffff;
+  --line:#dedbd5;
+  --line-soft:#ece8e1;
+  --text:#1b1b1b;
+  --muted:#6d6d6d;
+  --cyan:#e9471d;
+  --green:#44745b;
+  --amber:#8c6112;
+  --red:#aa2730;
+  --off:#8a8175;
+}
+:root[data-theme="light"] .sidebar{color:#fff}
+:root[data-theme="light"] .brand{color:#fff}
+:root[data-theme="light"] .brand small,
+:root[data-theme="light"] .side-foot{color:#d8bc83}
+:root[data-theme="light"] .nav-item{color:#ddd5be}
+:root[data-theme="light"] .nav-item.active{color:#fff;background:#2a2a2a;border-left-color:#e9471d}
+:root[data-theme="light"] .topbar{background:#191919;color:#fff}
+:root[data-theme="light"] .topbar .subtitle,
+:root[data-theme="light"] .topbar .clock{color:#d8bc83}
+:root[data-theme="light"] .badge.readonly{border-color:#a08d16;color:#ddd5be;background:transparent}
+:root[data-theme="light"] .badge.secure{border-color:#44745b;color:#d6eee1;background:transparent}
+:root[data-theme="light"] .badge.open{border-color:#e98600;color:#f2d29a;background:transparent}
+:root[data-theme="light"] .service-detail{color:#4d4d4d}
+:root[data-theme="light"] .host-strip{background:#fff}
+:root[data-theme="light"] .toolbar{background:#fff}
+:root[data-theme="light"] .filter{background:#fff;color:#6d6d6d}
+:root[data-theme="light"] .filter.active{color:#191919;border-color:#e9471d;background:#f5f3ef}
+:root[data-theme="light"] .sort-head:hover,
+:root[data-theme="light"] .sort-head:focus-visible{background:#f0ede7}
+:root[data-theme="light"] .table-head,
+:root[data-theme="light"] .docker-head,
+:root[data-theme="light"] .incident-head,
+:root[data-theme="light"] .event-head,
+:root[data-theme="light"] .diag-head,
+:root[data-theme="light"] .watchdog-head{background:#f5f3ef}
+:root[data-theme="light"] .channel{background:#fff}
+:root[data-theme="light"] .channel:hover{background:#faf8f4}
+:root[data-theme="light"] .signal.stopped{background:#9a9288}
+:root[data-theme="light"] .output{border-bottom-color:#dedbd5}
+:root[data-theme="light"] .output-action{background:#fff}
+:root[data-theme="light"] .output-action:hover{border-color:#e9471d}
+:root[data-theme="light"] .alert-note{border-color:#d8bc83;background:#faf5e7;color:#7b5710}
+:root[data-theme="light"] .severity.critical{border-color:#d9a8ac}
+:root[data-theme="light"] .severity.warning{border-color:#d8bc83}
+:root[data-theme="light"] .severity.info{color:#b33a18;border-color:#efb29f}
+:root[data-theme="light"] .state.connecting,
+:root[data-theme="light"] .sort-arrow{color:#b33a18}
+:root[data-theme="light"] .diag-button{border-color:#e9471d;background:#fff;color:#b33a18}
+:root[data-theme="light"] .watchdog-note{border-color:#d8bc83;background:#faf5e7;color:#7b5710}
+:root[data-theme="light"] .session-action{border-color:#e9471d;background:transparent;color:#fff}
+:root[data-theme="light"] .session-action:hover{border-color:#f57a59}
+:root[data-theme="light"] .login-gate{background:#f5f3ef}
+:root[data-theme="light"] .login-panel{background:#fff;box-shadow:0 20px 70px rgba(25,25,25,.18)}
+:root[data-theme="light"] .login-brand{color:#191919}
+:root[data-theme="light"] .login-kicker{color:#b33a18}
+:root[data-theme="light"] .login-field input{background:#fff;color:#191919;border-color:#cfcfcf}
+:root[data-theme="light"] .login-field input:focus{border-color:#e9471d}
+:root[data-theme="light"] .login-submit{border-color:#e9471d;background:#e9471d;color:#191919}
+:root[data-theme="light"] .login-submit:hover{border-color:#b33a18}
+:root[data-theme="light"] .login-note{color:#6d6d6d}
+:root[data-theme="light"] .app-modal{background:#fff;box-shadow:0 20px 70px rgba(25,25,25,.24)}
+:root[data-theme="light"] .modal-body{color:#4d4d4d}
+:root[data-theme="light"] .modal-button{background:#fff;color:#191919}
+:root[data-theme="light"] .modal-button.primary{border-color:#44745b;color:#315d47;background:#edf4ef}
+:root[data-theme="light"] .modal-button.warning{border-color:#d8bc83;color:#7b5710;background:#faf5e7}
+:root[data-theme="light"] .modal-button.danger{border-color:#aa2730;color:#8c2028;background:#f8ecee}
+:root[data-theme="light"] .mobile-navigation{background:#191919}
+:root[data-theme="light"] .mobile-navigation label{color:#ddd5be}
+:root[data-theme="light"] .mobile-navigation select{background:#fff;border-color:#e9471d;color:#191919}
+:root[data-theme="light"] .theme-toggle{border-color:#e9471d;background:transparent;color:#ddd5be}
+:root[data-theme="light"] .login-theme-toggle{background:#fff;color:#191919}
+:root[data-theme="light"] .theme-toggle:hover{border-color:#b33a18;color:#fff}
+:root[data-theme="light"] .login-theme-toggle:hover{color:#b33a18}
+@media(max-width:760px){
+  .mobile-navigation .theme-toggle{min-height:44px;min-width:58px;padding:8px 9px}
+}
+
 </style>
 </head>
 
 <body>
 <div id="loginGate" class="login-gate" aria-hidden="true">
   <div class="login-panel">
+    <button id="loginThemeToggle" class="theme-toggle login-theme-toggle" type="button" aria-label="Switch to light theme">LIGHT</button>
     <div class="login-brand">STREAM SUPERVISOR</div>
     <div class="login-kicker">SECURE OPERATIONS CONSOLE</div>
     <div class="login-rule"></div>
@@ -116,7 +208,7 @@
       <button type="button" class="nav-item" data-view="diagnostics" title="DIAGNOSTICS"><i class="nav-dot" aria-hidden="true"></i><span>DIAGNOSTICS</span></button>
       <button type="button" class="nav-item" data-view="watchdog" title="WATCHDOG"><i class="nav-dot" aria-hidden="true"></i><span>WATCHDOG</span></button>
     </nav>
-    <div class="side-foot">RESTREAMER / READ ONLY<br><span id="sideVersion">v0.1.0-alpha.15</span></div>
+    <div class="side-foot">RESTREAMER / READ ONLY<br><span id="sideVersion">v0.1.0-alpha.16</span><button id="desktopThemeToggle" class="theme-toggle" type="button" aria-label="Switch to light theme">LIGHT</button></div>
   </aside>
 
   <main class="main">
@@ -126,6 +218,7 @@
         <option value="channels">CHANNELS</option><option value="system">SYSTEM</option>
         <option value="incidents">INCIDENTS</option><option value="diagnostics">DIAGNOSTICS</option><option value="watchdog">WATCHDOG</option>
       </select>
+      <button id="mobileThemeToggle" class="theme-toggle" type="button" aria-label="Switch to light theme">LIGHT</button>
     </div>
     <header class="topbar">
       <div class="title-wrap"><div id="pageTitle" class="title">CHANNEL MONITOR</div><div id="pageSubtitle" class="subtitle">LIVE OPERATIONS</div></div>
@@ -292,6 +385,27 @@
 
 <script>
 const $=id=>document.getElementById(id);
+const THEME_KEY="stream-supervisor-theme";
+function applyTheme(value,{persist=false}={}){
+  const theme=value==="light"?"light":"dark";
+  document.documentElement.dataset.theme=theme;
+  document.querySelectorAll(".theme-toggle").forEach(button=>{
+    const next=theme==="dark"?"light":"dark";
+    button.textContent=next.toUpperCase();
+    button.setAttribute("aria-label","Switch to "+next+" theme");
+    button.setAttribute("aria-pressed",String(theme==="light"));
+  });
+  if(persist){
+    try{localStorage.setItem(THEME_KEY,theme)}catch{}
+  }
+}
+function toggleTheme(){
+  applyTheme(document.documentElement.dataset.theme==="light"?"dark":"light",{persist:true});
+}
+function storedTheme(){
+  try{return localStorage.getItem(THEME_KEY)==="light"?"light":"dark"}catch{return "dark"}
+}
+applyTheme(storedTheme());
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
 const fmtTime=s=>{s=Math.max(0,Math.floor(Number(s)||0));const d=Math.floor(s/86400);s%=86400;const h=Math.floor(s/3600);s%=3600;const m=Math.floor(s/60);return[d?d+"d":null,h?h+"h":null,m+"m"].filter(Boolean).join(" ")||"<1m"};
 const fmtBitrate=k=>{k=Number(k)||0;return k>=1000?(k/1000).toFixed(2)+" Mb/s":Math.round(k)+" kb/s"};
@@ -919,7 +1033,7 @@ function applyStatus(x){
     $("outputErrors").textContent=s.outputErrors??0;
     $("outputErrors").style.color=(s.outputErrors??0)>0?"var(--red)":"var(--text)";
     $("supervisorVersion").textContent=x.supervisor?.version||"--";
-    $("sideVersion").textContent=x.supervisor?.version||"v0.1.0-alpha.15";
+    $("sideVersion").textContent=x.supervisor?.version||"v0.1.0-alpha.16";
     $("monitorTransport").textContent=(monitoring.transport||"poll").toUpperCase()+" · source "+(monitoring.sourcePollMs||"--")+" ms · core "+(monitoring.pollDurationMs??"--")+" ms";
     latestChannels=r.channels||[];
     latestIncidentState=x.incidents||{active:[],summary:{}};
@@ -979,6 +1093,7 @@ function connectRealtime(){
 }
 document.querySelectorAll(".nav-item[data-view]").forEach(item=>item.addEventListener("click",()=>switchView(item.dataset.view)));
 $("mobileView").addEventListener("change",event=>switchView(event.target.value));
+document.querySelectorAll(".theme-toggle").forEach(button=>button.addEventListener("click",toggleTheme));
 $("loginForm").addEventListener("submit",submitLogin);
 $("logoutButton").addEventListener("click",logout);
 $("modalCancel").addEventListener("click",()=>closeModal(false));
