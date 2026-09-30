@@ -73,7 +73,7 @@ Alpha.14 a été validée en conditions réelles : ERROR avec consigne START con
 
 Alpha.15 a été déployée sur le VPS réel le 30/09/2026. Les cinq vues desktop ont été vérifiées, puis la navigation et le rendu mobile ont été contrôlés sur l'instance réelle. Les points d'accessibilité clavier restent couverts par les tests navigateur automatisés.
 
-Alpha.16 est une évolution **strictement UI** : le Dark d'alpha.15 reste la référence par défaut et un Light reprend la palette du portail Distillerie v1.0.3. Les tailles, grilles, métriques typographiques, règles responsive, adaptateurs, API, sécurité, watchdog et actions opérateur restent inchangés. Après CI verte et fusion, déployer avec `deployment/update.sh`, vérifier Dark + Light sur desktop/mobile, puis ouvrir la phase 0.2 Monitoring & exploitation.
+Alpha.16 est fusionnée sur `main` (PR #19, workflows `quality` et `visual` verts). C'est une évolution **strictement UI** : le Dark d'alpha.15 reste la référence par défaut et un Light reprend la palette du portail Distillerie v1.0.3. Les tailles, grilles, métriques typographiques, règles responsive, adaptateurs, API, sécurité, watchdog et actions opérateur restent inchangés. Prochaine action : déployer avec `deployment/update.sh`, vérifier Dark + Light sur desktop/mobile, puis ouvrir la phase 0.2 Monitoring & exploitation.
 
 Point connu non bloquant : les channels 8 et 9 ont déjà montré des oscillations serveur `INCIDENT OPEN → RESOLVED → OPEN` lorsqu'ils sont sans source. La cause n'est pas démontrée ; ne pas modifier cette logique sans investigation dédiée.
 
