@@ -87,7 +87,7 @@ Le déploiement réel de 0.2 alpha.1 a montré la limite de la première approch
 - journal brut conservé mais replié et limité visuellement à 20 événements ;
 - bouton `↑ TOP` après scroll.
 
-Aucun incident n'est effacé et le modèle interne/watchdog n'est pas modifié. Après CI/fusion : déployer alpha.2 et vérifier sur les données réelles que les épisodes de perte de signal deviennent lisibles avant d'ouvrir une autre brique 0.2.
+Aucun incident n'est effacé et le modèle interne/watchdog n'est pas modifié. La PR #25 est fusionnée sur `main` avec les workflows `quality` et `visual` verts. Prochaine action : déployer alpha.2 et vérifier sur les données réelles que les épisodes de perte de signal deviennent lisibles avant d'ouvrir une autre brique 0.2.
 
 Point connu non bloquant : les channels 8 et 9 ont déjà montré des oscillations serveur `INCIDENT OPEN → RESOLVED → OPEN` lorsqu'ils sont sans source. La cause n'est pas démontrée ; ne pas modifier cette logique sans investigation dédiée.
 
