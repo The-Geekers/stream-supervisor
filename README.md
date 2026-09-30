@@ -15,9 +15,9 @@ Le premier moteur ciblé est **Restreamer**. L'architecture reste volontairement
 
 ## État actuel
 
-`0.2.0-alpha.1`
+`0.2.0-alpha.2`
 
-`v0.1.0-alpha.18` reste le point de référence figé de la stabilisation 0.1. `main` est désormais en `0.2.0-alpha.1` avec un premier bloc volontairement limité à l'historique des incidents.
+`v0.1.0-alpha.18` reste le point de référence figé de la stabilisation 0.1. La série 0.2 travaille maintenant la lisibilité d'exploitation des incidents sans ajouter de stack de métriques.
 
 - navigation compacte mobile vers les cinq vues, dont **SYSTEM**, avec sidebar conservée sur tablette/desktop ;
 - modales accessibles au clavier : focus initial, Tab/Shift+Tab confinés, Escape et retour au déclencheur ;
@@ -51,9 +51,12 @@ Le premier moteur ciblé est **Restreamer**. L'architecture reste volontairement
 - anti-CSRF par en-tête d'action same-origin ;
 - validation serveur stricte : seules les IDs egress déjà découvertes et les commandes `start` / `stop` sont acceptées ;
 - page **INCIDENTS** avec état actif et journal d'événements persistant ;
-- 0.2 alpha.1 ajoute un historique **TODAY** dérivé de ce journal : nombre d'incidents, incidents résolus, temps cumulé, incident le plus long et durée de chaque occurrence ;
-- la période TODAY suit le fuseau horaire du navigateur : le frontend envoie simplement les bornes ISO de minuit local à maintenant, le backend reste indépendant du fuseau du VPS ;
-- le temps cumulé signifie la **somme des durées d'incidents**, pas une mesure de disponibilité globale lorsque plusieurs incidents se chevauchent ;
+- 0.2 alpha.2 affiche une vue opérateur bornée : **1H par défaut**, avec sélecteurs 1H / TODAY / 24H et maximum 20 lignes d'historique visibles ;
+- le temps affiché devient **Affected time** : durée murale pendant laquelle au moins un incident est présent, sans additionner plusieurs incidents simultanés ;
+- lorsqu'une perte d'ingest couvre entièrement des erreurs egress du même channel, ces erreurs downstream restent journalisées mais sont regroupées sous l'incident ingest dans la vue opérateur ;
+- une erreur egress qui persiste après le retour de l'ingest reste visible comme incident autonome ;
+- le journal brut est conservé mais replié par défaut et limité aux 20 événements récents dans l'UI ;
+- un bouton discret **↑ TOP** apparaît après scroll pour revenir rapidement en haut de page ;
 - détection d'incidents Core, Web UI, Docker, ingest et egress avec temporisation anti-bruit ;
 - journal des ouvertures/résolutions d'incidents et des actions opérateur start/stop ;
 - persistance dédiée dans un volume Docker Supervisor, sans payload Restreamer brut ;
@@ -69,16 +72,19 @@ Le premier moteur ciblé est **Restreamer**. L'architecture reste volontairement
 
 ## Historique d'exploitation 0.2
 
-Le premier bloc 0.2 reste volontairement limité. Supervisor réutilise le journal d'incidents déjà persistant au lieu d'ajouter immédiatement une nouvelle base ou une stack de métriques.
+Supervisor réutilise le journal persistant existant. Il n'ajoute toujours ni base de métriques haute fréquence, ni Grafana interne, ni alerte externe.
 
-Dans **INCIDENTS**, la section `TODAY · INCIDENT HISTORY` affiche :
-- le nombre d'incidents ayant affecté la journée ;
-- le nombre résolu ;
-- la somme des durées d'incidents sur la période ;
-- la durée de l'incident le plus long ;
-- l'historique détaillé avec début, fin, sévérité, source et durée.
+La page **INCIDENTS** propose désormais une vue opérateur :
+- **1H** par défaut, plus **TODAY** et **24H** ;
+- au maximum 20 incidents racine affichés ;
+- nombre d'incidents racine et nombre résolu ;
+- **Affected time** : union temporelle des incidents, donc une minute avec huit incidents simultanés compte une minute, pas huit ;
+- incident racine le plus long ;
+- nombre d'erreurs egress regroupées sous une perte ingest du même channel.
 
-Les durées actives continuent à évoluer jusqu'au moment de la requête. Les intervalles qui chevauchent minuit sont tronqués à la période affichée pour le calcul du total journalier.
+Le regroupement est volontairement conservateur : une erreur egress n'est masquée de la vue principale que si elle est entièrement couverte par une perte ingest du même channel. Si elle continue après le retour de l'ingest, elle reste un incident autonome.
+
+Le journal brut reste disponible dans un panneau repliable limité aux 20 événements les plus récents. Rien n'est supprimé par cette vue : il s'agit d'améliorer la lecture opérateur sans perdre la trace persistante.
 
 ## Thèmes UI
 
@@ -99,7 +105,7 @@ npm run check
 npm run visual
 ```
 
-Les tests navigateur démarrent leur propre serveur de démonstration sur `127.0.0.1:18090`, sans lire ni modifier de `.env` et sans joindre un moteur de production. Ils couvrent les cinq vues à 320, 390, 759, 760, 761, 1024 et 1600 px, les rôles Admin/Technician, les modales, logout/expiration/reconnexion, les commandes simulées et l'export diagnostic. Alpha.16 ajoute les contrôles Light ; alpha.17 vérifie le Light par défaut, le titre channel à 13 px et le vert LIVE dédié ; alpha.18 ajoute les tests de visibilité Admin/Technician et du workflow de confirmation du restart Restreamer. Les captures et traces sont publiées par le workflow `visual`.
+Les tests navigateur démarrent leur propre serveur de démonstration sur `127.0.0.1:18090`, sans lire ni modifier de `.env` et sans joindre un moteur de production. Ils couvrent les cinq vues à 320, 390, 759, 760, 761, 1024 et 1600 px, les rôles Admin/Technician, les modales, logout/expiration/reconnexion, les commandes simulées et l'export diagnostic. Alpha.16 ajoute les contrôles Light ; alpha.17 vérifie le Light par défaut, le titre channel à 13 px et le vert LIVE dédié ; alpha.18 ajoute les tests de visibilité Admin/Technician et du workflow de confirmation du restart Restreamer ; 0.2 alpha.2 couvre les périodes d'historique bornées et le retour en haut de page. Les captures et traces sont publiées par le workflow `visual`.
 
 L'export conserve `GET /api/diagnostics?download=1`. Le test attend l'événement de téléchargement **avant** le clic, vérifie sa terminaison et teste séparément le statut HTTP, `Content-Disposition` et les indicateurs de sanitisation. Un timeout d'automation isolé ne démontre pas une lenteur backend ; aucune modification de l'architecture d'export n'est incluse.
 
