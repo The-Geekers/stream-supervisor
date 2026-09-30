@@ -79,7 +79,7 @@ Le tag `v0.1.0-alpha.18` fige la stabilisation 0.1.
 
 0.2 alpha.1 démarre sans digression : **historique incidents uniquement**. La page INCIDENTS calcule désormais, pour la journée locale du navigateur, le nombre d'occurrences, le nombre résolu, le temps cumulé, l'incident le plus long et la durée de chaque occurrence à partir du journal persistant existant.
 
-Aucune base de métriques, aucun graphique, aucune alerte externe et aucune nouvelle automatisation ne sont ajoutés dans ce lot. Après CI et validation réelle, le prochain choix 0.2 sera fait à partir de l'usage observé de cet historique.
+Aucune base de métriques, aucun graphique, aucune alerte externe et aucune nouvelle automatisation ne sont ajoutés dans ce lot. La PR #24 est fusionnée avec les workflows `quality` et `visual` verts. Prochaine action : déployer `0.2.0-alpha.1` sur le VPS et valider l'historique avec les incidents réels avant d'ouvrir le bloc 0.2 suivant.
 
 Point connu non bloquant : les channels 8 et 9 ont déjà montré des oscillations serveur `INCIDENT OPEN → RESOLVED → OPEN` lorsqu'ils sont sans source. La cause n'est pas démontrée ; ne pas modifier cette logique sans investigation dédiée.
 
