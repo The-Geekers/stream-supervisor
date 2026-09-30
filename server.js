@@ -7,6 +7,7 @@ import { buildDemoStatus } from "./lib/demo.js";
 import { DockerAdapter } from "./lib/docker.js";
 import { DockerControlAdapter } from "./lib/docker-control.js";
 import { buildDiagnostics } from "./lib/diagnostics.js";
+import { buildIncidentHistory } from "./lib/history.js";
 import { EventJournal, IncidentTracker } from "./lib/incidents.js";
 import { RestreamerAdapter } from "./lib/restreamer.js";
 import { SystemAdapter } from "./lib/system.js";
@@ -17,7 +18,7 @@ const __dirname = dirname(__filename);
 
 const HOST = process.env.HOST || "0.0.0.0";
 const PORT = Number(process.env.PORT || 8090);
-const VERSION = "0.1.0-alpha.18";
+const VERSION = "0.2.0-alpha.1";
 const DEMO_MODE = process.env.DEMO_MODE === "true";
 const requestedMonitorInterval = Number(process.env.MONITOR_INTERVAL_MS || 1000);
 const MONITOR_INTERVAL_MS = Math.min(
@@ -470,8 +471,25 @@ const server = http.createServer(async (req, res) => {
 
   if (req.method === "GET" && url.pathname === "/api/incidents") {
     const limit = Number(url.searchParams.get("limit") || 100);
+    const snapshot = incidentTracker.snapshot();
+    let history;
+    try {
+      history = buildIncidentHistory({
+        events: journal.list(5000),
+        active: snapshot.active,
+        from: url.searchParams.get("from") || undefined,
+        to: url.searchParams.get("to") || undefined,
+        limit: Number(url.searchParams.get("historyLimit") || 100)
+      });
+    } catch (error) {
+      return sendJson(res, 400, {
+        status:"bad_request",
+        code:error?.message === "history_range_too_large" ? "history_range_too_large" : "invalid_history_range"
+      });
+    }
     return sendJson(res, 200, {
-      ...incidentTracker.snapshot(),
+      ...snapshot,
+      history,
       events: journal.list(limit),
       storage: {
         persistent: journal.persistent

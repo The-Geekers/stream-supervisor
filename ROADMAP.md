@@ -12,7 +12,20 @@ Alpha.16 a introduit les thèmes Dark/Light. Alpha.17 finalise le polish : Light
 
 ## 0.2 — Monitoring & exploitation
 
-Historique incidents, métriques avancées, alertes, historique des récupérations et watchdog enrichi.
+Phase active.
+
+### 0.2 alpha.1 — Historique incidents minimal
+
+Premier lot volontairement limité :
+- historique journalier des incidents à partir du journal persistant existant ;
+- nombre d'incidents et nombre résolu ;
+- somme des durées d'incidents ;
+- incident le plus long ;
+- début, fin, source, sévérité et durée de chaque occurrence.
+
+La période TODAY suit le jour local du navigateur. Aucun graphique, stockage de métriques haute fréquence, alerte externe ou enrichissement watchdog n'est inclus dans ce premier lot.
+
+Les étapes suivantes de 0.2 restent : métriques historiques utiles, alertes et historique de recovery, mais elles ne seront ouvertes qu'après validation de ce premier bloc.
 
 ## 0.3 — Multi-engine
 

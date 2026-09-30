@@ -7,7 +7,7 @@ async function login(page, role = "admin") {
   await page.getByRole("button", { name: "SIGN IN", exact: true }).click();
   await expect(page.locator("#loginGate")).not.toBeVisible();
   await expect(page.locator("#channels")).toContainText("Agora");
-  await expect(page.locator("#apiDetail")).toContainText("0.1.0-alpha.18");
+  await expect(page.locator("#apiDetail")).toContainText("0.2.0-alpha.1");
 }
 async function navigate(page, view) {
   if (await page.locator("#mobileView").isVisible()) await page.locator("#mobileView").selectOption(view);
@@ -78,6 +78,16 @@ test("first visit defaults to light and explicit theme preference persists local
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
   expect(await page.evaluate(() => localStorage.getItem("stream-supervisor-theme"))).toBe("light");
   expect(await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue("--bg").trim())).toBe("#f5f3ef");
+});
+
+test("0.2 daily incident history renders count and durations", async ({ page }) => {
+  await page.goto("/");
+  await login(page);
+  await navigate(page, "incidents");
+  await expect(page.locator("#historyIncidentCount")).not.toHaveText("--");
+  await expect(page.locator("#historyCumulative")).toHaveText(/\d+[smh]/);
+  await expect(page.locator("#incidentHistory")).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1)).toBe(true);
 });
 
 test("channel title and LIVE emphasis use alpha17 polish tokens", async ({ page }) => {

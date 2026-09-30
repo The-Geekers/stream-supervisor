@@ -16,7 +16,7 @@ try {
 }
 
 const requiredIds = [
-  "appShell","mobileView","desktopThemeToggle","mobileThemeToggle","loginThemeToggle","adminRecovery","restartRestreamerButton",
+  "appShell","mobileView","desktopThemeToggle","mobileThemeToggle","loginThemeToggle","adminRecovery","restartRestreamerButton","historyIncidentCount","historyCumulative","historyLongest","historyActiveNow","incidentHistory",
   "viewChannels","viewSystem","pageTitle","dockerEngine","dockerRunning",
   "dockerUnhealthy","dockerAge","dockerContainers","dockerDot","modeBadge","authBadge",
   "viewIncidents","incidentActiveCount","incidentCriticalCount","incidentWarningCount",
@@ -48,6 +48,10 @@ if (!html.includes("--live:#39e56f") || !html.includes(".channel-name{font-size:
   console.error("UI CHECK FAILED: alpha.17 channel/LIVE polish is missing");
   process.exit(1);
 }
+if (!html.includes("TODAY · INCIDENT HISTORY") || !html.includes("historyLimit")) {
+  console.error("UI CHECK FAILED: 0.2 incident history wiring is missing");
+  process.exit(1);
+}
 if (!html.includes("/api/admin/restart-restreamer")) {
   console.error("UI CHECK FAILED: Admin Restreamer restart endpoint wiring is missing");
   process.exit(1);
@@ -60,7 +64,7 @@ if (!html.includes("/api/restreamer/output-command")) {
   console.error("UI CHECK FAILED: output command endpoint wiring is missing");
   process.exit(1);
 }
-if (!html.includes("/api/incidents?limit=100")) {
+if (!html.includes("/api/incidents?")) {
   console.error("UI CHECK FAILED: incidents endpoint wiring is missing");
   process.exit(1);
 }

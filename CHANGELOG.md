@@ -2,6 +2,26 @@
 
 ## [Unreleased]
 
+## [0.2.0-alpha.1] - 2026-09-30
+
+### Added
+- Première brique de la phase 0.2 : section `TODAY · INCIDENT HISTORY` dans la page INCIDENTS.
+- Synthèse journalière : nombre d'incidents, nombre résolu, temps cumulé et incident le plus long.
+- Historique détaillé : début, fin/ACTIVE, sévérité, source, incident et durée.
+- Calcul backend allow-listé à partir des événements `incident_open` / `incident_resolved` et des incidents actifs.
+- Les incidents chevauchant le début de période sont tronqués pour le calcul journalier ; les incidents actifs comptent jusqu'à l'heure de la requête.
+- Bornes TODAY calculées dans le navigateur afin de respecter son jour local sans dépendre du fuseau horaire du VPS.
+- Tests unitaires dédiés au pairing, au clipping temporel, aux incidents actifs et à l'exclusion des événements opérateur/watchdog.
+
+### Changed
+- Fenêtre mémoire du journal portée de 500 à 5000 événements, tout en restant bornée ; le fichier JSONL persistant existant reste la source.
+- Version de développement portée à `0.2.0-alpha.1`.
+
+### Scope
+- Pas de graphique, pas de nouvelle base de données, pas de métriques haute fréquence, pas d'alerte externe et pas de nouvelle automatisation dans ce lot.
+- Le « temps cumulé » est la somme des durées d'incidents et ne doit pas être interprété comme une disponibilité globale si plusieurs incidents se chevauchent.
+
+
 ## [0.1.0-alpha.18] - 2026-09-30
 
 ### Added
