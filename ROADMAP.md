@@ -28,7 +28,7 @@ Correction ciblée :
 - journal brut replié et limité à 20 événements dans l'UI ;
 - bouton de retour en haut après scroll.
 
-Le journal persistant complet et les incidents techniques restent conservés. Aucun changement watchdog, aucune alerte externe, aucun graphique et aucune nouvelle base dans ce lot.
+Le journal persistant complet et les incidents techniques restent conservés. Aucun changement watchdog, aucune alerte externe, aucun graphique et aucune nouvelle base dans ce lot. La PR #25 est fusionnée sur `main` avec `quality` et `visual` verts.
 
 Les étapes suivantes de 0.2 restent les métriques historiques utiles, les alertes et l'historique de recovery, mais une nouvelle brique ne sera ouverte qu'après validation réelle de cette vue opérateur.
 
