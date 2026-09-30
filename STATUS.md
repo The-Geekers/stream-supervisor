@@ -45,7 +45,7 @@
 | Incidents actifs | Intégrés |
 | Historique incidents | 0.2 alpha.2 : 1H par défaut, TODAY / 24H, 20 lignes max visibles |
 | Temps incident | `Affected time` = union temporelle, pas somme des incidents parallèles |
-| Groupement causal | Egress entièrement couvert par perte ingest du même channel regroupé dans la vue opérateur |
+| Groupement causal | Egress du même channel regroupé dans une fenêtre ingest ±10 s ; au-delà il reste autonome |
 | Journal événements | Intégré, persistant ; fenêtre mémoire 5000, UI brute repliée et limitée aux 20 récents |
 | Retour haut de page | Bouton `↑ TOP` discret après scroll |
 | Actions opérateur dans le journal | Intégrées, y compris restart Restreamer Admin |
@@ -87,7 +87,7 @@ Le déploiement réel de 0.2 alpha.1 a montré la limite de la première approch
 - journal brut conservé mais replié et limité visuellement à 20 événements ;
 - bouton `↑ TOP` après scroll.
 
-Aucun incident n'est effacé et le modèle interne/watchdog n'est pas modifié. La PR #25 est fusionnée sur `main` avec les workflows `quality` et `visual` verts. Prochaine action : déployer alpha.2 et vérifier sur les données réelles que les épisodes de perte de signal deviennent lisibles avant d'ouvrir une autre brique 0.2.
+Aucun incident n'est effacé et le modèle interne/watchdog n'est pas modifié. La validation réelle d'alpha.2 a montré `GROUPED DOWNSTREAM = 0` malgré des épisodes egress manifestement liés à une perte ingest. Le correctif PR #27 est fusionné sur `main` après `quality` et `visual` verts : même channel + fenêtre ingest élargie de 10 s avant/après. Un egress qui dépasse cette marge reste autonome. Prochaine action : redéployer et vérifier que le compteur de regroupement augmente sur les mêmes données réelles.
 
 Point connu non bloquant : les channels 8 et 9 ont déjà montré des oscillations serveur `INCIDENT OPEN → RESOLVED → OPEN` lorsqu'ils sont sans source. La cause n'est pas démontrée ; ne pas modifier cette logique sans investigation dédiée.
 

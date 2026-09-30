@@ -53,7 +53,7 @@ Le premier moteur ciblé est **Restreamer**. L'architecture reste volontairement
 - page **INCIDENTS** avec état actif et journal d'événements persistant ;
 - 0.2 alpha.2 affiche une vue opérateur bornée : **1H par défaut**, avec sélecteurs 1H / TODAY / 24H et maximum 20 lignes d'historique visibles ;
 - le temps affiché devient **Affected time** : durée murale pendant laquelle au moins un incident est présent, sans additionner plusieurs incidents simultanés ;
-- lorsqu'une perte d'ingest couvre entièrement des erreurs egress du même channel, ces erreurs downstream restent journalisées mais sont regroupées sous l'incident ingest dans la vue opérateur ;
+- les erreurs egress du même channel sont regroupées sous la perte ingest lorsqu'elles tombent dans sa fenêtre temporelle avec une tolérance de 10 s autour de l'incident ;
 - une erreur egress qui persiste après le retour de l'ingest reste visible comme incident autonome ;
 - le journal brut est conservé mais replié par défaut et limité aux 20 événements récents dans l'UI ;
 - un bouton discret **↑ TOP** apparaît après scroll pour revenir rapidement en haut de page ;
@@ -82,7 +82,7 @@ La page **INCIDENTS** propose désormais une vue opérateur :
 - incident racine le plus long ;
 - nombre d'erreurs egress regroupées sous une perte ingest du même channel.
 
-Le regroupement est volontairement conservateur : une erreur egress n'est masquée de la vue principale que si elle est entièrement couverte par une perte ingest du même channel. Si elle continue après le retour de l'ingest, elle reste un incident autonome.
+Le regroupement est volontairement conservateur : une erreur egress du même channel est rattachée à la perte ingest si elle tombe dans une fenêtre élargie de 10 s autour de l'incident ingest. Cette marge absorbe les temporisations de détection différentes observées en production. Si l'egress dépasse cette marge après le retour de l'ingest, il reste un incident autonome.
 
 Le journal brut reste disponible dans un panneau repliable limité aux 20 événements les plus récents. Rien n'est supprimé par cette vue : il s'agit d'améliorer la lecture opérateur sans perdre la trace persistante.
 

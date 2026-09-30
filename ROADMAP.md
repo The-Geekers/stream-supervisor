@@ -30,6 +30,8 @@ Correction ciblée :
 
 Le journal persistant complet et les incidents techniques restent conservés. Aucun changement watchdog, aucune alerte externe, aucun graphique et aucune nouvelle base dans ce lot. La PR #25 est fusionnée sur `main` avec `quality` et `visual` verts.
 
+Validation réelle alpha.2 : le compteur `GROUPED DOWNSTREAM` restait à 0 car les incidents egress pouvaient être ouverts quelques secondes avant l'incident ingest. Correctif fusionné via la PR #27 : marge de corrélation de 10 s sur le même channel ; un egress au-delà de cette marge reste autonome.
+
 Les étapes suivantes de 0.2 restent les métriques historiques utiles, les alertes et l'historique de recovery, mais une nouvelle brique ne sera ouverte qu'après validation réelle de cette vue opérateur.
 
 ## 0.3 — Multi-engine

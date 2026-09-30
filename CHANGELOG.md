@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed
+- Vue INCIDENTS : tolérance de corrélation de 10 s autour d'une perte ingest afin de regrouper les erreurs egress du même channel malgré les temporisations de détection différentes.
+- Une erreur egress qui reste en défaut au-delà de cette marge continue d'apparaître comme incident autonome.
+
 ## [0.2.0-alpha.2] - 2026-09-30
 
 ### Changed
