@@ -16,7 +16,7 @@ try {
 }
 
 const requiredIds = [
-  "appShell","mobileView","desktopThemeToggle","mobileThemeToggle","loginThemeToggle",
+  "appShell","mobileView","desktopThemeToggle","mobileThemeToggle","loginThemeToggle","adminRecovery","restartRestreamerButton",
   "viewChannels","viewSystem","pageTitle","dockerEngine","dockerRunning",
   "dockerUnhealthy","dockerAge","dockerContainers","dockerDot","modeBadge","authBadge",
   "viewIncidents","incidentActiveCount","incidentCriticalCount","incidentWarningCount",
@@ -46,6 +46,14 @@ if (!html.includes('stream-supervisor-theme') || !html.includes('<html lang="fr"
 }
 if (!html.includes("--live:#39e56f") || !html.includes(".channel-name{font-size:13px")) {
   console.error("UI CHECK FAILED: alpha.17 channel/LIVE polish is missing");
+  process.exit(1);
+}
+if (!html.includes("/api/admin/restart-restreamer")) {
+  console.error("UI CHECK FAILED: Admin Restreamer restart endpoint wiring is missing");
+  process.exit(1);
+}
+if (!html.includes("ALL active streams will be interrupted temporarily")) {
+  console.error("UI CHECK FAILED: destructive restart warning is missing");
   process.exit(1);
 }
 if (!html.includes("/api/restreamer/output-command")) {
