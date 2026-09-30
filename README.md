@@ -15,7 +15,7 @@ Le premier moteur ciblé est **Restreamer**. L'architecture reste volontairement
 
 ## État actuel
 
-`0.1.0-alpha.12`
+`0.1.0-alpha.12.1`
 
 - adapter Restreamer Core 16 avec monitoring et contrôle limité des destinations ;
 - channels, destinations et métriques de streaming en pseudo temps réel SSE ;
