@@ -15,7 +15,7 @@ Le premier moteur ciblé est **Restreamer**. L'architecture reste volontairement
 
 ## État actuel
 
-`0.1.0-alpha.12.1`
+`0.1.0-alpha.13`
 
 - adapter Restreamer Core 16 avec monitoring et contrôle limité des destinations ;
 - channels, destinations et métriques de streaming en pseudo temps réel SSE ;
@@ -25,7 +25,9 @@ Le premier moteur ciblé est **Restreamer**. L'architecture reste volontairement
 - le port hôte `8090` est limité à `127.0.0.1` et n'est plus publié sur toutes les interfaces ;
 - CPU Docker affiché en équivalent de cœurs (`1.00` = un cœur pleinement utilisé), jamais en pourcentage multi-cœur ambigu ;
 - rôles Supervisor **Admin** et **Technician** ;
-- interface ouverte = monitoring uniquement, aucune action d'écriture ;
+- écran de connexion intégré à l'UI, sans popup Basic Auth du navigateur ;
+- sessions serveur avec cookie HttpOnly + SameSite=Strict et bouton **LOG OUT** ;
+- interface ouverte = monitoring uniquement si aucune authentification n'est configurée ;
 - une fois authentifié, Admin et Technician peuvent démarrer/arrêter une destination Restreamer existante ;
 - aucune modification de clé, URL, configuration de process ou channel n'est exposée ;
 - confirmation avant action opérateur ;
@@ -49,6 +51,8 @@ Le premier moteur ciblé est **Restreamer**. L'architecture reste volontairement
 
 `SUPERVISOR_USERNAME` / `SUPERVISOR_PASSWORD` définissent le compte Admin.
 
+Quand un compte est configuré, Supervisor affiche son propre écran de connexion. Le navigateur n'utilise plus de challenge HTTP Basic. Après connexion, Supervisor crée une session serveur et ne place dans le navigateur qu'un cookie de session HttpOnly / SameSite=Strict. Le bouton **LOG OUT** invalide immédiatement cette session côté serveur.
+
 Un compte Technician optionnel peut être configuré avec :
 
 ```text
@@ -63,6 +67,8 @@ sh deployment/configure-auth.sh
 ```
 
 Il demande les mots de passe sans les afficher et met à jour uniquement le `.env` local du VPS.
+
+La durée de session est configurable avec `SUPERVISOR_SESSION_TTL_MS` (8 h par défaut). Sur le déploiement HTTPS derrière Nginx Proxy Manager, le cookie reçoit l'attribut `Secure` lorsque le proxy annonce `X-Forwarded-Proto: https`.
 
 ## Restreamer Web UI
 
