@@ -25,6 +25,8 @@ const requiredIds = [
   "viewWatchdog","watchdogMode","watchdogRecovery","watchdogCandidatesCount",
   "watchdogGlobalRestart","watchdogThreshold","watchdogVerify","watchdogCooldown",
   "watchdogMaxAttempts","watchdogWindow","watchdogCandidates",
+  "loginGate","loginForm","loginUsername","loginPassword","loginSubmit","loginError",
+  "logoutButton","appModal","modalTitle","modalMessage","modalDetail","modalCancel","modalConfirm",
   "viewDiagnostics","diagOverall","diagCheckCount","diagStreaming","diagGenerated",
   "diagnosticChecks","downloadDiagnostics"
 ];
@@ -74,3 +76,8 @@ if (!html.includes('data-view="diagnostics"')) throw new Error("diagnostics navi
 
 if (!html.includes("/api/watchdog")) throw new Error("watchdog API wiring missing");
 if (!html.includes('data-view="watchdog"')) throw new Error("watchdog navigation missing");
+
+if (html.includes("window.confirm(")) throw new Error("native confirmation popup still present");
+if (html.includes("window.alert(")) throw new Error("native alert popup still present");
+if (!html.includes("/api/login")) throw new Error("session login wiring missing");
+if (!html.includes("/api/logout")) throw new Error("session logout wiring missing");
