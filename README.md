@@ -15,7 +15,7 @@ Le premier moteur ciblé est **Restreamer**. L'architecture reste volontairement
 
 ## État actuel
 
-`0.1.0-alpha.13`
+`0.1.0-alpha.14`
 
 - adapter Restreamer Core 16 avec monitoring et contrôle limité des destinations ;
 - channels, destinations et métriques de streaming en pseudo temps réel SSE ;
@@ -29,6 +29,8 @@ Le premier moteur ciblé est **Restreamer**. L'architecture reste volontairement
 - sessions serveur avec cookie HttpOnly + SameSite=Strict et bouton **LOG OUT** ;
 - interface ouverte = monitoring uniquement si aucune authentification n'est configurée ;
 - une fois authentifié, Admin et Technician peuvent démarrer/arrêter une destination Restreamer existante ;
+- le bouton START/STOP suit désormais la consigne Restreamer `state.order`, indépendamment de l'état observé ;
+- une destination en `ERROR` mais toujours configurée `START` reste donc arrêtable depuis Supervisor et peut afficher son délai de reconnexion ;
 - aucune modification de clé, URL, configuration de process ou channel n'est exposée ;
 - confirmation avant action opérateur ;
 - anti-CSRF par en-tête d'action same-origin ;
