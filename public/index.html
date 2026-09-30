@@ -30,6 +30,9 @@
 .watchdog-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--line);background:var(--panel);margin-bottom:12px}.watchdog-summary .metric:nth-child(4){border-right:0}
 .watchdog-policy{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border:1px solid var(--line);background:var(--panel);margin-bottom:12px}.watchdog-policy .metric:nth-child(5){border-right:0}
 .watchdog-table{border:1px solid var(--line);background:var(--panel);margin-bottom:12px}.watchdog-head,.watchdog-row{display:grid;grid-template-columns:110px minmax(180px,1fr) minmax(220px,1.3fr) 120px 110px 150px}.watchdog-head{background:#0c1014;color:var(--muted);font-size:9px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;border-bottom:1px solid var(--line)}.watchdog-head>div,.watchdog-row>div{padding:10px;border-right:1px solid var(--line-soft);min-width:0}.watchdog-head>div:last-child,.watchdog-row>div:last-child{border-right:0}.watchdog-row{min-height:52px;border-bottom:1px solid var(--line-soft)}.watchdog-row:last-child{border-bottom:0}.watchdog-note{border:1px solid #604f24;background:#151107;color:#e6c370;padding:12px;font:10px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace}
+.session-action{appearance:none;border:1px solid #235a34;background:#09150d;color:var(--green);padding:6px 9px;font:800 9px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.06em;cursor:pointer}.session-action:hover{border-color:var(--green)}.session-action[hidden]{display:none}
+.login-gate{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;background:#050708}.login-gate.show{display:flex}.login-panel{width:min(420px,calc(100vw - 32px));border:1px solid var(--line);background:#090d10;box-shadow:0 20px 70px #000;padding:26px}.login-brand{font-size:18px;font-weight:800;letter-spacing:.14em}.login-kicker{margin-top:7px;color:var(--muted);font:10px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.08em}.login-rule{height:1px;background:var(--line);margin:20px 0}.login-field{display:block;margin:0 0 14px}.login-field span{display:block;margin-bottom:7px;color:var(--muted);font:800 9px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.08em;text-transform:uppercase}.login-field input{width:100%;border:1px solid var(--line);background:#06090b;color:var(--text);padding:11px 12px;outline:none;font:12px ui-monospace,SFMono-Regular,Consolas,monospace}.login-field input:focus{border-color:var(--cyan)}.login-submit{width:100%;border:1px solid #235a34;background:#09150d;color:var(--green);padding:11px;font:800 10px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.08em;cursor:pointer}.login-submit:hover{border-color:var(--green)}.login-submit:disabled{opacity:.45;cursor:wait}.login-error{min-height:18px;margin:0 0 9px;color:var(--red);font:10px/1.4 ui-monospace,SFMono-Regular,Consolas,monospace}.login-note{margin-top:15px;color:var(--muted);font:9px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace}
+.modal-backdrop{position:fixed;inset:0;z-index:1100;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.74);padding:20px}.modal-backdrop.show{display:flex}.app-modal{width:min(520px,100%);border:1px solid var(--line);background:#0a0e11;box-shadow:0 20px 70px #000}.modal-head{padding:14px 16px;border-bottom:1px solid var(--line);font-size:11px;font-weight:800;letter-spacing:.08em}.modal-body{padding:18px 16px;color:#c5cdd3;line-height:1.55}.modal-detail{margin-top:9px;color:var(--muted);font:10px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace}.modal-actions{display:flex;justify-content:flex-end;gap:8px;padding:12px 16px;border-top:1px solid var(--line)}.modal-button{border:1px solid var(--line);background:#0a0e11;color:var(--text);padding:8px 12px;font:800 9px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.06em;cursor:pointer}.modal-button.primary{border-color:#235a34;color:var(--green);background:#09150d}.modal-button.warning{border-color:#6b5021;color:var(--amber);background:#171208}.modal-button.danger{border-color:#6b2929;color:var(--red);background:#170909}.modal-button:hover{filter:brightness(1.2)}
 @media(max-width:1280px){.table-head,.channel{grid-template-columns:minmax(210px,2fr) 95px 150px 120px 105px minmax(240px,2fr)}.table-head>.sort-head:nth-child(6),.channel>.cell:nth-child(6){display:none}}
 @media(max-width:1200px){.host-strip{grid-template-columns:repeat(4,1fr)}.host-metric:nth-child(4n){border-right:0}.telemetry{grid-template-columns:repeat(4,1fr)}.metric:nth-child(4n){border-right:0}}@media(max-width:1050px){.shell{grid-template-columns:58px minmax(0,1fr)}.brand{font-size:0}.brand:before{content:"SS";font-size:14px}.brand small,.nav-item span{display:none}.nav-item{justify-content:center}.telemetry{grid-template-columns:repeat(4,1fr)}.metric:nth-child(4n){border-right:0}.service-strip{grid-template-columns:1fr}.service{border-right:0;border-bottom:1px solid var(--line)}.service:last-child{border-bottom:0}.table-head{display:none}.channel{grid-template-columns:minmax(200px,1.8fr) 90px 140px 110px minmax(220px,1.6fr)}.channel>.cell:nth-child(4),.channel>.cell:nth-child(6){display:none}}
 @media(max-width:760px){.host-strip{grid-template-columns:repeat(2,1fr)}.host-metric:nth-child(even){border-right:0}.shell{display:block}.sidebar{display:none}.topbar{padding:0 10px}.subtitle,.clock{display:none}.content{padding:10px}.telemetry{grid-template-columns:repeat(2,1fr)}.metric:nth-child(odd){border-right:1px solid var(--line)}.metric:nth-child(even){border-right:0}.channel{display:block;padding:9px}.cell{border:0;padding:5px 0}.identity{min-height:50px}.toolbar{height:auto;padding:8px;gap:10px;align-items:flex-start;flex-direction:column}}
@@ -37,6 +40,32 @@
 </head>
 
 <body>
+<div id="loginGate" class="login-gate" aria-hidden="true">
+  <div class="login-panel">
+    <div class="login-brand">STREAM SUPERVISOR</div>
+    <div class="login-kicker">SECURE OPERATIONS CONSOLE</div>
+    <div class="login-rule"></div>
+    <form id="loginForm">
+      <label class="login-field"><span>Username</span><input id="loginUsername" name="username" autocomplete="username" spellcheck="false"></label>
+      <label class="login-field"><span>Password</span><input id="loginPassword" name="password" type="password" autocomplete="current-password"></label>
+      <div id="loginError" class="login-error"></div>
+      <button id="loginSubmit" class="login-submit" type="submit">SIGN IN</button>
+    </form>
+    <div class="login-note">Authentication creates an HttpOnly same-site session. Credentials are never stored in the browser application.</div>
+  </div>
+</div>
+
+<div id="appModal" class="modal-backdrop" aria-hidden="true">
+  <div class="app-modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div id="modalTitle" class="modal-head">CONFIRM ACTION</div>
+    <div class="modal-body"><div id="modalMessage"></div><div id="modalDetail" class="modal-detail"></div></div>
+    <div class="modal-actions">
+      <button id="modalCancel" class="modal-button" type="button">CANCEL</button>
+      <button id="modalConfirm" class="modal-button primary" type="button">CONFIRM</button>
+    </div>
+  </div>
+</div>
+
 <div class="shell">
   <aside class="sidebar">
     <div class="brand">STREAM SUPERVISOR<small>OPERATIONS CONSOLE</small></div>
@@ -54,7 +83,7 @@
   <main class="main">
     <header class="topbar">
       <div class="title-wrap"><div id="pageTitle" class="title">CHANNEL MONITOR</div><div id="pageSubtitle" class="subtitle">LIVE OPERATIONS</div></div>
-      <div class="top-right"><div id="clock" class="clock">--:--:--</div><div id="modeBadge" class="badge readonly">READ ONLY</div><div id="authBadge" class="badge open">ACCESS OPEN</div></div>
+      <div class="top-right"><div id="clock" class="clock">--:--:--</div><div id="modeBadge" class="badge readonly">READ ONLY</div><div id="authBadge" class="badge open">ACCESS OPEN</div><button id="logoutButton" class="session-action" type="button" hidden>LOG OUT</button></div>
     </header>
 
     <div class="content">
@@ -225,7 +254,7 @@ const fmtRate=bps=>{bps=Number(bps)||0;const bits=bps*8;return bits>=1000000000?
 const stateLabel=s=>({live:"LIVE",connecting:"CONNECTING",waiting:"NO SOURCE",error:"ERROR",stopped:"STOPPED",idle:"IDLE"}[s]||String(s||"UNKNOWN").toUpperCase());
 const fmtDateTime=v=>{const d=new Date(v);return Number.isNaN(d.getTime())?"--":d.toLocaleString("fr-FR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false})};
 const statusClass=s=>["live","connecting","waiting","error","stopped","idle"].includes(s)?s:"idle";
-let lastRefresh=0,currentFilter="all",currentSort="name",currentDirection="asc",latestChannels=[],latestIncidentState={active:[],summary:{}},latestJournal=[],journalPersistent=null,latestDiagnostics=null,latestWatchdog=null,eventStream=null,currentView="channels",session={authenticated:false,role:"viewer",username:null,actionsEnabled:false},actionBusy=false;
+let lastRefresh=0,currentFilter="all",currentSort="name",currentDirection="asc",latestChannels=[],latestIncidentState={active:[],summary:{}},latestJournal=[],journalPersistent=null,latestDiagnostics=null,latestWatchdog=null,eventStream=null,pollFallbackTimer=null,currentView="channels",session={authenticated:false,authRequired:false,role:"viewer",username:null,actionsEnabled:false},actionBusy=false,modalResolver=null;
 
 function renderDocker(docker){
   const containers=Array.isArray(docker?.containers)?docker.containers:[];
@@ -318,7 +347,7 @@ function renderIncidents(){
 
 async function fetchIncidents(){
   try{
-    const response=await fetch("/api/incidents?limit=100",{cache:"no-store"});
+    const response=await apiFetch("/api/incidents?limit=100",{cache:"no-store"});
     if(!response.ok)throw new Error("incidents");
     const data=await response.json();
     latestIncidentState={active:Array.isArray(data.active)?data.active:[],summary:data.summary||{}};
@@ -360,7 +389,7 @@ function renderDiagnostics(){
 
 async function fetchDiagnostics(){
   try{
-    const response=await fetch("/api/diagnostics",{cache:"no-store"});
+    const response=await apiFetch("/api/diagnostics",{cache:"no-store"});
     if(!response.ok)throw new Error("diagnostics");
     latestDiagnostics=await response.json();
     renderDiagnostics();
@@ -391,22 +420,24 @@ function renderWatchdog(){
   $("watchdogWindow").textContent=fmtTime(data.policy?.attemptWindowSeconds??0);
 
   $("watchdogCandidates").innerHTML=candidates.length?candidates.map(item=>{
-    const state=String(item.state||"observing").toUpperCase();
-    const severity=item.state==="manual"?"critical":item.state==="eligible"||item.state==="verifying"?"warning":"info";
+    const rawState=String(item.state||"observing");
+    const state=data.mode==="observe"&&rawState==="eligible"?"CANDIDATE":rawState.toUpperCase();
+    const severity=rawState==="manual"?"critical":rawState==="eligible"||rawState==="verifying"?"warning":"info";
+    const nextAction=data.mode==="observe"?"NO ACTION · OBSERVE":String(item.nextAction||"--").toUpperCase();
     return '<div class="watchdog-row">'+
       '<div><span class="severity '+severity+'">'+esc(state)+'</span></div>'+
       '<div class="incident-title">'+esc(item.channel||"--")+'</div>'+
       '<div><div class="incident-title">'+esc(item.output||"--")+'</div><div class="incident-meta">'+esc(String(item.provider||"").toUpperCase())+'</div></div>'+
       '<div class="incident-meta">'+esc((item.errorAgeSeconds??0)+"s")+'</div>'+
       '<div class="incident-meta">'+esc(String(item.attemptsInWindow??0))+'</div>'+
-      '<div class="incident-meta">'+esc(String(item.nextAction||"--").toUpperCase())+'</div>'+
+      '<div class="incident-meta">'+esc(nextAction)+'</div>'+
     '</div>';
   }).join(""):'<div class="empty">No recovery candidates.</div>';
 }
 
 async function fetchWatchdog(){
   try{
-    const response=await fetch("/api/watchdog",{cache:"no-store"});
+    const response=await apiFetch("/api/watchdog",{cache:"no-store"});
     if(!response.ok)throw new Error("watchdog");
     latestWatchdog=await response.json();
     renderWatchdog();
@@ -417,41 +448,190 @@ async function fetchWatchdog(){
   }
 }
 
+function updateSessionUi(){
+  const label=session.authenticated
+    ? (session.role.toUpperCase()+(session.username?" · "+session.username:""))
+    : (session.authRequired?"SIGNED OUT":"ACCESS OPEN");
+  $("authBadge").textContent=label;
+  $("authBadge").className="badge "+(session.authenticated?"secure":"open");
+  $("modeBadge").textContent=session.actionsEnabled?"OUTPUT CONTROL":"READ ONLY";
+  $("modeBadge").className="badge "+(session.actionsEnabled?"secure":"readonly");
+  $("logoutButton").hidden=!session.authenticated;
+  renderChannels();
+}
+
+function showLogin(message=""){
+  $("loginError").textContent=message;
+  $("loginGate").classList.add("show");
+  $("loginGate").setAttribute("aria-hidden","false");
+  setTimeout(()=>$("loginUsername").focus(),0);
+}
+
+function hideLogin(){
+  $("loginGate").classList.remove("show");
+  $("loginGate").setAttribute("aria-hidden","true");
+  $("loginError").textContent="";
+  $("loginPassword").value="";
+}
+
+function disconnectRealtime(){
+  if(eventStream){
+    try{eventStream.close()}catch{}
+    eventStream=null;
+  }
+  if(pollFallbackTimer){
+    clearInterval(pollFallbackTimer);
+    pollFallbackTimer=null;
+  }
+}
+
 async function loadSession(){
   try{
     const response=await fetch("/api/session",{cache:"no-store"});
     if(!response.ok)throw new Error("session");
     session=await response.json();
   }catch{
-    session={authenticated:false,role:"viewer",username:null,actionsEnabled:false};
+    session={authenticated:false,authRequired:true,role:"viewer",username:null,actionsEnabled:false};
+  }
+  updateSessionUi();
+  return session;
+}
+
+async function handleUnauthorized(message="Session expired. Sign in again."){
+  disconnectRealtime();
+  session={authenticated:false,authRequired:true,role:"viewer",username:null,actionsEnabled:false};
+  updateSessionUi();
+  showLogin(message);
+}
+
+async function apiFetch(url,options={}){
+  const response=await fetch(url,options);
+  if(response.status===401){
+    await handleUnauthorized();
+    throw new Error("unauthorized");
+  }
+  return response;
+}
+
+function closeModal(result=false){
+  $("appModal").classList.remove("show");
+  $("appModal").setAttribute("aria-hidden","true");
+  const resolver=modalResolver;
+  modalResolver=null;
+  if(resolver)resolver(result);
+}
+
+function showDialog({title="CONFIRM ACTION",message="",detail="",confirmLabel="CONFIRM",tone="primary",cancel=true}={}){
+  if(modalResolver)closeModal(false);
+  $("modalTitle").textContent=title;
+  $("modalMessage").textContent=message;
+  $("modalDetail").textContent=detail;
+  $("modalDetail").style.display=detail?"block":"none";
+  $("modalConfirm").textContent=confirmLabel;
+  $("modalConfirm").className="modal-button "+tone;
+  $("modalCancel").style.display=cancel?"inline-block":"none";
+  $("appModal").classList.add("show");
+  $("appModal").setAttribute("aria-hidden","false");
+  return new Promise(resolve=>{modalResolver=resolve});
+}
+
+async function showNotice(title,message,detail=""){
+  await showDialog({title,message,detail,confirmLabel:"OK",tone:"primary",cancel:false});
+}
+
+async function submitLogin(event){
+  event.preventDefault();
+  const username=$("loginUsername").value.trim();
+  const password=$("loginPassword").value;
+  if(!username||!password){
+    $("loginError").textContent="Username and password are required.";
+    return;
   }
 
-  $("authBadge").textContent=session.authenticated?session.role.toUpperCase():"ACCESS OPEN";
-  $("authBadge").className="badge "+(session.authenticated?"secure":"open");
-  $("modeBadge").textContent=session.actionsEnabled?"OUTPUT CONTROL":"READ ONLY";
-  $("modeBadge").className="badge "+(session.actionsEnabled?"secure":"readonly");
-  renderChannels();
+  $("loginSubmit").disabled=true;
+  $("loginError").textContent="";
+  try{
+    const response=await fetch("/api/login",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({username,password})
+    });
+    if(response.status===429){
+      $("loginError").textContent="Too many failed attempts. Try again later.";
+      return;
+    }
+    if(!response.ok){
+      $("loginError").textContent="Invalid username or password.";
+      return;
+    }
+
+    await loadSession();
+    if(!session.authenticated){
+      $("loginError").textContent="Session could not be established.";
+      return;
+    }
+
+    hideLogin();
+    connectRealtime();
+    await fetchSnapshot();
+  }catch{
+    $("loginError").textContent="Supervisor authentication is unavailable.";
+  }finally{
+    $("loginSubmit").disabled=false;
+    $("loginPassword").value="";
+  }
+}
+
+async function logout(){
+  const confirmed=await showDialog({
+    title:"LOG OUT",
+    message:"End the current Supervisor session?",
+    detail:"Monitoring and output controls will be unavailable until a new sign-in.",
+    confirmLabel:"LOG OUT",
+    tone:"warning"
+  });
+  if(!confirmed)return;
+
+  try{
+    await fetch("/api/logout",{
+      method:"POST",
+      headers:{"X-Supervisor-Action":"1"}
+    });
+  }catch{}
+  await handleUnauthorized("Signed out.");
 }
 
 async function commandOutput(outputId, outputName, command){
   if(!session.actionsEnabled||actionBusy)return;
   const verb=command==="stop"?"STOP":"START";
-  const warning=command==="stop"
-    ? verb+' destination "'+outputName+'"? The channel ingest will keep running.'
-    : verb+' destination "'+outputName+'"?';
-  if(!window.confirm(warning))return;
+  const confirmed=await showDialog({
+    title:verb+" DESTINATION",
+    message:verb+' destination "'+outputName+'"?',
+    detail:command==="stop"
+      ?"The channel ingest will keep running. No other destination is affected."
+      :"Only this existing destination will receive a START command.",
+    confirmLabel:verb,
+    tone:command==="stop"?"warning":"primary"
+  });
+  if(!confirmed)return;
 
   actionBusy=true;
   renderChannels();
   try{
-    const response=await fetch("/api/restreamer/output-command",{
+    const response=await apiFetch("/api/restreamer/output-command",{
       method:"POST",
       headers:{"Content-Type":"application/json","X-Supervisor-Action":"1"},
       body:JSON.stringify({outputId,command})
     });
     if(!response.ok)throw new Error("command");
-  }catch{
-    window.alert("Destination command failed. No global Restreamer restart was attempted.");
+  }catch(error){
+    if(error.message!=="unauthorized"){
+      await showNotice(
+        "COMMAND FAILED",
+        "The destination command could not be completed.",
+        "No global Restreamer restart was attempted."
+      );
+    }
   }finally{
     actionBusy=false;
     setTimeout(fetchSnapshot,300);
@@ -608,7 +788,7 @@ function applyStatus(x){
 }
 async function fetchSnapshot(){
   try{
-    const response=await fetch("/api/status",{cache:"no-store"});
+    const response=await apiFetch("/api/status",{cache:"no-store"});
     if(!response.ok)throw new Error("api");
     applyStatus(await response.json());
   }catch{
@@ -616,10 +796,12 @@ async function fetchSnapshot(){
   }
 }
 function connectRealtime(){
+  if(eventStream||pollFallbackTimer)return;
+  if(session.authRequired&&!session.authenticated)return;
   if(!("EventSource" in window)){
     $("monitorTransport").textContent="POLL FALLBACK · 5s";
     fetchSnapshot();
-    setInterval(fetchSnapshot,5000);
+    pollFallbackTimer=setInterval(fetchSnapshot,5000);
     return;
   }
 
@@ -637,11 +819,20 @@ function connectRealtime(){
   eventStream.onerror=()=>{
     $("apiDot").className="dot warn";
     $("monitorTransport").textContent="SSE RECONNECTING";
+    fetch("/api/session",{cache:"no-store"}).then(r=>r.json()).then(data=>{
+      if(data.authRequired&&!data.authenticated)handleUnauthorized();
+    }).catch(()=>{});
   };
 
   fetchSnapshot();
 }
 document.querySelectorAll(".nav-item[data-view]").forEach(item=>item.addEventListener("click",()=>switchView(item.dataset.view)));
+$("loginForm").addEventListener("submit",submitLogin);
+$("logoutButton").addEventListener("click",logout);
+$("modalCancel").addEventListener("click",()=>closeModal(false));
+$("modalConfirm").addEventListener("click",()=>closeModal(true));
+$("appModal").addEventListener("click",(event)=>{if(event.target===$("appModal"))closeModal(false)});
+document.addEventListener("keydown",(event)=>{if(event.key==="Escape"&&modalResolver)closeModal(false)});
 $("downloadDiagnostics").addEventListener("click",()=>{window.location.href="/api/diagnostics?download=1"});
 $("channels").addEventListener("click",(event)=>{
   const button=event.target.closest(".output-action");
@@ -679,8 +870,15 @@ setInterval(updateClock,1000);
 updateClock();
 const initialView=new URLSearchParams(window.location.search).get("view");
 if(["system","incidents","diagnostics","watchdog"].includes(initialView)) switchView(initialView);
-loadSession();
-connectRealtime();
+(async()=>{
+  await loadSession();
+  if(session.authRequired&&!session.authenticated){
+    showLogin();
+    return;
+  }
+  hideLogin();
+  connectRealtime();
+})();
 </script>
 </body>
 </html>
