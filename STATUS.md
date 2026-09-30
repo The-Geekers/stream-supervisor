@@ -1,13 +1,13 @@
 # Project Status
 
-**Version :** 0.1.0-alpha.12.1  
+**Version :** 0.1.0-alpha.13  
 **Phase :** supervision complète + premières actions opérateur sécurisées
 
 | Domaine | État |
 |---|---|
 | Dépôt GitHub / workflow GitHub → VPS | OK |
 | Application Docker | OK |
-| Interface monitoring | Alpha 12.1 |
+| Interface monitoring | Alpha 13 |
 | Restreamer Core 16 | Intégré |
 | Channels / outputs / métriques | Intégrés |
 | Monitoring SSE quasi temps réel | Intégré, 1 s par défaut |
@@ -19,6 +19,9 @@
 | CPU Docker | Affiché en équivalent de cœurs |
 | Page SYSTEM | Intégrée |
 | Rôles Admin / Technician | Intégrés |
+| Login intégré Supervisor | Intégré |
+| Sessions navigateur + logout | Intégrés |
+| Confirmations actions | Modales UI intégrées |
 | Monitoring ouvert sans auth | Autorisé, read-only |
 | Start/stop destinations Restreamer | Intégré, auth obligatoire |
 | Contrôle ingest | Non exposé |
@@ -57,5 +60,7 @@ Avec authentification :
 - **Admin** : mêmes actions dans alpha.9, rôle réservé aux futures opérations plus sensibles.
 
 ## Prochaine étape
+
+Alpha.13 ajoute une connexion intégrée, une vraie déconnexion, des confirmations cohérentes avec l'interface et un libellé watchdog plus explicite en mode OBSERVE. Après validation sur le VPS, reprise de la phase 0.2 Monitoring & exploitation.
 
 Alpha.12 validée sur le VPS réel en modes observe et recover : un egress RTMP volontairement invalide avec ingest LIVE est devenu recovery candidate, a déclenché une unique commande START ciblée, puis une vérification après délai. La recovery non confirmée a été journalisée, la limite d'une tentative a conduit l'état à MANUAL, sans restart Core/conteneur ni action sur les autres flux. Les ingests absents restent exclus des recovery candidates. Correction alpha.12.1 : pendant la fenêtre de vérification watchdog, l'incident egress reste maintenu ouvert afin d'éviter le bruit RESOLVED → OPEN provoqué par un état transitoire après START.

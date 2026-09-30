@@ -3,6 +3,10 @@
 ## [Unreleased]
 
 ### Added
+- Écran de connexion Supervisor intégré à l'interface, sans popup Basic Auth navigateur.
+- Sessions serveur avec cookie HttpOnly / SameSite=Strict et bouton de déconnexion.
+- Modales UI pour confirmer les actions START/STOP et afficher les erreurs.
+- Limitation simple des tentatives de connexion échouées.
 - Page **WATCHDOG** avec état runtime, politique et candidats de recovery.
 - Moteur de watchdog gradué avec mode `off` / `observe` / `recover`.
 - Recovery automatique optionnelle limitée à un `start` ciblé d'un egress en erreur, avec ingest LIVE et incident actif.
@@ -29,11 +33,12 @@
 - Test unitaire réel de la commande Restreamer avec login JWT et endpoint process command.
 
 ### Fixed
+- Le mode WATCHDOG `observe` affiche désormais clairement qu'aucune action automatique n'est envoyée.
 - Pendant une recovery watchdog, l'incident egress reste ouvert pendant la fenêtre de vérification afin d'éviter un faux `INCIDENT RESOLVED` suivi d'un nouvel `INCIDENT OPEN` sur un état transitoire.
 - Le CPU des conteneurs Docker n'est plus affiché en pourcentage multi-cœur (`175%`). Il est affiché en équivalent de cœurs (`1.75`).
 
 ### Changed
-- Passage à `0.1.0-alpha.12.1`.
+- Passage à `0.1.0-alpha.13`.
 - Mode ouvert : monitoring uniquement.
 - Mode authentifié : `OUTPUT CONTROL` pour Admin/Technician.
 - Le statut de la Web UI est désormais basé sur la vraie route statique `/ui/`.

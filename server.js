@@ -2,7 +2,7 @@ import http from "node:http";
 import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
-import { createBasicAuth } from "./lib/auth.js";
+import { createSessionAuth } from "./lib/auth.js";
 import { buildDemoStatus } from "./lib/demo.js";
 import { DockerAdapter } from "./lib/docker.js";
 import { buildDiagnostics } from "./lib/diagnostics.js";
@@ -16,7 +16,7 @@ const __dirname = dirname(__filename);
 
 const HOST = process.env.HOST || "0.0.0.0";
 const PORT = Number(process.env.PORT || 8090);
-const VERSION = "0.1.0-alpha.12.1";
+const VERSION = "0.1.0-alpha.13";
 const DEMO_MODE = process.env.DEMO_MODE === "true";
 const requestedMonitorInterval = Number(process.env.MONITOR_INTERVAL_MS || 1000);
 const MONITOR_INTERVAL_MS = Math.min(
@@ -25,11 +25,12 @@ const MONITOR_INTERVAL_MS = Math.min(
 );
 const startedAt = Date.now();
 
-const auth = createBasicAuth({
+const auth = createSessionAuth({
   username: process.env.SUPERVISOR_USERNAME,
   password: process.env.SUPERVISOR_PASSWORD,
   technicianUsername: process.env.SUPERVISOR_TECH_USERNAME,
-  technicianPassword: process.env.SUPERVISOR_TECH_PASSWORD
+  technicianPassword: process.env.SUPERVISOR_TECH_PASSWORD,
+  sessionTtlMs: Number(process.env.SUPERVISOR_SESSION_TTL_MS || 8 * 60 * 60 * 1000)
 });
 
 const restreamer = new RestreamerAdapter({
@@ -76,6 +77,7 @@ await incidentTracker.init();
 await watchdog.init();
 
 const sseClients = new Set();
+const loginFailures = new Map();
 let latestStatus = null;
 let refreshPromise = null;
 let monitorTimer = null;
@@ -99,12 +101,39 @@ function sendJson(res, status, body, extraHeaders = {}) {
 }
 
 function unauthorized(res) {
-  return sendJson(
-    res,
-    401,
-    { status: "unauthorized" },
-    { "WWW-Authenticate": 'Basic realm="Stream Supervisor", charset="UTF-8"' }
-  );
+  return sendJson(res, 401, { status:"unauthorized", code:"login_required" });
+}
+
+function cookieSecure(req) {
+  if (String(process.env.SUPERVISOR_COOKIE_SECURE || "").toLowerCase() === "true") return true;
+  const forwarded = String(req.headers["x-forwarded-proto"] || "").split(",")[0].trim().toLowerCase();
+  return forwarded === "https";
+}
+
+function loginSource(req) {
+  const forwarded = String(req.headers["x-forwarded-for"] || "").split(",")[0].trim();
+  return (forwarded || req.socket.remoteAddress || "unknown").slice(0, 120);
+}
+
+function loginAllowed(req) {
+  const key = loginSource(req);
+  const now = Date.now();
+  const windowMs = 5 * 60 * 1000;
+  const recent = (loginFailures.get(key) || []).filter((at) => now - at < windowMs);
+  if (recent.length) loginFailures.set(key, recent);
+  else loginFailures.delete(key);
+  return recent.length < 10;
+}
+
+function recordLoginFailure(req) {
+  const key = loginSource(req);
+  const recent = loginFailures.get(key) || [];
+  recent.push(Date.now());
+  loginFailures.set(key, recent.slice(-10));
+}
+
+function clearLoginFailures(req) {
+  loginFailures.delete(loginSource(req));
 }
 
 function forbidden(res, code = "forbidden") {
@@ -287,19 +316,77 @@ const server = http.createServer(async (req, res) => {
     });
   }
 
-  if (!auth.isAuthorized(req.headers.authorization)) {
-    return unauthorized(res);
+  if (req.method === "GET" && (url.pathname === "/" || url.pathname === "/index.html")) {
+    try {
+      const content = await readFile(join(__dirname, "public", "index.html"));
+      res.writeHead(200, securityHeaders({
+        "Content-Type": "text/html; charset=utf-8",
+        "Content-Security-Policy": "default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'self'; img-src 'self' data:;"
+      }));
+      return res.end(content);
+    } catch {
+      return sendJson(res, 500, { status:"error", message:"UI unavailable" });
+    }
   }
 
-  const session = auth.authenticate(req.headers.authorization);
-
   if (req.method === "GET" && url.pathname === "/api/session") {
+    const session = auth.authenticate(req.headers.cookie);
     return sendJson(res, 200, {
       authenticated: session.authenticated,
+      authRequired: auth.enabled,
       role: session.role,
       username: session.username,
-      actionsEnabled: auth.enabled && session.actionsEnabled
+      actionsEnabled: auth.enabled && session.actionsEnabled,
+      expiresAt: session.expiresAt || null
     });
+  }
+
+  if (req.method === "POST" && url.pathname === "/api/login") {
+    if (!auth.enabled) {
+      return sendJson(res, 409, { status:"conflict", code:"authentication_not_configured" });
+    }
+    if (!loginAllowed(req)) {
+      return sendJson(res, 429, { status:"rate_limited", code:"too_many_login_attempts" });
+    }
+    if (!String(req.headers["content-type"] || "").toLowerCase().startsWith("application/json")) {
+      return sendJson(res, 415, { status:"unsupported_media_type" });
+    }
+
+    let body;
+    try {
+      body = await readJsonBody(req, 2048);
+    } catch {
+      return sendJson(res, 400, { status:"bad_request" });
+    }
+
+    const username = typeof body?.username === "string" ? body.username : "";
+    const password = typeof body?.password === "string" ? body.password : "";
+    const result = auth.login(username, password);
+
+    if (!result) {
+      recordLoginFailure(req);
+      return sendJson(res, 401, { status:"unauthorized", code:"invalid_credentials" });
+    }
+
+    clearLoginFailures(req);
+    return sendJson(res, 200, result.session, {
+      "Set-Cookie": auth.cookie(result.token, { secure:cookieSecure(req) })
+    });
+  }
+
+  if (req.method === "POST" && url.pathname === "/api/logout") {
+    if (req.headers["x-supervisor-action"] !== "1") {
+      return forbidden(res, "action_header_required");
+    }
+    auth.logout(req.headers.cookie);
+    return sendJson(res, 200, { status:"logged_out" }, {
+      "Set-Cookie": auth.clearCookie({ secure:cookieSecure(req) })
+    });
+  }
+
+  const session = auth.authenticate(req.headers.cookie);
+  if (auth.enabled && !session.authenticated) {
+    return unauthorized(res);
   }
 
   if (req.method === "GET" && url.pathname === "/api/incidents") {
@@ -442,19 +529,6 @@ const server = http.createServer(async (req, res) => {
         status: "unavailable",
         message: "monitoring snapshot unavailable"
       });
-    }
-  }
-
-  if (req.method === "GET" && (url.pathname === "/" || url.pathname === "/index.html")) {
-    try {
-      const content = await readFile(join(__dirname, "public", "index.html"));
-      res.writeHead(200, securityHeaders({
-        "Content-Type": "text/html; charset=utf-8",
-        "Content-Security-Policy": "default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'self'; img-src 'self' data:;"
-      }));
-      return res.end(content);
-    } catch {
-      return sendJson(res, 500, { status: "error", message: "UI unavailable" });
     }
   }
 
