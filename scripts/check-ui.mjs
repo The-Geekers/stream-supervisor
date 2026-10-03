@@ -16,6 +16,7 @@ try {
 }
 
 const requiredIds = [
+  "viewAccount","accountNav","securityForm","securityPassword","securityToken","twoFactorQr","twoFactorSecret","recoveryCodes","loginToken","loginTokenField",
   "appShell","mobileView","desktopThemeToggle","mobileThemeToggle","loginThemeToggle","adminRecovery","restartRestreamerButton","backToTop","historyIncidentCount","historyResolvedCount","historyAffected","historyLongest","historyGrouped","historyScopeNote","incidentHistory",
   "viewChannels","viewSystem","pageTitle","dockerEngine","dockerRunning",
   "dockerUnhealthy","dockerAge","dockerContainers","dockerDot","modeBadge","authBadge",

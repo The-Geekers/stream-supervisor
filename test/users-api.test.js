@@ -1,3 +1,4 @@
+import {totp} from "../lib/totp.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import {spawn} from "node:child_process";
@@ -36,4 +37,20 @@ test("user administration API enforces roles, action header and password confirm
   const listed=await (await fetch(base+'/api/admin/users',{headers:{Cookie:owner}})).json();
   assert.ok(!JSON.stringify(listed).includes('temporary-pass'));
   assert.ok(!JSON.stringify(listed).includes('"hash"'));
+  assert.equal((await write(owner,'DELETE',{username:'operator'})).status,400);
+  assert.equal((await write(tech,'DELETE',{username:'operator',confirmUsername:'operator'})).status,403);
+  assert.equal((await write(owner,'DELETE',{username:'operator',confirmUsername:'operator'})).status,200);
+  assert.equal((await write(owner,'DELETE',{username:'owner',confirmUsername:'owner'})).status,400);
+  const security=(action,data)=>fetch(base+'/api/account/2fa/'+action,{method:'POST',headers:{Cookie:owner,'Content-Type':'application/json','X-Supervisor-Action':'1'},body:JSON.stringify(data)});
+  const setup=await (await security('setup',{password:'bootstrap-pass'})).json();
+  assert.match(setup.qrDataUrl,/^data:image\/png;base64,/);
+  const codes=await (await security('confirm',{password:'bootstrap-pass',token:totp(setup.secret)})).json();
+  assert.equal(codes.recoveryCodes.length,10);
+  const challenge=await fetch(base+'/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:'owner',password:'bootstrap-pass'})});
+  assert.equal(challenge.status,401);assert.equal(challenge.headers.get('set-cookie'),null);
+  assert.equal((await challenge.json()).code,'two_factor_required');
+  const restored=await fetch(base+'/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:'owner',password:'bootstrap-pass',token:codes.recoveryCodes[0]})});
+  assert.equal(restored.status,200);
+  const replay=await fetch(base+'/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:'owner',password:'bootstrap-pass',token:codes.recoveryCodes[0]})});
+  assert.equal(replay.status,401);
 });

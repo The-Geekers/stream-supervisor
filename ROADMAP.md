@@ -14,6 +14,10 @@ Alpha.16 a introduit les thèmes Dark/Light. Alpha.17 finalise le polish : Light
 
 Phase active.
 
+### 0.2 alpha.4 — Suppression et 2FA
+
+Suppression de comptes avec confirmation et révocation, protection du super-admin. TOTP optionnel par utilisateur dans Mon compte, QR code local, codes de récupération à usage unique. Activation confirmée, désactivation et renouvellement soumis au mot de passe et au second facteur. Candidate à valider sur le VPS.
+
 ### 0.2 alpha.3 — Gestion utilisateurs
 
 Interface inspirée du Portal : créer/modifier un compte, attribuer son rôle, désactiver et réinitialiser le mot de passe. Réservée au super-admin ; comptes persistants hachés et sessions révoquées sur modification. Candidate à valider sur le VPS.
