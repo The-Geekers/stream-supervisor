@@ -103,3 +103,12 @@ test("self-service password change verifies current password and factor and revo
   assert.equal(auth.login("owner","bootstrap-pass",codes[1]),null);
   assert.ok(auth.login("owner","updated-owner-password",codes[1]).token);
 });
+
+test("technician changes own password without changing role",()=>{
+ const {auth}=fixture();auth.saveUser({username:"tech",role:"technician",password:"temporary-tech-pass"},{create:true});
+ const cookie=auth.cookie(auth.login("tech","temporary-tech-pass").token);
+ assert.throws(()=>auth.changePassword(cookie,{password:"temporary-tech-pass"}),/password_length/);
+ auth.changePassword(cookie,{password:"temporary-tech-pass",newPassword:"updated-tech-pass",confirmPassword:"updated-tech-pass"});
+ assert.equal(auth.authenticate(cookie).authenticated,false);
+ assert.equal(auth.login("tech","updated-tech-pass").session.role,"technician");
+});
