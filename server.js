@@ -18,7 +18,7 @@ const __dirname = dirname(__filename);
 
 const HOST = process.env.HOST || "0.0.0.0";
 const PORT = Number(process.env.PORT || 8090);
-const VERSION = "0.2.0-alpha.2";
+const VERSION = "0.2.0-alpha.3";
 const DEMO_MODE = process.env.DEMO_MODE === "true";
 const requestedMonitorInterval = Number(process.env.MONITOR_INTERVAL_MS || 1000);
 const MONITOR_INTERVAL_MS = Math.min(
@@ -28,6 +28,7 @@ const MONITOR_INTERVAL_MS = Math.min(
 const startedAt = Date.now();
 
 const auth = createSessionAuth({
+  storeFile: process.env.USERS_FILE || (process.env.NODE_ENV === "production" ? "/data/users.json" : undefined),
   username: process.env.SUPERVISOR_USERNAME,
   password: process.env.SUPERVISOR_PASSWORD,
   technicianUsername: process.env.SUPERVISOR_TECH_USERNAME,
@@ -395,9 +396,34 @@ const server = http.createServer(async (req, res) => {
     return unauthorized(res);
   }
 
+  if (url.pathname === "/api/admin/users") {
+    if (!auth.enabled || session.role !== "super-admin") return forbidden(res, "super_admin_required");
+    if (req.method === "GET") return sendJson(res, 200, {users:auth.listUsers()});
+    if (!["POST", "PATCH"].includes(req.method)) return sendJson(res, 405, {code:"method_not_allowed"});
+    if (req.headers["x-supervisor-action"] !== "1") return forbidden(res, "action_header_required");
+    if (!String(req.headers["content-type"] || "").toLowerCase().startsWith("application/json")) {
+      return sendJson(res, 415, {code:"unsupported_media_type"});
+    }
+    let user;
+    try {
+      const body = await readJsonBody(req, 4096);
+      if (body.password !== undefined && body.password !== body.confirmPassword) throw new Error("password_confirmation");
+      user = auth.saveUser(body, {create:req.method === "POST", actor:session.username});
+    } catch (error) {
+      const known = ["user_store_unavailable", "invalid_username", "user_exists", "user_not_found",
+        "password_confirmation", "invalid_role", "invalid_status", "cannot_demote_self", "password_length_12_256", "password_required", "last_super_admin"];
+      return sendJson(res, known.includes(error.message) ? 400 : 500,
+        {code:known.includes(error.message) ? error.message : "user_save_failed"});
+    }
+    await journal.append({kind:"operator_action", severity:"info", source:"users",
+      title:req.method === "POST" ? "Compte créé" : "Compte modifié",
+      actor:session.username, action:"user_management", detail:user.username, status:"success"});
+    return sendJson(res, req.method === "POST" ? 201 : 200, {user});
+  }
+
   if (req.method === "POST" && url.pathname === "/api/admin/restart-restreamer") {
     if (!auth.enabled) return forbidden(res, "actions_locked");
-    if (session.role !== "admin") return forbidden(res, "admin_required");
+    if (!["super-admin", "admin"].includes(session.role)) return forbidden(res, "admin_required");
     if (req.headers["x-supervisor-action"] !== "1") return forbidden(res, "action_header_required");
     if (restreamerRestartInFlight) {
       return sendJson(res, 409, { status:"conflict", code:"restreamer_restart_in_progress" });
@@ -633,7 +659,7 @@ const server = http.createServer(async (req, res) => {
 });
 
 server.listen(PORT, HOST, () => {
-  console.log(`[stream-supervisor] ${VERSION} listening on ${HOST}:${PORT}`);
+  console.log(`[stream-supervisor] ${VERSION} listening on ${HOST}:${server.address().port}`);
   monitorLoop();
 });
 

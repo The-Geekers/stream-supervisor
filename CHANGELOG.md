@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.0-alpha.3 — Gestion utilisateurs
+
+- Vue Utilisateurs réservée au super-admin : création, rôle, activation/désactivation et réinitialisation du mot de passe avec confirmation.
+- Migration unique des comptes `.env` vers `/data/users.json` ; Admin initial devient super-admin. Identifiants conservés, secrets hachés scrypt, fichier écrit atomiquement en mode 0600.
+- Rôles super-admin, admin, technicien et lecture seule ; protection du dernier super-admin et de son propre accès. Toute modification révoque les sessions concernées.
+- Gestion inspirée du Portal, comptes Supervisor indépendants. Aucun changement du chemin média ni redémarrage moteur.
+
+
 ## [Unreleased]
 
 ### Fixed

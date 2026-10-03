@@ -179,3 +179,14 @@ Une destination ne peut devenir éligible à une recovery automatique que si :
 - le cooldown et la limite de tentatives l'autorisent.
 
 Même en mode recovery, alpha.12 ne redémarre jamais automatiquement Restreamer Core ou son conteneur.
+
+
+### Gestion des utilisateurs (0.2.0-alpha.3)
+
+Connectez-vous avec l’Admin existant puis ouvrez **Utilisateurs**. Le compte initial devient super-admin à la première migration, avec le même identifiant et mot de passe. Le compte Technician existant est également importé.
+
+Le super-admin crée et modifie les comptes, choisit leur rôle et état, et réinitialise le mot de passe (12 à 256 caractères, confirmation requise). Les rôles Admin/Technicien conservent les actions opérateur ; le rôle lecture seule consulte seulement. Le restart exceptionnel reste réservé à Admin/Super-admin.
+
+Les comptes sont enregistrés dans `/data/users.json` (`USERS_FILE`) sur le volume `supervisor_data`, déjà sauvegardé par l’export infrastructure. Après migration, ce fichier fait autorité : modifier les anciennes variables `.env` ne réinitialise plus les comptes. Une modification invalide les sessions du compte. Le dernier super-admin actif et votre propre rôle/activation sont protégés.
+
+La première migration nécessite un compte Admin complet dans le `.env`. Un fichier utilisateurs invalide fait échouer le démarrage plutôt que réactiver des identifiants obsolètes. Pour un rollback, sauvegarder le volume avant mise à jour ; une version ancienne utilise à nouveau les identifiants du `.env`. Les comptes du Portal et ceux de Supervisor restent indépendants. Cette livraison reprend la gestion des comptes, sans SSO, 2FA ni mode « Voir comme ».

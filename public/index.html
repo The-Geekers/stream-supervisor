@@ -186,6 +186,7 @@
   .admin-recovery .danger-action{width:100%;white-space:normal}
 }
 
+[hidden]{display:none!important}.users-form{border:1px solid var(--line);background:var(--panel);padding:18px;max-width:700px}.users-form label{display:block;margin:12px 0}.users-form input,.users-form select{display:block;width:100%;padding:10px;margin-top:5px;background:var(--bg);color:var(--text);border:1px solid var(--line);font:inherit}.user-row{display:flex;justify-content:space-between;gap:12px;padding:14px;border-bottom:1px solid var(--line);flex-wrap:wrap}#userMessage{padding:12px 0;white-space:pre-wrap}
 </style>
 </head>
 
@@ -226,8 +227,8 @@
       <button type="button" class="nav-item" data-view="incidents" title="INCIDENTS"><i class="nav-dot" aria-hidden="true"></i><span>INCIDENTS</span></button>
       <button type="button" class="nav-item" data-view="diagnostics" title="DIAGNOSTICS"><i class="nav-dot" aria-hidden="true"></i><span>DIAGNOSTICS</span></button>
       <button type="button" class="nav-item" data-view="watchdog" title="WATCHDOG"><i class="nav-dot" aria-hidden="true"></i><span>WATCHDOG</span></button>
-    </nav>
-    <div class="side-foot">RESTREAMER / READ ONLY<br><span id="sideVersion">v0.2.0-alpha.2</span><button id="desktopThemeToggle" class="theme-toggle" type="button" aria-label="Switch to light theme">LIGHT</button></div>
+    <button id="usersNav" type="button" class="nav-item" data-view="users" hidden><i class="nav-dot" aria-hidden="true"></i><span>UTILISATEURS</span></button></nav>
+    <div class="side-foot">RESTREAMER / READ ONLY<br><span id="sideVersion">v0.2.0-alpha.3</span><button id="desktopThemeToggle" class="theme-toggle" type="button" aria-label="Switch to light theme">LIGHT</button></div>
   </aside>
   <button id="backToTop" class="back-to-top" type="button" hidden aria-label="Back to top">↑ TOP</button>
 
@@ -237,7 +238,7 @@
       <select id="mobileView" aria-label="Navigation">
         <option value="channels">CHANNELS</option><option value="system">SYSTEM</option>
         <option value="incidents">INCIDENTS</option><option value="diagnostics">DIAGNOSTICS</option><option value="watchdog">WATCHDOG</option>
-      </select>
+      <option id="usersOption" value="users" hidden>UTILISATEURS</option></select>
       <button id="mobileThemeToggle" class="theme-toggle" type="button" aria-label="Switch to light theme">LIGHT</button>
     </div>
     <header class="topbar">
@@ -264,7 +265,23 @@
         <div class="host-metric"><div class="host-label">VPS uptime</div><div id="hostUptime" class="host-value">--</div><div class="host-sub">host uptime</div></div>
       </section>
 
-      <div id="viewChannels" class="view active">
+      <section id="viewUsers" class="view">
+      <p>Comptes Supervisor. Gestion réservée au super-admin.</p>
+      <button id="newUser" type="button" class="diag-button">Créer un utilisateur</button>
+      <div id="userMessage" role="status" aria-live="polite"></div>
+      <div id="usersList" class="table" style="margin:16px 0"></div>
+      <form id="userForm" class="users-form" hidden>
+        <h2 id="userFormTitle">Nouvel utilisateur</h2>
+        <label>Identifiant<input id="userName" required maxlength="80" pattern="[a-zA-Z0-9_.@\-]+" autocomplete="off"></label>
+        <label>Rôle<select id="userRole"><option value="technician">Technicien</option><option value="viewer">Lecture seule</option><option value="admin">Admin</option><option value="super-admin">Super-admin</option></select></label>
+        <label>État<select id="userStatus"><option value="active">Actif</option><option value="disabled">Désactivé</option></select></label>
+        <label id="userPasswordLabel">Mot de passe (12 caractères minimum)<input id="userPassword" type="password" minlength="12" maxlength="256" autocomplete="new-password"></label>
+        <label>Confirmer le mot de passe<input id="userPasswordConfirm" type="password" minlength="12" maxlength="256" autocomplete="new-password"></label>
+        <p>En modification, laisser les mots de passe vides pour les conserver. Une modification invalide les sessions de ce compte.</p>
+        <div><button id="saveUser" type="submit" class="diag-button">Enregistrer</button> <button id="cancelUser" type="button" class="modal-button">Annuler</button></div>
+      </form>
+    </section>
+    <div id="viewChannels" class="view active">
       <section class="telemetry">
         <div class="metric"><div class="metric-label">Channels live</div><div id="channelsLive" class="metric-value">--</div><div id="channelsSub" class="metric-sub">--</div></div>
         <div class="metric"><div class="metric-label">Outputs live</div><div id="outputsLive" class="metric-value">--</div><div id="outputsSub" class="metric-sub">--</div></div>
@@ -492,6 +509,11 @@ function syncInteraction(){
 }
 
 function clearOperationalData(){
+  userAccounts=[];
+  $("usersList").replaceChildren();
+  $("userForm").reset();
+  $("userForm").hidden=true;
+  $("userMessage").textContent="";
   latestChannels=[];
   latestIncidentState={active:[],summary:{}};
   latestIncidentHistory={summary:{},incidents:[]};
@@ -540,7 +562,7 @@ function renderDocker(docker){
 }
 
 function switchView(view){
-  currentView=["channels","system","incidents","diagnostics","watchdog"].includes(view)?view:"channels";
+  currentView=["channels","system","incidents","diagnostics","watchdog","users"].includes(view)&& (view!=="users"||session.role==="super-admin")?view:"channels";
   document.querySelectorAll(".nav-item[data-view]").forEach(item=>{
     const active=item.dataset.view===currentView;
     item.classList.toggle("active",active);
@@ -552,11 +574,13 @@ function switchView(view){
   $("viewIncidents").classList.toggle("active",currentView==="incidents");
   $("viewDiagnostics").classList.toggle("active",currentView==="diagnostics");
   $("viewWatchdog").classList.toggle("active",currentView==="watchdog");
+  $("viewUsers").classList.toggle("active",currentView==="users");
   const titles={
     channels:["CHANNEL MONITOR","LIVE OPERATIONS"],
     system:["SYSTEM MONITOR","HOST + DOCKER SERVICES"],
     incidents:["INCIDENTS","ACTIVE STATE + EVENT JOURNAL"],
     diagnostics:["DIAGNOSTICS","SAFE OPERATOR CHECKS"],
+    users:["UTILISATEURS","ADMINISTRATION DES COMPTES"],
     watchdog:["WATCHDOG","GRADUATED RECOVERY POLICY"]
   };
   $("pageTitle").textContent=titles[currentView][0];
@@ -564,6 +588,7 @@ function switchView(view){
   if(currentView==="incidents")fetchIncidents();
   if(currentView==="diagnostics")fetchDiagnostics();
   if(currentView==="watchdog")fetchWatchdog();
+  if(currentView==="users")fetchUsers();
 }
 
 function renderIncidents(){
@@ -747,6 +772,55 @@ async function fetchWatchdog(){
   }
 }
 
+let userAccounts=[],editingUser=false,userSaving=false;
+const userErrors={user_exists:"Cet identifiant existe déjà.",invalid_username:"Identifiant invalide.",password_length_12_256:"Le mot de passe doit contenir 12 à 256 caractères.",cannot_demote_self:"Impossible de désactiver ou rétrograder votre propre compte.",last_super_admin:"Conserver au moins un super-admin actif.",super_admin_required:"Accès réservé au super-admin.",user_save_failed:"Échec de l’enregistrement. Réessayez.",password_confirmation:"Les mots de passe ne correspondent pas."};
+async function fetchUsers(){
+  try{
+    const data=await apiJson("/api/admin/users");
+    userAccounts=data.users;
+    $("usersList").innerHTML=userAccounts.map((u,i)=>'<div class="user-row"><div><strong>'+esc(u.username)+'</strong><br>'+esc(u.role)+' · '+(u.disabled?'Désactivé':'Actif')+'</div><button type="button" class="diag-button" data-edit-user="'+i+'">Modifier</button></div>').join("");
+  }catch(error){if(monitoringEnabled)$("userMessage").textContent="Impossible de charger les utilisateurs.";}
+}
+function openUserForm(user){
+  editingUser=Boolean(user);
+  $("userForm").reset();
+  $("userForm").hidden=false;
+  $("userFormTitle").textContent=user?"Modifier l’utilisateur":"Nouvel utilisateur";
+  $("userName").value=user?.username||"";
+  $("userName").readOnly=editingUser;
+  $("userRole").value=user?.role||"technician";
+  $("userStatus").value=user?.disabled?"disabled":"active";
+  $("userPassword").required=!editingUser;
+  $("userPasswordConfirm").required=!editingUser;
+  $("userMessage").textContent="";
+  $("userForm").scrollIntoView({block:"nearest"});
+  (editingUser?$("userRole"):$("userName")).focus();
+}
+$("newUser").addEventListener("click",()=>openUserForm());
+$("cancelUser").addEventListener("click",()=>{$("userForm").reset();$("userForm").hidden=true;});
+$("usersList").addEventListener("click",event=>{const button=event.target.closest("[data-edit-user]");if(button)openUserForm(userAccounts[Number(button.dataset.editUser)]);});
+$("userForm").addEventListener("submit",async event=>{
+  event.preventDefault();
+  if(userSaving)return;
+  const password=$("userPassword").value;
+  if(password!==$("userPasswordConfirm").value){$("userMessage").textContent="Les mots de passe ne correspondent pas.";return;}
+  const body={username:$("userName").value,role:$("userRole").value,disabled:$("userStatus").value==="disabled"};
+  if(password){body.password=password;body.confirmPassword=$("userPasswordConfirm").value;}
+  const userGeneration=sessionGeneration;
+  userSaving=true;$("saveUser").disabled=true;
+  try{
+    const response=await apiFetch("/api/admin/users",{method:editingUser?"PATCH":"POST",headers:{"Content-Type":"application/json","X-Supervisor-Action":"1"},body:JSON.stringify(body)});
+    const result=await response.json();
+    if(userGeneration!==sessionGeneration||!monitoringEnabled)return;
+    if(!response.ok)throw new Error(result.code);
+    $("userForm").reset();$("userForm").hidden=true;
+    if(body.username===session.username){await handleUnauthorized("Compte modifié. Reconnectez-vous.");return;}
+    $("userMessage").textContent="Utilisateur enregistré.";
+    await fetchUsers();
+  }catch(error){if(monitoringEnabled)$("userMessage").textContent=userErrors[error.message]||"Échec de l’enregistrement.";}
+  finally{userSaving=false;$("saveUser").disabled=false;}
+});
+
 function updateSessionUi(){
   const label=session.authenticated
     ? (session.role.toUpperCase()+(session.username?" · "+session.username:""))
@@ -756,10 +830,13 @@ function updateSessionUi(){
   $("modeBadge").textContent=session.actionsEnabled?"OUTPUT CONTROL":"READ ONLY";
   $("modeBadge").className="badge "+(session.actionsEnabled?"secure":"readonly");
   $("logoutButton").hidden=!session.authenticated;
-  const adminRestart=session.authenticated&&session.role==="admin";
+  const adminRestart=session.authenticated&&["super-admin","admin"].includes(session.role);
   $("adminRecovery").hidden=!adminRestart;
   $("restartRestreamerButton").disabled=!adminRestart||adminRestartBusy;
   $("restartRestreamerButton").textContent=adminRestartBusy?"RESTARTING…":"RESTART RESTREAMER";
+  $("usersNav").hidden=session.role!=="super-admin";
+  $("usersOption").hidden=session.role!=="super-admin";
+  if(session.role!=="super-admin"&&currentView==="users")switchView("channels");
   renderChannels();
 }
 
@@ -942,7 +1019,7 @@ async function logout(){
 }
 
 async function restartRestreamer(){
-  if(!session.authenticated||session.role!=="admin"||adminRestartBusy||!monitoringEnabled)return;
+  if(!session.authenticated||!["super-admin","admin"].includes(session.role)||adminRestartBusy||!monitoringEnabled)return;
 
   const confirmed=await showDialog({
     title:"RESTART RESTREAMER",
@@ -951,7 +1028,7 @@ async function restartRestreamer(){
     confirmLabel:"RESTART",
     tone:"danger"
   });
-  if(!confirmed||session.role!=="admin"||!monitoringEnabled)return;
+  if(!confirmed||!["super-admin","admin"].includes(session.role)||!monitoringEnabled)return;
 
   const generation=sessionGeneration;
   adminRestartBusy=true;
@@ -1186,7 +1263,7 @@ function applyStatus(x){
     $("outputErrors").textContent=s.outputErrors??0;
     $("outputErrors").style.color=(s.outputErrors??0)>0?"var(--red)":"var(--text)";
     $("supervisorVersion").textContent=x.supervisor?.version||"--";
-    $("sideVersion").textContent=x.supervisor?.version||"v0.2.0-alpha.2";
+    $("sideVersion").textContent=x.supervisor?.version||"v0.2.0-alpha.3";
     $("monitorTransport").textContent=(monitoring.transport||"poll").toUpperCase()+" · source "+(monitoring.sourcePollMs||"--")+" ms · core "+(monitoring.pollDurationMs??"--")+" ms";
     latestChannels=r.channels||[];
     latestIncidentState=x.incidents||{active:[],summary:{}};

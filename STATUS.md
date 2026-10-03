@@ -1,10 +1,11 @@
 # Project Status
 
-**Version :** 0.2.0-alpha.2
+**Version :** 0.2.0-alpha.3
 **Phase :** 0.2 Monitoring & exploitation — incidents lisibles / vue opérateur
 
 | Domaine | État |
 |---|---|
+| Gestion utilisateurs | Candidate alpha.3 : interface super-admin, stockage persistant haché ; validation VPS restante |
 | Dépôt GitHub / workflow GitHub → VPS | OK |
 | Application Docker | OK |
 | Interface monitoring | Alpha 17, cinq vues responsive + thèmes Dark/Light |
