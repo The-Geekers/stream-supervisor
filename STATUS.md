@@ -1,11 +1,11 @@
 # Project Status
 
-**Version :** 0.2.0-alpha.5
+**Version :** 0.2.0-alpha.6
 **Phase :** 0.2 Monitoring & exploitation — incidents lisibles / vue opérateur
 
 | Domaine | État |
 |---|---|
-| Gestion utilisateurs | Alpha.4 déployée (capture VPS 03/10) ; alpha.5 corrige l’alignement Modifier/Supprimer |
+| Gestion utilisateurs | Alpha.6 rend le paramétrage personnel 2FA explicite dans la barre de session |
 | Dépôt GitHub / workflow GitHub → VPS | OK |
 | Application Docker | OK |
 | Interface monitoring | Alpha 17, cinq vues responsive + thèmes Dark/Light |

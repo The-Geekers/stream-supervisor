@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.0-alpha.6 — Accès explicite au 2FA
+
+- Bouton MON COMPTE / 2FA près de la déconnexion, sur desktop et mobile.
+- Navigation et aide Utilisateurs explicitent le paramétrage personnel du 2FA.
+- Parcours navigateur vérifie cet accès puis activation, récupération et désactivation.
+
+
 ## 0.2.0-alpha.5 — Alignement des actions utilisateurs
 
 - Boutons Modifier/Supprimer regroupés à droite, colonnes fixes, même taille et alignement vertical indépendant du nom ou du rôle.

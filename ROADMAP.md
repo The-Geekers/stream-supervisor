@@ -14,6 +14,11 @@ Alpha.16 a introduit les thèmes Dark/Light. Alpha.17 finalise le polish : Light
 
 Phase active.
 
+### 0.2 alpha.6 — Accès au 2FA
+
+Accès direct depuis la barre de session ; parcours complet TOTP validé via ce bouton.
+
+
 ### 0.2 alpha.5 — Alignement des actions utilisateurs
 
 Polish de la liste : groupe Modifier/Supprimer à droite, tailles et colonnes identiques, disposition adaptée au mobile. Aucun changement du fonctionnement des comptes ou du 2FA.

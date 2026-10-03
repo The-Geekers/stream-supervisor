@@ -8,7 +8,7 @@ async function login(page, role = "admin") {
   await page.getByRole("button", { name: "SIGN IN", exact: true }).click();
   await expect(page.locator("#loginGate")).not.toBeVisible();
   await expect(page.locator("#channels")).toContainText("Agora");
-  await expect(page.locator("#apiDetail")).toContainText("0.2.0-alpha.5");
+  await expect(page.locator("#apiDetail")).toContainText("0.2.0-alpha.6");
 }
 async function navigate(page, view) {
   if (await page.locator("#mobileView").isVisible()) await page.locator("#mobileView").selectOption(view);
@@ -373,7 +373,9 @@ for(const width of [390,1600]){
     await expect(page.locator('#loginGate')).toBeVisible();
     await page.locator('#loginUsername').fill(username);await page.locator('#loginPassword').fill(password);await page.locator('#loginSubmit').click();
     await expect(page.locator('#loginGate')).not.toBeVisible();
-    await navigate(page,'account');
+    await expect(page.locator('#accountButton')).toBeInViewport();
+    await page.locator('#accountButton').click();
+    await expect(page.locator('#viewAccount')).toBeVisible();
     await expect(page.locator('#securityStatus')).toHaveText('2FA inactif.');
     await page.locator('#securityPassword').fill(password);await page.locator('#setupTwoFactor').click();
     await expect(page.locator('#twoFactorQr')).toHaveAttribute('src',/^data:image\/png/);
