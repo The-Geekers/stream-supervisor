@@ -14,6 +14,7 @@ export default defineConfig({
       HOST: "127.0.0.1", PORT: "18090", DEMO_MODE: "true",
       SUPERVISOR_USERNAME: "visual-admin", SUPERVISOR_PASSWORD: "visual-pass",
       SUPERVISOR_TECH_USERNAME: "visual-tech", SUPERVISOR_TECH_PASSWORD: "visual-tech-pass",
+      USERS_FILE: "runtime/browser-tests/users.json",
       EVENTS_FILE: "runtime/browser-tests/events.jsonl",
       INCIDENT_STATE_FILE: "runtime/browser-tests/incidents.json",
       WATCHDOG_STATE_FILE: "runtime/browser-tests/watchdog.json"

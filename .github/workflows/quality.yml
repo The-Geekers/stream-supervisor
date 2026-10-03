@@ -99,9 +99,9 @@ jobs:
           done
           test "$(curl -sS -o /dev/null -w '%{http_code}' http://127.0.0.1:8090/api/status)" = "401"
           curl -fsS -c /tmp/admin.cookies -H 'Content-Type: application/json' -d '{"username":"ci-admin","password":"ci-admin-pass"}' http://127.0.0.1:8090/api/login >/tmp/admin-login.json
-          node -e 'const d=require("/tmp/admin-login.json"); if(d.role!=="admin"||!d.actionsEnabled||!d.authenticated)process.exit(1)'
+          node -e 'const d=require("/tmp/admin-login.json"); if(d.role!=="super-admin"||!d.actionsEnabled||!d.authenticated)process.exit(1)'
           curl -fsS -b /tmp/admin.cookies http://127.0.0.1:8090/api/session >/tmp/admin-session.json
-          node -e 'const d=require("/tmp/admin-session.json"); if(d.role!=="admin"||!d.actionsEnabled)process.exit(1)'
+          node -e 'const d=require("/tmp/admin-session.json"); if(d.role!=="super-admin"||!d.actionsEnabled)process.exit(1)'
           test "$(curl -sS -b /tmp/admin.cookies -o /dev/null -w '%{http_code}' -X POST http://127.0.0.1:8090/api/admin/restart-restreamer)" = "403"
           curl -fsS -c /tmp/tech.cookies -H 'Content-Type: application/json' -d '{"username":"ci-tech","password":"ci-tech-pass"}' http://127.0.0.1:8090/api/login >/tmp/tech-login.json
           node -e 'const d=require("/tmp/tech-login.json"); if(d.role!=="technician"||!d.actionsEnabled||!d.authenticated)process.exit(1)'

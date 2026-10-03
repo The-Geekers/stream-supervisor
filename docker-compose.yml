@@ -19,6 +19,7 @@ services:
       SYSTEM_NETWORK_INTERFACE: ${SYSTEM_NETWORK_INTERFACE:-ens3}
       DOCKER_STATUS_FILE: /runtime/docker-status/status.json
       DOCKER_CONTROL_URL: http://docker-control:8181
+      USERS_FILE: /data/users.json
       EVENTS_FILE: /data/events.jsonl
       INCIDENT_STATE_FILE: /data/incidents-state.json
       WATCHDOG_STATE_FILE: /data/watchdog-state.json

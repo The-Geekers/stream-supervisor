@@ -7,7 +7,7 @@ async function login(page, role = "admin") {
   await page.getByRole("button", { name: "SIGN IN", exact: true }).click();
   await expect(page.locator("#loginGate")).not.toBeVisible();
   await expect(page.locator("#channels")).toContainText("Agora");
-  await expect(page.locator("#apiDetail")).toContainText("0.2.0-alpha.2");
+  await expect(page.locator("#apiDetail")).toContainText("0.2.0-alpha.3");
 }
 async function navigate(page, view) {
   if (await page.locator("#mobileView").isVisible()) await page.locator("#mobileView").selectOption(view);
@@ -306,4 +306,41 @@ test("mobile notice traps a single button and polling fallback stops on logout",
   await page.waitForTimeout(5500);
   expect(snapshots).toBe(signedOutSnapshots);
   await page.screenshot({ path: testInfo.outputPath("mobile-logged-out.png") });
+});
+
+for (const width of [390,1600]) {
+  test(`user management lifecycle at ${width}px`, async ({page},testInfo) => {
+    await page.setViewportSize({width,height:900});
+    await page.goto('/');
+    await login(page);
+    await navigate(page,'users');
+    await expect(page.locator('#usersList')).toContainText('visual-admin');
+    await page.locator('#newUser').click();
+    const username=`operator-${width}`;
+    await page.locator('#userName').fill(username);
+    await page.locator('#userPassword').fill('temporary-test-password');
+    await page.locator('#userPasswordConfirm').fill('temporary-test-password');
+    await page.locator('#saveUser').click();
+    await expect(page.locator('#usersList')).toContainText(username);
+    const row=page.locator('.user-row').filter({hasText:username});
+    await row.getByRole('button',{name:'Modifier'}).click();
+    await page.locator('#userStatus').selectOption('disabled');
+    await page.locator('#saveUser').click();
+    await expect(row).toContainText('Désactivé');
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth<=document.documentElement.clientWidth+1)).toBe(true);
+    await page.screenshot({path:testInfo.outputPath(`users-${width}.png`),fullPage:true});
+    await page.locator('#logoutButton').click();
+    await page.locator('#modalConfirm').click();
+    await expect(page.locator('#loginGate')).toBeVisible();
+    await expect(page.locator('#usersList')).toBeEmpty();
+  });
+}
+
+test('account API rejects technician writes and missing action header',async ({request})=>{
+  const loginResponse=await request.post('/api/login',{data:{username:'visual-tech',password:'visual-tech-pass'}});
+  expect(loginResponse.ok()).toBe(true);
+  expect((await request.get('/api/admin/users')).status()).toBe(403);
+  expect((await request.post('/api/admin/users',{headers:{'X-Supervisor-Action':'1'},data:{username:'forbidden',role:'super-admin',password:'temporary-test-password',confirmPassword:'temporary-test-password'}})).status()).toBe(403);
+  await request.post('/api/login',{data:{username:'visual-admin',password:'visual-pass'}});
+  expect((await request.post('/api/admin/users',{data:{username:'forbidden'}})).status()).toBe(403);
 });

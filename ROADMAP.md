@@ -14,6 +14,10 @@ Alpha.16 a introduit les thèmes Dark/Light. Alpha.17 finalise le polish : Light
 
 Phase active.
 
+### 0.2 alpha.3 — Gestion utilisateurs
+
+Interface inspirée du Portal : créer/modifier un compte, attribuer son rôle, désactiver et réinitialiser le mot de passe. Réservée au super-admin ; comptes persistants hachés et sessions révoquées sur modification. Candidate à valider sur le VPS.
+
 ### 0.2 alpha.1 — Historique incidents minimal
 
 Premier lot : historique dérivé du journal persistant, testé en production. La validation réelle a révélé une surcharge de lecture : événements parallèles additionnés et page trop longue.
