@@ -1,0 +1,72 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {mkdtempSync, readFileSync, statSync, unlinkSync} from "node:fs";
+import {tmpdir} from "node:os";
+import {join} from "node:path";
+import {createSessionAuth} from "../lib/auth.js";
+import {totp} from "../lib/totp.js";
+function fixture(){const storeFile=join(mkdtempSync(join(tmpdir(),"supervisor-2fa-")),"users.json");return{storeFile,auth:createSessionAuth({storeFile,username:"owner",password:"bootstrap-pass"})};}
+
+test("deleting a user revokes sessions and protects own/last super-admin",()=>{
+  const {auth,storeFile}=fixture();
+  auth.saveUser({username:"operator",role:"technician",password:"temporary-pass"},{create:true});
+  const cookie=auth.cookie(auth.login("operator","temporary-pass").token);
+  assert.throws(()=>auth.deleteUser("owner","owner"),/cannot_delete_self/);
+  assert.throws(()=>auth.deleteUser("owner","operator"),/last_super_admin/);
+  auth.deleteUser("operator","owner");
+  assert.equal(auth.authenticate(cookie).authenticated,false);
+  assert.equal(auth.login("operator","temporary-pass"),null);
+  assert.equal(createSessionAuth({storeFile}).listUsers().length,1);
+});
+test("2FA enrollment verifies password/code, encrypts seed and provides one-use recovery codes",()=>{
+  const {auth,storeFile}=fixture();
+  const cookie=auth.cookie(auth.login("owner","bootstrap-pass").token);
+  const otherCookie=auth.cookie(auth.login("owner","bootstrap-pass").token);
+  assert.throws(()=>auth.securityAction(cookie,"setup",{password:"wrong"}),/invalid_credentials/);
+  const setup=auth.securityAction(cookie,"setup",{password:"bootstrap-pass"});
+  assert.match(setup.uri,/^otpauth:\/\/totp\//);
+  assert.throws(()=>auth.securityAction(cookie,"confirm",{password:"bootstrap-pass",token:"abc"}),/invalid_two_factor/);
+  const code=totp(setup.secret);
+  const enabled=auth.securityAction(cookie,"confirm",{password:"bootstrap-pass",token:code});
+  assert.equal(enabled.recoveryCodes.length,10);
+  assert.equal(auth.authenticate(otherCookie).authenticated,false);
+  assert.equal(auth.authenticate(cookie).authenticated,true);
+  const disk=readFileSync(storeFile,"utf8");
+  assert.equal(JSON.parse(disk).version,2);
+  assert.ok(!disk.includes(setup.secret));
+  assert.ok(!disk.includes(enabled.recoveryCodes[0]));
+  assert.equal(statSync(storeFile+".key").mode & 0o777,0o600);
+  assert.deepEqual(auth.login("owner","bootstrap-pass"),{requiresTwoFactor:true});
+  assert.equal(auth.login("owner","bootstrap-pass",code),null);
+  assert.equal(auth.login("owner","wrong",enabled.recoveryCodes[0]),null);
+  assert.ok(auth.login("owner","bootstrap-pass",enabled.recoveryCodes[0]).token);
+  assert.equal(auth.login("owner","bootstrap-pass",enabled.recoveryCodes[0]),null);
+  const restarted=createSessionAuth({storeFile});
+  assert.equal(restarted.login("owner","bootstrap-pass",enabled.recoveryCodes[0]),null);
+  assert.ok(restarted.login("owner","bootstrap-pass",enabled.recoveryCodes[1]).token);
+  assert.equal(restarted.securityStatus("owner").recoveryCodesRemaining,8);
+  assert.equal(auth.listUsers()[0].twoFactorEnabled,true);
+});
+test("password reset preserves 2FA; recovery renewal and disable require both factors",()=>{
+  const {auth}=fixture();
+  let cookie=auth.cookie(auth.login("owner","bootstrap-pass").token);
+  const setup=auth.securityAction(cookie,"setup",{password:"bootstrap-pass"});
+  const codes=auth.securityAction(cookie,"confirm",{password:"bootstrap-pass",token:totp(setup.secret)}).recoveryCodes;
+  auth.saveUser({username:"owner",password:"new-bootstrap-pass"},{actor:"owner"});
+  assert.deepEqual(auth.login("owner","new-bootstrap-pass"),{requiresTwoFactor:true});
+  cookie=auth.cookie(auth.login("owner","new-bootstrap-pass",codes[0]).token);
+  assert.throws(()=>auth.securityAction(cookie,"disable",{password:"new-bootstrap-pass",token:"wrong"}),/invalid_two_factor/);
+  assert.throws(()=>auth.securityAction(cookie,"disable",{password:"wrong",token:codes[1]}),/invalid_credentials/);
+  const newCodes=auth.securityAction(cookie,"recovery",{password:"new-bootstrap-pass",token:codes[1]}).recoveryCodes;
+  assert.equal(auth.login("owner","new-bootstrap-pass",codes[2]),null);
+  auth.securityAction(cookie,"disable",{password:"new-bootstrap-pass",token:newCodes[0]});
+  assert.equal(auth.authenticate(cookie).authenticated,false);
+  assert.ok(auth.login("owner","new-bootstrap-pass").token);
+});
+test("enabled 2FA without its encryption key fails closed on restart",()=>{
+  const {auth,storeFile}=fixture();const cookie=auth.cookie(auth.login("owner","bootstrap-pass").token);
+  const setup=auth.securityAction(cookie,"setup",{password:"bootstrap-pass"});
+  auth.securityAction(cookie,"confirm",{password:"bootstrap-pass",token:totp(setup.secret)});
+  unlinkSync(storeFile+".key");
+  assert.throws(()=>createSessionAuth({storeFile}),/two_factor_key_missing/);
+});

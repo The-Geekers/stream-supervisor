@@ -1,3 +1,4 @@
+import {totp} from "../lib/totp.js";
 import { test, expect } from "@playwright/test";
 
 const views = ["channels", "system", "incidents", "diagnostics", "watchdog"];
@@ -7,7 +8,7 @@ async function login(page, role = "admin") {
   await page.getByRole("button", { name: "SIGN IN", exact: true }).click();
   await expect(page.locator("#loginGate")).not.toBeVisible();
   await expect(page.locator("#channels")).toContainText("Agora");
-  await expect(page.locator("#apiDetail")).toContainText("0.2.0-alpha.3");
+  await expect(page.locator("#apiDetail")).toContainText("0.2.0-alpha.4");
 }
 async function navigate(page, view) {
   if (await page.locator("#mobileView").isVisible()) await page.locator("#mobileView").selectOption(view);
@@ -327,6 +328,9 @@ for (const width of [390,1600]) {
     await page.locator('#userStatus').selectOption('disabled');
     await page.locator('#saveUser').click();
     await expect(row).toContainText('Désactivé');
+    await row.getByRole('button',{name:'Supprimer'}).click();
+    await page.locator('#modalConfirm').click();
+    await expect(row).toHaveCount(0);
     expect(await page.evaluate(()=>document.documentElement.scrollWidth<=document.documentElement.clientWidth+1)).toBe(true);
     await page.screenshot({path:testInfo.outputPath(`users-${width}.png`),fullPage:true});
     await page.locator('#logoutButton').click();
@@ -344,3 +348,44 @@ test('account API rejects technician writes and missing action header',async ({r
   await request.post('/api/login',{data:{username:'visual-admin',password:'visual-pass'}});
   expect((await request.post('/api/admin/users',{data:{username:'forbidden'}})).status()).toBe(403);
 });
+
+for(const width of [390,1600]){
+  test(`2FA setup, recovery login and disable at ${width}px`,async({page},testInfo)=>{
+    await page.setViewportSize({width,height:950});
+    await page.goto('/');await login(page);
+    const username=`twofactor-${width}`,password='temporary-2fa-password';
+    const created=await page.request.post('/api/admin/users',{headers:{'X-Supervisor-Action':'1'},data:{username,role:'technician',password,confirmPassword:password}});
+    expect(created.status()).toBe(201);
+    await page.locator('#logoutButton').click();await page.locator('#modalConfirm').click();
+    await expect(page.locator('#loginGate')).toBeVisible();
+    await page.locator('#loginUsername').fill(username);await page.locator('#loginPassword').fill(password);await page.locator('#loginSubmit').click();
+    await expect(page.locator('#loginGate')).not.toBeVisible();
+    await navigate(page,'account');
+    await expect(page.locator('#securityStatus')).toHaveText('2FA inactif.');
+    await page.locator('#securityPassword').fill(password);await page.locator('#setupTwoFactor').click();
+    await expect(page.locator('#twoFactorQr')).toHaveAttribute('src',/^data:image\/png/);
+    const secret=await page.locator('#twoFactorSecret').textContent();
+    await page.locator('#securityToken').fill(totp(secret));await page.locator('#confirmTwoFactor').click();
+    await expect(page.locator('#twoFactorRecovery')).toBeVisible();
+    const codes=(await page.locator('#recoveryCodes').inputValue()).split('\n');expect(codes.length).toBe(10);
+    await page.locator('#closeRecovery').click();
+    await expect(page.locator('#securityStatus')).toContainText('2FA actif');
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth<=document.documentElement.clientWidth+1)).toBe(true);
+    await page.screenshot({path:testInfo.outputPath(`account-${width}.png`),fullPage:true});
+    await page.locator('#logoutButton').click();await page.locator('#modalConfirm').click();
+    await expect(page.locator('#loginGate')).toBeVisible();
+    await expect(page.locator('#twoFactorSecret')).toHaveText('');await expect(page.locator('#recoveryCodes')).toHaveValue('');
+    await expect(page.locator('#twoFactorQr')).not.toHaveAttribute('src');
+    await page.locator('#loginUsername').fill(username);await page.locator('#loginPassword').fill(password);await page.locator('#loginSubmit').click();
+    await expect(page.locator('#loginTokenField')).toBeVisible();await expect(page.locator('#loginGate')).toBeVisible();
+    await page.locator('#loginToken').fill(codes[0]);await page.locator('#loginSubmit').click();
+    await expect(page.locator('#loginGate')).not.toBeVisible();await navigate(page,'account');
+    await expect(page.locator('#securityStatus')).toContainText('9 codes');
+    await page.locator('#securityPassword').fill(password);await page.locator('#securityToken').fill(codes[1]);
+    await page.locator('#disableTwoFactor').click();await page.locator('#modalConfirm').click();
+    await expect(page.locator('#loginGate')).toBeVisible();
+    await page.locator('#loginPassword').fill(password);await page.locator('#loginSubmit').click();
+    await expect(page.locator('#loginGate')).not.toBeVisible();await navigate(page,'account');
+    await expect(page.locator('#securityStatus')).toHaveText('2FA inactif.');
+  });
+}

@@ -1,3 +1,4 @@
+import QRCode from "qrcode";
 import http from "node:http";
 import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
@@ -18,7 +19,7 @@ const __dirname = dirname(__filename);
 
 const HOST = process.env.HOST || "0.0.0.0";
 const PORT = Number(process.env.PORT || 8090);
-const VERSION = "0.2.0-alpha.3";
+const VERSION = "0.2.0-alpha.4";
 const DEMO_MODE = process.env.DEMO_MODE === "true";
 const requestedMonitorInterval = Number(process.env.MONITOR_INTERVAL_MS || 1000);
 const MONITOR_INTERVAL_MS = Math.min(
@@ -368,13 +369,15 @@ const server = http.createServer(async (req, res) => {
 
     const username = typeof body?.username === "string" ? body.username : "";
     const password = typeof body?.password === "string" ? body.password : "";
-    const result = auth.login(username, password);
+    const factorToken = typeof body?.token === "string" ? body.token.trim() : "";
+    const result = auth.login(username, password, factorToken);
 
     if (!result) {
       recordLoginFailure(req);
       return sendJson(res, 401, { status:"unauthorized", code:"invalid_credentials" });
     }
 
+    if (result.requiresTwoFactor) return sendJson(res, 401, {code:"two_factor_required"});
     clearLoginFailures(req);
     return sendJson(res, 200, result.session, {
       "Set-Cookie": auth.cookie(result.token, { secure:cookieSecure(req) })
@@ -396,10 +399,36 @@ const server = http.createServer(async (req, res) => {
     return unauthorized(res);
   }
 
+  if(url.pathname === "/api/account/security" || url.pathname.startsWith("/api/account/2fa/")) {
+    if(!session.authenticated)return unauthorized(res);
+    if(req.method === "GET" && url.pathname === "/api/account/security") {
+      return sendJson(res,200,auth.securityStatus(session.username));
+    }
+    if(req.method !== "POST")return sendJson(res,405,{code:"method_not_allowed"});
+    if(req.headers["x-supervisor-action"] !== "1")return forbidden(res,"action_header_required");
+    if(!String(req.headers["content-type"] || "").toLowerCase().startsWith("application/json"))return sendJson(res,415,{code:"unsupported_media_type"});
+    if(!loginAllowed(req))return sendJson(res,429,{code:"too_many_login_attempts"});
+    const action=url.pathname.slice("/api/account/2fa/".length);
+    if(!["setup","confirm","disable","recovery"].includes(action))return sendJson(res,404,{code:"not_found"});
+    let result;
+    try {
+      const body=await readJsonBody(req,2048);
+      result=auth.securityAction(req.headers.cookie,action,body);
+      if(action === "setup")result.qrDataUrl=await QRCode.toDataURL(result.uri,{width:256,margin:2});
+    } catch(error) {
+      if(["invalid_credentials","invalid_two_factor"].includes(error.message))recordLoginFailure(req);
+      const known=["invalid_credentials","invalid_two_factor","two_factor_setup_expired","two_factor_already_enabled","user_store_unavailable"];
+      return sendJson(res,known.includes(error.message)?400:500,{code:known.includes(error.message)?error.message:"security_action_failed"});
+    }
+    clearLoginFailures(req);
+    if(action !== "setup")await journal.append({kind:"operator_action",severity:"info",source:"users",title:"Sécurité du compte modifiée",actor:session.username,action:"two_factor_"+action,status:"success"});
+    return sendJson(res,200,result);
+  }
+
   if (url.pathname === "/api/admin/users") {
     if (!auth.enabled || session.role !== "super-admin") return forbidden(res, "super_admin_required");
     if (req.method === "GET") return sendJson(res, 200, {users:auth.listUsers()});
-    if (!["POST", "PATCH"].includes(req.method)) return sendJson(res, 405, {code:"method_not_allowed"});
+    if (!["POST", "PATCH", "DELETE"].includes(req.method)) return sendJson(res, 405, {code:"method_not_allowed"});
     if (req.headers["x-supervisor-action"] !== "1") return forbidden(res, "action_header_required");
     if (!String(req.headers["content-type"] || "").toLowerCase().startsWith("application/json")) {
       return sendJson(res, 415, {code:"unsupported_media_type"});
@@ -408,15 +437,18 @@ const server = http.createServer(async (req, res) => {
     try {
       const body = await readJsonBody(req, 4096);
       if (body.password !== undefined && body.password !== body.confirmPassword) throw new Error("password_confirmation");
-      user = auth.saveUser(body, {create:req.method === "POST", actor:session.username});
+      if(req.method === "DELETE") {
+        if(typeof body.username !== "string" || body.confirmUsername !== body.username) throw new Error("delete_confirmation_required");
+        user = auth.deleteUser(body.username, session.username);
+      } else user = auth.saveUser(body, {create:req.method === "POST", actor:session.username});
     } catch (error) {
-      const known = ["user_store_unavailable", "invalid_username", "user_exists", "user_not_found",
+      const known = ["delete_confirmation_required", "cannot_delete_self", "user_store_unavailable", "invalid_username", "user_exists", "user_not_found",
         "password_confirmation", "invalid_role", "invalid_status", "cannot_demote_self", "password_length_12_256", "password_required", "last_super_admin"];
       return sendJson(res, known.includes(error.message) ? 400 : 500,
         {code:known.includes(error.message) ? error.message : "user_save_failed"});
     }
     await journal.append({kind:"operator_action", severity:"info", source:"users",
-      title:req.method === "POST" ? "Compte créé" : "Compte modifié",
+      title:req.method === "DELETE" ? "Compte supprimé" : req.method === "POST" ? "Compte créé" : "Compte modifié",
       actor:session.username, action:"user_management", detail:user.username, status:"success"});
     return sendJson(res, req.method === "POST" ? 201 : 200, {user});
   }

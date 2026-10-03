@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.2.0-alpha.4 — Suppression et double authentification
+
+- Suppression explicite depuis Utilisateurs, réservée au super-admin, confirmée et journalisée. Protection de son propre compte et du dernier super-admin ; révocation immédiate des sessions.
+- Vue Mon compte pour tous les comptes authentifiés : activation TOTP par QR code ou clé manuelle, confirmation, désactivation et renouvellement des codes de récupération. Mot de passe courant requis, facteur valide requis pour désactiver ou renouveler.
+- Connexion avec mot de passe puis code TOTP ou code de récupération, sans session avant validation du second facteur. Codes TOTP non rejouables, fenêtre de tolérance ±30 s, limitation des échecs.
+- Dix codes de récupération aléatoires à usage unique, affichés une seule fois et téléchargeables. Secrets TOTP chiffrés AES-256-GCM avec clé locale `/data/users.json.key` ; codes de récupération hachés. La clé et le fichier comptes sont dans le volume sauvegardé.
+- Lecture du schéma comptes version 1 existant et écriture version 2 ; les versions précédentes refusent ce schéma plutôt que contourner le 2FA lors d’un rollback.
+- Le reset de mot de passe préserve le 2FA. Purge des QR codes, clés et codes de récupération à la déconnexion.
+
+
 ## 0.2.0-alpha.3 — Gestion utilisateurs
 
 - Vue Utilisateurs réservée au super-admin : création, rôle, activation/désactivation et réinitialisation du mot de passe avec confirmation.

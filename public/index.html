@@ -200,6 +200,7 @@
     <form id="loginForm">
       <label class="login-field"><span>Username</span><input id="loginUsername" name="username" autocomplete="username" spellcheck="false"></label>
       <label class="login-field"><span>Password</span><input id="loginPassword" name="password" type="password" autocomplete="current-password"></label>
+      <label id="loginTokenField" class="login-field" hidden><span>Code 2FA ou code de récupération</span><input id="loginToken" name="token" autocomplete="one-time-code" maxlength="64" spellcheck="false"></label>
       <div id="loginError" class="login-error" role="alert"></div>
       <button id="loginSubmit" class="login-submit" type="submit">SIGN IN</button>
     </form>
@@ -227,8 +228,8 @@
       <button type="button" class="nav-item" data-view="incidents" title="INCIDENTS"><i class="nav-dot" aria-hidden="true"></i><span>INCIDENTS</span></button>
       <button type="button" class="nav-item" data-view="diagnostics" title="DIAGNOSTICS"><i class="nav-dot" aria-hidden="true"></i><span>DIAGNOSTICS</span></button>
       <button type="button" class="nav-item" data-view="watchdog" title="WATCHDOG"><i class="nav-dot" aria-hidden="true"></i><span>WATCHDOG</span></button>
-    <button id="usersNav" type="button" class="nav-item" data-view="users" hidden><i class="nav-dot" aria-hidden="true"></i><span>UTILISATEURS</span></button></nav>
-    <div class="side-foot">RESTREAMER / READ ONLY<br><span id="sideVersion">v0.2.0-alpha.3</span><button id="desktopThemeToggle" class="theme-toggle" type="button" aria-label="Switch to light theme">LIGHT</button></div>
+    <button id="accountNav" type="button" class="nav-item" data-view="account" hidden><i class="nav-dot" aria-hidden="true"></i><span>MON COMPTE</span></button><button id="usersNav" type="button" class="nav-item" data-view="users" hidden><i class="nav-dot" aria-hidden="true"></i><span>UTILISATEURS</span></button></nav>
+    <div class="side-foot">RESTREAMER / READ ONLY<br><span id="sideVersion">v0.2.0-alpha.4</span><button id="desktopThemeToggle" class="theme-toggle" type="button" aria-label="Switch to light theme">LIGHT</button></div>
   </aside>
   <button id="backToTop" class="back-to-top" type="button" hidden aria-label="Back to top">↑ TOP</button>
 
@@ -238,7 +239,7 @@
       <select id="mobileView" aria-label="Navigation">
         <option value="channels">CHANNELS</option><option value="system">SYSTEM</option>
         <option value="incidents">INCIDENTS</option><option value="diagnostics">DIAGNOSTICS</option><option value="watchdog">WATCHDOG</option>
-      <option id="usersOption" value="users" hidden>UTILISATEURS</option></select>
+      <option id="accountOption" value="account" hidden>MON COMPTE</option><option id="usersOption" value="users" hidden>UTILISATEURS</option></select>
       <button id="mobileThemeToggle" class="theme-toggle" type="button" aria-label="Switch to light theme">LIGHT</button>
     </div>
     <header class="topbar">
@@ -265,6 +266,31 @@
         <div class="host-metric"><div class="host-label">VPS uptime</div><div id="hostUptime" class="host-value">--</div><div class="host-sub">host uptime</div></div>
       </section>
 
+      <section id="viewAccount" class="view">
+        <h2>Mon compte · Double authentification</h2>
+        <p>Code TOTP à six chiffres, renouvelé toutes les 30 secondes. Compatible avec une application d’authentification.</p>
+        <div id="securityStatus" role="status"></div><div id="securityMessage" role="alert"></div>
+        <form id="securityForm" class="users-form">
+          <label>Mot de passe actuel<input id="securityPassword" type="password" autocomplete="current-password" maxlength="256" required></label>
+          <div id="twoFactorSetup" hidden>
+            <p>Scanner ce QR code dans l’application, ou saisir la clé manuellement. Confirmer avec le code de l’application.</p>
+            <img id="twoFactorQr" alt="QR code de configuration 2FA" width="256" height="256" style="max-width:100%;height:auto;background:white">
+            <p>Clé de configuration : <code id="twoFactorSecret" style="overflow-wrap:anywhere"></code></p>
+          </div>
+          <label id="securityTokenLabel" hidden>Code 2FA ou code de récupération<input id="securityToken" autocomplete="one-time-code" maxlength="64" spellcheck="false"></label>
+          <button id="setupTwoFactor" type="submit" class="diag-button" value="setup">Activer le 2FA</button>
+          <button id="confirmTwoFactor" type="submit" class="diag-button" value="confirm" hidden>Confirmer l’activation</button>
+          <button id="disableTwoFactor" type="submit" class="modal-button danger" value="disable" hidden>Désactiver le 2FA</button>
+          <button id="renewRecovery" type="submit" class="diag-button" value="recovery" hidden>Renouveler les codes de récupération</button>
+        </form>
+        <section id="twoFactorRecovery" class="users-form" hidden>
+          <h3>Codes de récupération · affichés une seule fois</h3>
+          <p>Chaque code est à usage unique. Conserver une copie hors du VPS. Un code remplace le code 2FA à la connexion, avec votre mot de passe.</p>
+          <textarea id="recoveryCodes" aria-label="Codes de récupération" readonly rows="10" style="width:100%;background:var(--bg);color:var(--text)"></textarea>
+          <button id="downloadRecovery" type="button" class="diag-button">Télécharger les codes</button>
+          <button id="closeRecovery" type="button" class="modal-button">J’ai sauvegardé les codes</button>
+        </section>
+      </section>
       <section id="viewUsers" class="view">
       <p>Comptes Supervisor. Gestion réservée au super-admin.</p>
       <button id="newUser" type="button" class="diag-button">Créer un utilisateur</button>
@@ -509,6 +535,9 @@ function syncInteraction(){
 }
 
 function clearOperationalData(){
+  clearSecuritySecrets();
+  $("securityMessage").textContent="";
+  $("securityStatus").textContent="";
   userAccounts=[];
   $("usersList").replaceChildren();
   $("userForm").reset();
@@ -562,7 +591,7 @@ function renderDocker(docker){
 }
 
 function switchView(view){
-  currentView=["channels","system","incidents","diagnostics","watchdog","users"].includes(view)&& (view!=="users"||session.role==="super-admin")?view:"channels";
+  currentView=["channels","system","incidents","diagnostics","watchdog","users","account"].includes(view)&& (view!=="users"||session.role==="super-admin")?view:"channels";
   document.querySelectorAll(".nav-item[data-view]").forEach(item=>{
     const active=item.dataset.view===currentView;
     item.classList.toggle("active",active);
@@ -574,12 +603,14 @@ function switchView(view){
   $("viewIncidents").classList.toggle("active",currentView==="incidents");
   $("viewDiagnostics").classList.toggle("active",currentView==="diagnostics");
   $("viewWatchdog").classList.toggle("active",currentView==="watchdog");
+  $("viewAccount").classList.toggle("active",currentView==="account");
   $("viewUsers").classList.toggle("active",currentView==="users");
   const titles={
     channels:["CHANNEL MONITOR","LIVE OPERATIONS"],
     system:["SYSTEM MONITOR","HOST + DOCKER SERVICES"],
     incidents:["INCIDENTS","ACTIVE STATE + EVENT JOURNAL"],
     diagnostics:["DIAGNOSTICS","SAFE OPERATOR CHECKS"],
+    account:["MON COMPTE","SÉCURITÉ ET DOUBLE AUTHENTIFICATION"],
     users:["UTILISATEURS","ADMINISTRATION DES COMPTES"],
     watchdog:["WATCHDOG","GRADUATED RECOVERY POLICY"]
   };
@@ -589,6 +620,7 @@ function switchView(view){
   if(currentView==="diagnostics")fetchDiagnostics();
   if(currentView==="watchdog")fetchWatchdog();
   if(currentView==="users")fetchUsers();
+  if(currentView==="account")fetchSecurity();
 }
 
 function renderIncidents(){
@@ -772,14 +804,30 @@ async function fetchWatchdog(){
   }
 }
 
-let userAccounts=[],editingUser=false,userSaving=false;
-const userErrors={user_exists:"Cet identifiant existe déjà.",invalid_username:"Identifiant invalide.",password_length_12_256:"Le mot de passe doit contenir 12 à 256 caractères.",cannot_demote_self:"Impossible de désactiver ou rétrograder votre propre compte.",last_super_admin:"Conserver au moins un super-admin actif.",super_admin_required:"Accès réservé au super-admin.",user_save_failed:"Échec de l’enregistrement. Réessayez.",password_confirmation:"Les mots de passe ne correspondent pas."};
+let userAccounts=[],editingUser=false,userSaving=false,securityBusy=false;
+const userErrors={cannot_delete_self:"Impossible de supprimer votre propre compte.",delete_confirmation_required:"Confirmer la suppression.",user_exists:"Cet identifiant existe déjà.",invalid_username:"Identifiant invalide.",password_length_12_256:"Le mot de passe doit contenir 12 à 256 caractères.",cannot_demote_self:"Impossible de désactiver ou rétrograder votre propre compte.",last_super_admin:"Conserver au moins un super-admin actif.",super_admin_required:"Accès réservé au super-admin.",user_save_failed:"Échec de l’enregistrement. Réessayez.",password_confirmation:"Les mots de passe ne correspondent pas."};
 async function fetchUsers(){
   try{
     const data=await apiJson("/api/admin/users");
     userAccounts=data.users;
-    $("usersList").innerHTML=userAccounts.map((u,i)=>'<div class="user-row"><div><strong>'+esc(u.username)+'</strong><br>'+esc(u.role)+' · '+(u.disabled?'Désactivé':'Actif')+'</div><button type="button" class="diag-button" data-edit-user="'+i+'">Modifier</button></div>').join("");
+    $("usersList").innerHTML=userAccounts.map((u,i)=>'<div class="user-row"><div><strong>'+esc(u.username)+'</strong><br>'+esc(u.role)+' · '+(u.disabled?'Désactivé':'Actif')+' · 2FA '+(u.twoFactorEnabled?'actif':'inactif')+'</div><button type="button" class="diag-button" data-edit-user="'+i+'">Modifier</button><button type="button" class="modal-button danger" data-delete-user="'+i+'" '+(u.username===session.username?'disabled':'')+'>Supprimer</button></div>').join("");
   }catch(error){if(monitoringEnabled)$("userMessage").textContent="Impossible de charger les utilisateurs.";}
+}
+async function removeUser(user){
+  if(userSaving||session.role!=="super-admin")return;
+  const generation=sessionGeneration;
+  const confirmed=await showDialog({title:"SUPPRIMER UN UTILISATEUR",message:"Supprimer définitivement le compte « "+user.username+" » ?",detail:"Ses sessions seront invalidées. Cette action ne peut pas être annulée depuis l’interface.",confirmLabel:"SUPPRIMER",tone:"danger"});
+  if(!confirmed||generation!==sessionGeneration||!monitoringEnabled)return;
+  userSaving=true;
+  try{
+    const response=await apiFetch("/api/admin/users",{method:"DELETE",headers:{"Content-Type":"application/json","X-Supervisor-Action":"1"},body:JSON.stringify({username:user.username,confirmUsername:user.username})});
+    const data=await response.json();
+    if(generation!==sessionGeneration||!monitoringEnabled)return;
+    if(!response.ok)throw new Error(data.code);
+    $("userForm").reset();$("userForm").hidden=true;$("userMessage").textContent="Compte supprimé.";
+    await fetchUsers();
+  }catch(error){if(monitoringEnabled)$("userMessage").textContent=userErrors[error.message]||"Suppression impossible.";}
+  finally{userSaving=false;}
 }
 function openUserForm(user){
   editingUser=Boolean(user);
@@ -798,7 +846,7 @@ function openUserForm(user){
 }
 $("newUser").addEventListener("click",()=>openUserForm());
 $("cancelUser").addEventListener("click",()=>{$("userForm").reset();$("userForm").hidden=true;});
-$("usersList").addEventListener("click",event=>{const button=event.target.closest("[data-edit-user]");if(button)openUserForm(userAccounts[Number(button.dataset.editUser)]);});
+$("usersList").addEventListener("click",event=>{const button=event.target.closest("[data-edit-user]");if(button)openUserForm(userAccounts[Number(button.dataset.editUser)]);const remove=event.target.closest("[data-delete-user]");if(remove)removeUser(userAccounts[Number(remove.dataset.deleteUser)]);});
 $("userForm").addEventListener("submit",async event=>{
   event.preventDefault();
   if(userSaving)return;
@@ -821,6 +869,65 @@ $("userForm").addEventListener("submit",async event=>{
   finally{userSaving=false;$("saveUser").disabled=false;}
 });
 
+function clearSecuritySecrets(){
+  $("securityForm").reset();
+  $("twoFactorQr").removeAttribute("src");
+  $("twoFactorSecret").textContent="";
+  $("twoFactorSetup").hidden=true;
+  $("twoFactorRecovery").hidden=true;
+  $("recoveryCodes").value="";
+  $("confirmTwoFactor").hidden=true;
+}
+function renderSecurity(state){
+  $("securityStatus").textContent=state.twoFactorEnabled?"2FA actif · "+state.recoveryCodesRemaining+" codes de récupération restants.":"2FA inactif.";
+  $("setupTwoFactor").hidden=state.twoFactorEnabled;
+  $("disableTwoFactor").hidden=!state.twoFactorEnabled;
+  $("renewRecovery").hidden=!state.twoFactorEnabled;
+  $("securityTokenLabel").hidden=!state.twoFactorEnabled;
+  $("securityToken").required=state.twoFactorEnabled;
+}
+async function fetchSecurity(){
+  try{renderSecurity(await apiJson("/api/account/security"));}
+  catch{if(monitoringEnabled)$("securityMessage").textContent="Impossible de charger la sécurité du compte.";}
+}
+$("securityForm").addEventListener("submit",async event=>{
+  event.preventDefault();if(securityBusy)return;
+  const action=event.submitter?.value;if(!action)return;
+  const generation=sessionGeneration;
+  if(action==="disable"||action==="recovery"){
+    const confirmed=await showDialog({title:action==="disable"?"DÉSACTIVER LE 2FA":"RENOUVELER LES CODES",message:action==="disable"?"Retirer le second facteur de votre compte ?":"Remplacer tous vos codes de récupération ?",detail:action==="disable"?"Votre mot de passe et votre code seront vérifiés. Vous devrez vous reconnecter.":"Les anciens codes ne fonctionneront plus.",confirmLabel:"CONFIRMER",tone:"warning"});
+    if(!confirmed||generation!==sessionGeneration||!monitoringEnabled)return;
+  }
+  securityBusy=true;$("securityMessage").textContent="";
+  $("securityForm").querySelectorAll("button").forEach(button=>button.disabled=true);
+  try{
+    const response=await apiFetch("/api/account/2fa/"+action,{method:"POST",headers:{"Content-Type":"application/json","X-Supervisor-Action":"1"},body:JSON.stringify({password:$("securityPassword").value,token:$("securityToken").value.trim()})});
+    const data=await response.json();
+    if(generation!==sessionGeneration||!monitoringEnabled)return;
+    if(!response.ok)throw new Error(data.code);
+    if(action==="setup"){
+      $("twoFactorQr").src=data.qrDataUrl;$("twoFactorSecret").textContent=data.secret;$("twoFactorSetup").hidden=false;
+      $("setupTwoFactor").hidden=true;$("confirmTwoFactor").hidden=false;
+      $("securityTokenLabel").hidden=false;$("securityToken").required=true;$("securityToken").focus();return;
+    }
+    clearSecuritySecrets();
+    if(action==="disable"){await handleUnauthorized("2FA désactivé. Reconnectez-vous.");return;}
+    $("recoveryCodes").value=data.recoveryCodes.join("\n");$("twoFactorRecovery").hidden=false;
+    $("securityMessage").textContent="Codes à sauvegarder maintenant. Pour la prochaine connexion, utiliser un nouveau code TOTP ou un code de récupération.";
+    await fetchSecurity();
+  }catch(error){
+    const errors={invalid_credentials:"Mot de passe incorrect.",invalid_two_factor:"Code incorrect ou déjà utilisé. Attendre le prochain code, ou utiliser un code de récupération.",two_factor_setup_expired:"Configuration expirée. Recommencer l’activation.",two_factor_already_enabled:"Le 2FA est déjà actif.",too_many_login_attempts:"Trop de tentatives. Réessayer dans cinq minutes."};
+    if(monitoringEnabled)$("securityMessage").textContent=errors[error.message]||"Opération impossible.";
+    if(error.message==="two_factor_setup_expired"){clearSecuritySecrets();await fetchSecurity();}
+  }finally{securityBusy=false;$("securityForm").querySelectorAll("button").forEach(button=>button.disabled=false);}
+});
+$("closeRecovery").addEventListener("click",()=>{$("recoveryCodes").value="";$("twoFactorRecovery").hidden=true;});
+$("downloadRecovery").addEventListener("click",()=>{
+  const codes=$("recoveryCodes").value;if(!codes)return;
+  const url=URL.createObjectURL(new Blob(["DISTILLERIE Supervisor — "+session.username+"\nCodes de récupération 2FA à usage unique\n\n"+codes+"\n"],{type:"text/plain;charset=utf-8"}));
+  const link=document.createElement("a");link.href=url;link.download="supervisor-codes-recuperation.txt";link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+});
+
 function updateSessionUi(){
   const label=session.authenticated
     ? (session.role.toUpperCase()+(session.username?" · "+session.username:""))
@@ -834,6 +941,8 @@ function updateSessionUi(){
   $("adminRecovery").hidden=!adminRestart;
   $("restartRestreamerButton").disabled=!adminRestart||adminRestartBusy;
   $("restartRestreamerButton").textContent=adminRestartBusy?"RESTARTING…":"RESTART RESTREAMER";
+  $("accountNav").hidden=!session.authenticated;
+  $("accountOption").hidden=!session.authenticated;
   $("usersNav").hidden=session.role!=="super-admin";
   $("usersOption").hidden=session.role!=="super-admin";
   if(session.role!=="super-admin"&&currentView==="users")switchView("channels");
@@ -841,6 +950,8 @@ function updateSessionUi(){
 }
 
 function showLogin(message=""){
+  $("loginToken").value="";
+  $("loginTokenField").hidden=true;
   monitoringEnabled=false;
   if(modalResolver)closeModal(false);
   $("loginError").textContent=message;
@@ -858,6 +969,8 @@ function hideLogin(){
   $("loginGate").setAttribute("aria-hidden","true");
   $("loginError").textContent="";
   $("loginPassword").value="";
+  $("loginToken").value="";
+  $("loginTokenField").hidden=true;
 }
 
 function disconnectRealtime(){
@@ -964,20 +1077,26 @@ async function submitLogin(event){
     return;
   }
 
+  let keepPassword=false;
   $("loginSubmit").disabled=true;
   $("loginError").textContent="";
   try{
     const response=await fetch("/api/login",{
       method:"POST",
       headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({username,password})
+      body:JSON.stringify({username,password,token:$("loginToken").value.trim()})
     });
     if(response.status===429){
       $("loginError").textContent="Too many failed attempts. Try again later.";
       return;
     }
     if(!response.ok){
-      $("loginError").textContent="Invalid username or password.";
+      const data=await response.json();
+      if(data.code==="two_factor_required"){
+        keepPassword=true;$("loginTokenField").hidden=false;$("loginToken").focus();
+        $("loginError").textContent="Saisir le code 2FA ou un code de récupération.";return;
+      }
+      $("loginError").textContent="Identifiants ou code 2FA incorrects. Un code TOTP est à usage unique.";
       return;
     }
 
@@ -995,7 +1114,8 @@ async function submitLogin(event){
     $("loginError").textContent="Supervisor authentication is unavailable.";
   }finally{
     $("loginSubmit").disabled=false;
-    $("loginPassword").value="";
+    if(!keepPassword)$("loginPassword").value="";
+    if(!keepPassword)$("loginToken").value="";
   }
 }
 
@@ -1263,7 +1383,7 @@ function applyStatus(x){
     $("outputErrors").textContent=s.outputErrors??0;
     $("outputErrors").style.color=(s.outputErrors??0)>0?"var(--red)":"var(--text)";
     $("supervisorVersion").textContent=x.supervisor?.version||"--";
-    $("sideVersion").textContent=x.supervisor?.version||"v0.2.0-alpha.3";
+    $("sideVersion").textContent=x.supervisor?.version||"v0.2.0-alpha.4";
     $("monitorTransport").textContent=(monitoring.transport||"poll").toUpperCase()+" · source "+(monitoring.sourcePollMs||"--")+" ms · core "+(monitoring.pollDurationMs??"--")+" ms";
     latestChannels=r.channels||[];
     latestIncidentState=x.incidents||{active:[],summary:{}};
