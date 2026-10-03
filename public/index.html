@@ -526,7 +526,7 @@ let lastRefresh=0,currentFilter="all",currentSort="name",currentDirection="asc",
 let monitoringEnabled=false,sessionGeneration=0,requestController=new AbortController(),modalTrigger=null,adminRestartBusy=false;
 // Keep the original neutral values, not a copy of operational data or credentials.
 const neutralContent=[...document.querySelectorAll(".content [id]")]
-  .filter(element=>!element.querySelector("[id]")&&element.tagName!=="BUTTON")
+  .filter(element=>!element.querySelector("[id]")&&element.tagName!=="BUTTON"&&!["accountSecurityHost","adminSecurityHost"].includes(element.id))
   .map(element=>({element,html:element.innerHTML,className:element.className,style:element.getAttribute("style")}));
 
 function labelRows(containerId){
