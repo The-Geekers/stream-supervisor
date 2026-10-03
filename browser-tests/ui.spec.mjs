@@ -8,7 +8,7 @@ async function login(page, role = "admin") {
   await page.getByRole("button", { name: "SIGN IN", exact: true }).click();
   await expect(page.locator("#loginGate")).not.toBeVisible();
   await expect(page.locator("#channels")).toContainText("Agora");
-  await expect(page.locator("#apiDetail")).toContainText("0.2.0-alpha.4");
+  await expect(page.locator("#apiDetail")).toContainText("0.2.0-alpha.5");
 }
 async function navigate(page, view) {
   if (await page.locator("#mobileView").isVisible()) await page.locator("#mobileView").selectOption(view);
@@ -316,6 +316,19 @@ for (const width of [390,1600]) {
     await login(page);
     await navigate(page,'users');
     await expect(page.locator('#usersList')).toContainText('visual-admin');
+    const boxes=[];
+    for(const row of await page.locator('.user-row').all()){
+      const edit=await row.getByRole('button',{name:'Modifier'}).boundingBox();
+      const remove=await row.getByRole('button',{name:'Supprimer'}).boundingBox();
+      expect(Math.abs(edit.width-remove.width)).toBeLessThan(1);
+      expect(Math.abs(edit.height-remove.height)).toBeLessThan(1);
+      expect(Math.abs(edit.y-remove.y)).toBeLessThan(1);
+      boxes.push({edit,remove});
+    }
+    for(const box of boxes){
+      expect(Math.abs(box.edit.x-boxes[0].edit.x)).toBeLessThan(1);
+      expect(Math.abs(box.remove.x-boxes[0].remove.x)).toBeLessThan(1);
+    }
     await page.locator('#newUser').click();
     const username=`operator-${width}`;
     await page.locator('#userName').fill(username);
