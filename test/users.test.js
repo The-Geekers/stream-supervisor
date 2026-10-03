@@ -45,3 +45,12 @@ test("corrupted store fails closed instead of reseeding environment credentials"
   writeFileSync(storeFile,'{}');
   assert.throws(()=>createSessionAuth({storeFile,username:"owner",password:"bootstrap-pass"}),/invalid_user_store/);
 });
+
+test("existing schema version 1 is readable and upgrades on the next mutation",()=>{
+  const {storeFile}=fixture();
+  const data=JSON.parse(readFileSync(storeFile,"utf8"));data.version=1;writeFileSync(storeFile,JSON.stringify(data));
+  const auth=createSessionAuth({storeFile});
+  assert.ok(auth.login("owner","bootstrap-pass"));
+  auth.saveUser({username:"tech",role:"viewer"},{actor:"owner"});
+  assert.equal(JSON.parse(readFileSync(storeFile,"utf8")).version,2);
+});

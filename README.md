@@ -206,4 +206,4 @@ Les secrets TOTP sont chiffrés AES-256-GCM dans `users.json` avec une clé gén
 
 Si le téléphone est perdu, se connecter avec le mot de passe et un code de récupération, puis reconfigurer le 2FA. Si tous les codes sont perdus, prévoir une intervention de récupération sur une sauvegarde contrôlée ; conserver les codes hors du serveur évite ce blocage. Les QR codes, clés et codes affichés sont purgés de l’interface à la déconnexion ; aucun stockage navigateur persistant.
 
-Rollback : éviter de revenir à une version avant alpha.4 après activation du 2FA ; cette ancienne version ne vérifie pas le second facteur. Les comptes du Portal restent indépendants.
+Le fichier comptes passe au schéma version 2 à la première écriture sous alpha.4 ; alpha.4 lit aussi le schéma version 1 existant. Une version antérieure refuse le schéma version 2 au lieu d’ignorer le second facteur. Rollback : restaurer une sauvegarde compatible et contrôler les accès ; ne pas modifier manuellement le numéro de schéma. Les comptes du Portal restent indépendants.

@@ -32,6 +32,7 @@ test("2FA enrollment verifies password/code, encrypts seed and provides one-use 
   assert.equal(auth.authenticate(otherCookie).authenticated,false);
   assert.equal(auth.authenticate(cookie).authenticated,true);
   const disk=readFileSync(storeFile,"utf8");
+  assert.equal(JSON.parse(disk).version,2);
   assert.ok(!disk.includes(setup.secret));
   assert.ok(!disk.includes(enabled.recoveryCodes[0]));
   assert.equal(statSync(storeFile+".key").mode & 0o777,0o600);
