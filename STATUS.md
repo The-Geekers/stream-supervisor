@@ -1,11 +1,11 @@
 # Project Status
 
-**Version :** 0.2.0-alpha.6
+**Version :** 0.2.0-alpha.7
 **Phase :** 0.2 Monitoring & exploitation — incidents lisibles / vue opérateur
 
 | Domaine | État |
 |---|---|
-| Gestion utilisateurs | Alpha.6 rend le paramétrage personnel 2FA explicite dans la barre de session |
+| Gestion utilisateurs | Alpha.7 intègre le 2FA dans Modifier l’utilisateur et complète Mon compte pour les autres rôles |
 | Dépôt GitHub / workflow GitHub → VPS | OK |
 | Application Docker | OK |
 | Interface monitoring | Alpha 17, cinq vues responsive + thèmes Dark/Light |

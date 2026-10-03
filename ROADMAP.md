@@ -14,6 +14,11 @@ Alpha.16 a introduit les thèmes Dark/Light. Alpha.17 finalise le polish : Light
 
 Phase active.
 
+### 0.2 alpha.7 — Sécurité des comptes
+
+Gestion 2FA intégrée à la fiche utilisateur pour le super-admin. Mon compte rassemble mot de passe et 2FA pour les autres rôles. QR/clé affichés dès la configuration.
+
+
 ### 0.2 alpha.6 — Accès au 2FA
 
 Accès direct depuis la barre de session ; parcours complet TOTP validé via ce bouton.

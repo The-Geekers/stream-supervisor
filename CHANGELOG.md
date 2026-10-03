@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.0-alpha.7 — Sécurité intégrée aux utilisateurs
+
+- Super-admin : configuration 2FA dans Modifier l’utilisateur, pour soi et les autres comptes.
+- Autres rôles : Mon compte avec changement de mot de passe et 2FA.
+- Configuration sans saisie préalable du mot de passe : QR code et clé visible, activation confirmée par TOTP.
+- Désactivation/récupération protégées ; révocation des sessions concernées, événements journalisés.
+
+
 ## 0.2.0-alpha.6 — Accès explicite au 2FA
 
 - Bouton MON COMPTE / 2FA près de la déconnexion, sur desktop et mobile.
