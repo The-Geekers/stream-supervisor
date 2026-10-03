@@ -19,7 +19,7 @@ const __dirname = dirname(__filename);
 
 const HOST = process.env.HOST || "0.0.0.0";
 const PORT = Number(process.env.PORT || 8090);
-const VERSION = "0.2.0-alpha.6";
+const VERSION = "0.2.0-alpha.7";
 const DEMO_MODE = process.env.DEMO_MODE === "true";
 const requestedMonitorInterval = Number(process.env.MONITOR_INTERVAL_MS || 1000);
 const MONITOR_INTERVAL_MS = Math.min(
@@ -399,29 +399,50 @@ const server = http.createServer(async (req, res) => {
     return unauthorized(res);
   }
 
-  if(url.pathname === "/api/account/security" || url.pathname.startsWith("/api/account/2fa/")) {
+  if(url.pathname === "/api/account/password") {
+    if(req.method!=="POST")return sendJson(res,405,{code:"method_not_allowed"});
     if(!session.authenticated)return unauthorized(res);
-    if(req.method === "GET" && url.pathname === "/api/account/security") {
-      return sendJson(res,200,auth.securityStatus(session.username));
+    if(req.headers["x-supervisor-action"]!=="1")return forbidden(res,"action_header_required");
+    if(!loginAllowed(req))return sendJson(res,429,{code:"too_many_login_attempts"});
+    if(!String(req.headers["content-type"]||"").toLowerCase().startsWith("application/json"))return sendJson(res,415,{code:"unsupported_media_type"});
+    try { auth.changePassword(req.headers.cookie,await readJsonBody(req,4096)); }
+    catch(error){
+      if(["invalid_credentials","invalid_two_factor"].includes(error.message))recordLoginFailure(req);
+      const known=["invalid_credentials","invalid_two_factor","password_confirmation","password_length_12_256"];
+      return sendJson(res,known.includes(error.message)?400:500,{code:known.includes(error.message)?error.message:"password_change_failed"});
+    }
+    clearLoginFailures(req);
+    await journal.append({kind:"operator_action",severity:"info",source:"users",title:"Mot de passe modifié",actor:session.username,action:"password_change",status:"success"});
+    return sendJson(res,200,{ok:true});
+  }
+
+  const adminSecurity=url.pathname === "/api/admin/users/security" || url.pathname.startsWith("/api/admin/users/2fa/");
+  if(adminSecurity || url.pathname === "/api/account/security" || url.pathname.startsWith("/api/account/2fa/")) {
+    if(adminSecurity && session.role!=="super-admin")return forbidden(res,"super_admin_required");
+    const target=adminSecurity?url.searchParams.get("username"):session.username;
+    if(!target)return sendJson(res,400,{code:"invalid_username"});
+    if(!session.authenticated)return unauthorized(res);
+    if(req.method === "GET" && (url.pathname === "/api/account/security" || url.pathname === "/api/admin/users/security")) {
+      try{return sendJson(res,200,auth.securityStatus(target));}catch{return sendJson(res,404,{code:"user_not_found"});}
     }
     if(req.method !== "POST")return sendJson(res,405,{code:"method_not_allowed"});
     if(req.headers["x-supervisor-action"] !== "1")return forbidden(res,"action_header_required");
     if(!String(req.headers["content-type"] || "").toLowerCase().startsWith("application/json"))return sendJson(res,415,{code:"unsupported_media_type"});
     if(!loginAllowed(req))return sendJson(res,429,{code:"too_many_login_attempts"});
-    const action=url.pathname.slice("/api/account/2fa/".length);
+    const action=url.pathname.slice((adminSecurity?"/api/admin/users/2fa/":"/api/account/2fa/").length);
     if(!["setup","confirm","disable","recovery"].includes(action))return sendJson(res,404,{code:"not_found"});
     let result;
     try {
       const body=await readJsonBody(req,2048);
-      result=auth.securityAction(req.headers.cookie,action,body);
+      result=auth.securityAction(req.headers.cookie,action,body,adminSecurity?target:undefined);
       if(action === "setup")result.qrDataUrl=await QRCode.toDataURL(result.uri,{width:256,margin:2});
     } catch(error) {
       if(["invalid_credentials","invalid_two_factor"].includes(error.message))recordLoginFailure(req);
-      const known=["invalid_credentials","invalid_two_factor","two_factor_setup_expired","two_factor_already_enabled","user_store_unavailable"];
+      const known=["invalid_credentials","invalid_two_factor","two_factor_setup_expired","two_factor_already_enabled","user_store_unavailable","user_not_found","super_admin_required"];
       return sendJson(res,known.includes(error.message)?400:500,{code:known.includes(error.message)?error.message:"security_action_failed"});
     }
     clearLoginFailures(req);
-    if(action !== "setup")await journal.append({kind:"operator_action",severity:"info",source:"users",title:"Sécurité du compte modifiée",actor:session.username,action:"two_factor_"+action,status:"success"});
+    if(action !== "setup")await journal.append({kind:"operator_action",severity:"info",source:"users",title:"Sécurité du compte modifiée",actor:session.username,action:"two_factor_"+action,detail:target,status:"success"});
     return sendJson(res,200,result);
   }
 

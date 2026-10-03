@@ -8,7 +8,7 @@ async function login(page, role = "admin") {
   await page.getByRole("button", { name: "SIGN IN", exact: true }).click();
   await expect(page.locator("#loginGate")).not.toBeVisible();
   await expect(page.locator("#channels")).toContainText("Agora");
-  await expect(page.locator("#apiDetail")).toContainText("0.2.0-alpha.6");
+  await expect(page.locator("#apiDetail")).toContainText("0.2.0-alpha.7");
 }
 async function navigate(page, view) {
   if (await page.locator("#mobileView").isVisible()) await page.locator("#mobileView").selectOption(view);
@@ -377,7 +377,7 @@ for(const width of [390,1600]){
     await page.locator('#accountButton').click();
     await expect(page.locator('#viewAccount')).toBeVisible();
     await expect(page.locator('#securityStatus')).toHaveText('2FA inactif.');
-    await page.locator('#securityPassword').fill(password);await page.locator('#setupTwoFactor').click();
+    await expect(page.locator('#securityPasswordLabel')).not.toBeVisible();await page.locator('#setupTwoFactor').click();
     await expect(page.locator('#twoFactorQr')).toHaveAttribute('src',/^data:image\/png/);
     const secret=await page.locator('#twoFactorSecret').textContent();
     await page.locator('#securityToken').fill(totp(secret));await page.locator('#confirmTwoFactor').click();
@@ -402,5 +402,47 @@ for(const width of [390,1600]){
     await page.locator('#loginPassword').fill(password);await page.locator('#loginSubmit').click();
     await expect(page.locator('#loginGate')).not.toBeVisible();await navigate(page,'account');
     await expect(page.locator('#securityStatus')).toHaveText('2FA inactif.');
+  });
+}
+
+for(const width of [390,1600]){
+  test(`super-admin configures 2FA inside user editing at ${width}px`,async({page},testInfo)=>{
+    await page.setViewportSize({width,height:950});await page.goto('/');await login(page);
+    await expect(page.locator('#accountButton')).not.toBeVisible();
+    await navigate(page,'users');
+    const name=`admin-factor-${width}`,password='temporary-admin-factor';
+    const response=await page.request.post('/api/admin/users',{headers:{'X-Supervisor-Action':'1'},data:{username:name,role:'technician',password,confirmPassword:password}});
+    expect(response.status()).toBe(201);await navigate(page,'channels');await navigate(page,'users');
+    await page.locator('.user-row').filter({has:page.locator('strong',{hasText:name})}).getByRole('button',{name:'Modifier'}).click();
+    await expect(page.locator('#adminSecurityHost #securityPanel')).toBeVisible();
+    await expect(page.locator('#securityStatus')).toHaveText('2FA inactif.');
+    await page.locator('#setupTwoFactor').click();
+    await expect(page.locator('#twoFactorQr')).toBeVisible();
+    await expect(page.locator('#twoFactorQr')).toHaveAttribute('src',/^data:image\/png/);
+    const secret=await page.locator('#twoFactorSecret').textContent();expect(secret.length).toBeGreaterThan(20);
+    await page.screenshot({path:testInfo.outputPath(`user-2fa-qr-${width}.png`),fullPage:true});
+    await page.locator('#securityToken').fill(totp(secret));await page.locator('#confirmTwoFactor').click();
+    await expect(page.locator('#securityStatus')).toContainText('2FA actif');
+    await expect(page.locator('#recoveryCodes')).not.toHaveValue('');
+    await page.locator('#securityPassword').fill('visual-pass');await page.locator('#disableTwoFactor').click();await page.locator('#modalConfirm').click();
+    await expect(page.locator('#securityStatus')).toHaveText('2FA inactif.');
+    await expect(page.locator('#loginGate')).not.toBeVisible();
+    await page.locator('.user-row').filter({has:page.locator('strong',{hasText:'visual-admin'})}).getByRole('button',{name:'Modifier'}).click();
+    await expect(page.locator('#adminSecurityHost')).toBeVisible();await expect(page.locator('#securityStatus')).toHaveText('2FA inactif.');
+    await page.locator('#setupTwoFactor').click();await expect(page.locator('#twoFactorQr')).toBeVisible();
+    await page.locator('#cancelUser').click();await expect(page.locator('#twoFactorSecret')).toHaveText('');
+  });
+  test(`technician changes password in own account at ${width}px`,async({page})=>{
+    await page.setViewportSize({width,height:950});await page.goto('/');await login(page);
+    const username=`password-self-${width}`,password='temporary-old-password',next='temporary-new-password';
+    expect((await page.request.post('/api/admin/users',{headers:{'X-Supervisor-Action':'1'},data:{username,role:'technician',password,confirmPassword:password}})).status()).toBe(201);
+    await page.locator('#logoutButton').click();await page.locator('#modalConfirm').click();
+    await page.locator('#loginUsername').fill(username);await page.locator('#loginPassword').fill(password);await page.locator('#loginSubmit').click();
+    await expect(page.locator('#loginGate')).not.toBeVisible();await page.locator('#accountButton').click();
+    await page.locator('#accountCurrentPassword').fill(password);await page.locator('#accountNewPassword').fill(next);await page.locator('#accountConfirmPassword').fill(next);
+    await page.locator('#accountPasswordForm').getByRole('button',{name:'Changer le mot de passe'}).click();
+    await expect(page.locator('#loginGate')).toBeVisible();await page.locator('#loginPassword').fill(next);await page.locator('#loginSubmit').click();
+    await expect(page.locator('#loginGate')).not.toBeVisible();
+    expect((await page.request.post('/api/admin/users/2fa/setup?username=visual-admin',{headers:{'X-Supervisor-Action':'1'},data:{}})).status()).toBe(403);
   });
 }

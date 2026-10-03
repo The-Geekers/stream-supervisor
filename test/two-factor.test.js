@@ -18,12 +18,12 @@ test("deleting a user revokes sessions and protects own/last super-admin",()=>{
   assert.equal(auth.login("operator","temporary-pass"),null);
   assert.equal(createSessionAuth({storeFile}).listUsers().length,1);
 });
-test("2FA enrollment verifies password/code, encrypts seed and provides one-use recovery codes",()=>{
+test("2FA enrollment verifies authenticated session/code, encrypts seed and provides one-use recovery codes",()=>{
   const {auth,storeFile}=fixture();
   const cookie=auth.cookie(auth.login("owner","bootstrap-pass").token);
   const otherCookie=auth.cookie(auth.login("owner","bootstrap-pass").token);
-  assert.throws(()=>auth.securityAction(cookie,"setup",{password:"wrong"}),/invalid_credentials/);
-  const setup=auth.securityAction(cookie,"setup",{password:"bootstrap-pass"});
+  assert.throws(()=>auth.securityAction("","setup"),/login_required/);
+  const setup=auth.securityAction(cookie,"setup");
   assert.match(setup.uri,/^otpauth:\/\/totp\//);
   assert.throws(()=>auth.securityAction(cookie,"confirm",{password:"bootstrap-pass",token:"abc"}),/invalid_two_factor/);
   const code=totp(setup.secret);
@@ -69,4 +69,46 @@ test("enabled 2FA without its encryption key fails closed on restart",()=>{
   auth.securityAction(cookie,"confirm",{password:"bootstrap-pass",token:totp(setup.secret)});
   unlinkSync(storeFile+".key");
   assert.throws(()=>createSessionAuth({storeFile}),/two_factor_key_missing/);
+});
+
+test("super-admin enrolls and resets another user, with isolated pending setup and revoked sessions",()=>{
+  const {auth}=fixture();
+  auth.saveUser({username:"operator",role:"technician",password:"temporary-pass"},{create:true});
+  const owner=auth.cookie(auth.login("owner","bootstrap-pass").token);
+  const tech=auth.cookie(auth.login("operator","temporary-pass").token);
+  assert.throws(()=>auth.securityAction(tech,"setup",{},"owner"),/super_admin_required/);
+  const own=auth.securityAction(owner,"setup",{},"owner");
+  const setup=auth.securityAction(owner,"setup",{},"operator");
+  assert.throws(()=>auth.securityAction(owner,"confirm",{token:totp(own.secret)},"operator"),/invalid_two_factor/);
+  const enabled=auth.securityAction(owner,"confirm",{token:totp(setup.secret)},"operator");
+  assert.equal(auth.authenticate(tech).authenticated,false);
+  assert.equal(auth.authenticate(owner).authenticated,true);
+  const loggedIn=auth.cookie(auth.login("operator","temporary-pass",enabled.recoveryCodes[0]).token);
+  assert.throws(()=>auth.securityAction(owner,"disable",{password:"wrong"},"operator"),/invalid_credentials/);
+  auth.securityAction(owner,"disable",{password:"bootstrap-pass"},"operator");
+  assert.equal(auth.authenticate(loggedIn).authenticated,false);
+  assert.equal(auth.securityStatus("operator").twoFactorEnabled,false);
+  auth.securityAction(owner,"confirm",{token:totp(own.secret)},"owner");
+  assert.equal(auth.securityStatus("owner").twoFactorEnabled,true);
+});
+test("self-service password change verifies current password and factor and revokes sessions",()=>{
+  const {auth}=fixture();const cookie=auth.cookie(auth.login("owner","bootstrap-pass").token);
+  const setup=auth.securityAction(cookie,"setup");
+  const codes=auth.securityAction(cookie,"confirm",{token:totp(setup.secret)}).recoveryCodes;
+  const body={password:"bootstrap-pass",newPassword:"updated-owner-password",confirmPassword:"updated-owner-password"};
+  assert.throws(()=>auth.changePassword(cookie,{...body,password:"wrong"}),/invalid_credentials/);
+  assert.throws(()=>auth.changePassword(cookie,{...body,token:"wrong"}),/invalid_two_factor/);
+  auth.changePassword(cookie,{...body,token:codes[0]});
+  assert.equal(auth.authenticate(cookie).authenticated,false);
+  assert.equal(auth.login("owner","bootstrap-pass",codes[1]),null);
+  assert.ok(auth.login("owner","updated-owner-password",codes[1]).token);
+});
+
+test("technician changes own password without changing role",()=>{
+ const {auth}=fixture();auth.saveUser({username:"tech",role:"technician",password:"temporary-tech-pass"},{create:true});
+ const cookie=auth.cookie(auth.login("tech","temporary-tech-pass").token);
+ assert.throws(()=>auth.changePassword(cookie,{password:"temporary-tech-pass"}),/password_length/);
+ auth.changePassword(cookie,{password:"temporary-tech-pass",newPassword:"updated-tech-pass",confirmPassword:"updated-tech-pass"});
+ assert.equal(auth.authenticate(cookie).authenticated,false);
+ assert.equal(auth.login("tech","updated-tech-pass").session.role,"technician");
 });

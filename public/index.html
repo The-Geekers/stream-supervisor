@@ -186,7 +186,7 @@
   .admin-recovery .danger-action{width:100%;white-space:normal}
 }
 
-[hidden]{display:none!important}.users-form{border:1px solid var(--line);background:var(--panel);padding:18px;max-width:700px}.users-form label{display:block;margin:12px 0}.users-form input,.users-form select{display:block;width:100%;padding:10px;margin-top:5px;background:var(--bg);color:var(--text);border:1px solid var(--line);font:inherit}.user-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;padding:14px;border-bottom:1px solid var(--line)}.user-row:last-child{border-bottom:0}.user-info{min-width:0;overflow-wrap:anywhere}.user-actions{display:grid;grid-template-columns:repeat(2,100px);align-items:center;gap:8px}.user-actions>button{width:100%;min-height:34px;margin:0;padding:8px 12px}.user-actions>button:disabled{opacity:.45;cursor:not-allowed}@media(max-width:600px){.user-row{grid-template-columns:minmax(0,1fr)}.user-actions{justify-content:end}.user-actions>button{min-height:44px}}#userMessage{padding:12px 0;white-space:pre-wrap}
+[hidden]{display:none!important}#userEditor:has(#userForm[hidden]){display:none}.users-form{border:1px solid var(--line);background:var(--panel);padding:18px;max-width:700px}.users-form label{display:block;margin:12px 0}.users-form input,.users-form select{display:block;width:100%;padding:10px;margin-top:5px;background:var(--bg);color:var(--text);border:1px solid var(--line);font:inherit}.user-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;padding:14px;border-bottom:1px solid var(--line)}.user-row:last-child{border-bottom:0}.user-info{min-width:0;overflow-wrap:anywhere}.user-actions{display:grid;grid-template-columns:repeat(2,100px);align-items:center;gap:8px}.user-actions>button{width:100%;min-height:34px;margin:0;padding:8px 12px}.user-actions>button:disabled{opacity:.45;cursor:not-allowed}@media(max-width:600px){.user-row{grid-template-columns:minmax(0,1fr)}.user-actions{justify-content:end}.user-actions>button{min-height:44px}}#userMessage{padding:12px 0;white-space:pre-wrap}
 </style>
 </head>
 
@@ -228,8 +228,8 @@
       <button type="button" class="nav-item" data-view="incidents" title="INCIDENTS"><i class="nav-dot" aria-hidden="true"></i><span>INCIDENTS</span></button>
       <button type="button" class="nav-item" data-view="diagnostics" title="DIAGNOSTICS"><i class="nav-dot" aria-hidden="true"></i><span>DIAGNOSTICS</span></button>
       <button type="button" class="nav-item" data-view="watchdog" title="WATCHDOG"><i class="nav-dot" aria-hidden="true"></i><span>WATCHDOG</span></button>
-    <button id="accountNav" type="button" class="nav-item" data-view="account" hidden><i class="nav-dot" aria-hidden="true"></i><span>MON COMPTE / 2FA</span></button><button id="usersNav" type="button" class="nav-item" data-view="users" hidden><i class="nav-dot" aria-hidden="true"></i><span>UTILISATEURS</span></button></nav>
-    <div class="side-foot">RESTREAMER / READ ONLY<br><span id="sideVersion">v0.2.0-alpha.6</span><button id="desktopThemeToggle" class="theme-toggle" type="button" aria-label="Switch to light theme">LIGHT</button></div>
+    <button id="accountNav" type="button" class="nav-item" data-view="account" hidden><i class="nav-dot" aria-hidden="true"></i><span>MON COMPTE</span></button><button id="usersNav" type="button" class="nav-item" data-view="users" hidden><i class="nav-dot" aria-hidden="true"></i><span>UTILISATEURS</span></button></nav>
+    <div class="side-foot">RESTREAMER / READ ONLY<br><span id="sideVersion">v0.2.0-alpha.7</span><button id="desktopThemeToggle" class="theme-toggle" type="button" aria-label="Switch to light theme">LIGHT</button></div>
   </aside>
   <button id="backToTop" class="back-to-top" type="button" hidden aria-label="Back to top">↑ TOP</button>
 
@@ -239,12 +239,12 @@
       <select id="mobileView" aria-label="Navigation">
         <option value="channels">CHANNELS</option><option value="system">SYSTEM</option>
         <option value="incidents">INCIDENTS</option><option value="diagnostics">DIAGNOSTICS</option><option value="watchdog">WATCHDOG</option>
-      <option id="accountOption" value="account" hidden>MON COMPTE / 2FA</option><option id="usersOption" value="users" hidden>UTILISATEURS</option></select>
+      <option id="accountOption" value="account" hidden>MON COMPTE</option><option id="usersOption" value="users" hidden>UTILISATEURS</option></select>
       <button id="mobileThemeToggle" class="theme-toggle" type="button" aria-label="Switch to light theme">LIGHT</button>
     </div>
     <header class="topbar">
       <div class="title-wrap"><div id="pageTitle" class="title">CHANNEL MONITOR</div><div id="pageSubtitle" class="subtitle">LIVE OPERATIONS</div></div>
-      <div class="top-right"><div id="clock" class="clock">--:--:--</div><div id="modeBadge" class="badge readonly">READ ONLY</div><div id="authBadge" class="badge open">ACCESS OPEN</div><button id="accountButton" class="session-action" type="button" hidden>MON COMPTE / 2FA</button><button id="logoutButton" class="session-action" type="button" hidden>LOG OUT</button></div>
+      <div class="top-right"><div id="clock" class="clock">--:--:--</div><div id="modeBadge" class="badge readonly">READ ONLY</div><div id="authBadge" class="badge open">ACCESS OPEN</div><button id="accountButton" class="session-action" type="button" hidden>MON COMPTE</button><button id="logoutButton" class="session-action" type="button" hidden>LOG OUT</button></div>
     </header>
 
     <div class="content">
@@ -267,18 +267,30 @@
       </section>
 
       <section id="viewAccount" class="view">
-        <h2>Mon compte · Double authentification</h2>
+        <h2>Mon compte</h2>
+        <form id="accountPasswordForm" class="users-form">
+          <h3>Mot de passe</h3>
+          <label>Mot de passe actuel<input id="accountCurrentPassword" type="password" autocomplete="current-password" required maxlength="256"></label>
+          <label>Nouveau mot de passe<input id="accountNewPassword" type="password" autocomplete="new-password" required minlength="12" maxlength="256"></label>
+          <label>Confirmer le nouveau mot de passe<input id="accountConfirmPassword" type="password" autocomplete="new-password" required minlength="12" maxlength="256"></label>
+          <label id="accountPasswordTokenLabel" hidden>Code 2FA ou de récupération<input id="accountPasswordToken" autocomplete="one-time-code" maxlength="64"></label>
+          <button class="diag-button" type="submit">Changer le mot de passe</button>
+          <div id="accountPasswordMessage" role="alert"></div>
+        </form>
+        <div id="accountSecurityHost"></div>
+        <div id="securityPanel">
+        <h3>Double authentification (2FA)</h3>
         <p>Code TOTP à six chiffres, renouvelé toutes les 30 secondes. Compatible avec une application d’authentification.</p>
         <div id="securityStatus" role="status"></div><div id="securityMessage" role="alert"></div>
         <form id="securityForm" class="users-form">
-          <label>Mot de passe actuel<input id="securityPassword" type="password" autocomplete="current-password" maxlength="256" required></label>
+          <label id="securityPasswordLabel">Votre mot de passe actuel<input id="securityPassword" type="password" autocomplete="current-password" maxlength="256"></label>
           <div id="twoFactorSetup" hidden>
             <p>Scanner ce QR code dans l’application, ou saisir la clé manuellement. Confirmer avec le code de l’application.</p>
             <img id="twoFactorQr" alt="QR code de configuration 2FA" width="256" height="256" style="max-width:100%;height:auto;background:white">
             <p>Clé de configuration : <code id="twoFactorSecret" style="overflow-wrap:anywhere"></code></p>
           </div>
           <label id="securityTokenLabel" hidden>Code 2FA ou code de récupération<input id="securityToken" autocomplete="one-time-code" maxlength="64" spellcheck="false"></label>
-          <button id="setupTwoFactor" type="submit" class="diag-button" value="setup">Activer le 2FA</button>
+          <button id="setupTwoFactor" type="submit" class="diag-button" value="setup">Configurer le 2FA</button>
           <button id="confirmTwoFactor" type="submit" class="diag-button" value="confirm" hidden>Confirmer l’activation</button>
           <button id="disableTwoFactor" type="submit" class="modal-button danger" value="disable" hidden>Désactiver le 2FA</button>
           <button id="renewRecovery" type="submit" class="diag-button" value="recovery" hidden>Renouveler les codes de récupération</button>
@@ -290,13 +302,15 @@
           <button id="downloadRecovery" type="button" class="diag-button">Télécharger les codes</button>
           <button id="closeRecovery" type="button" class="modal-button">J’ai sauvegardé les codes</button>
         </section>
+        </div>
       </section>
       <section id="viewUsers" class="view">
-      <p>Comptes Supervisor. Gestion réservée au super-admin. Chaque utilisateur configure son propre 2FA dans MON COMPTE / 2FA, en haut de la page.</p>
+      <p>Comptes Supervisor. Modifier un utilisateur pour gérer son mot de passe et son 2FA.</p>
       <button id="newUser" type="button" class="diag-button">Créer un utilisateur</button>
       <div id="userMessage" role="status" aria-live="polite"></div>
       <div id="usersList" class="table" style="margin:16px 0"></div>
-      <form id="userForm" class="users-form" hidden>
+      <div id="userEditor" class="users-form">
+      <form id="userForm" hidden>
         <h2 id="userFormTitle">Nouvel utilisateur</h2>
         <label>Identifiant<input id="userName" required maxlength="80" pattern="[a-zA-Z0-9_.@\-]+" autocomplete="off"></label>
         <label>Rôle<select id="userRole"><option value="technician">Technicien</option><option value="viewer">Lecture seule</option><option value="admin">Admin</option><option value="super-admin">Super-admin</option></select></label>
@@ -306,6 +320,8 @@
         <p>En modification, laisser les mots de passe vides pour les conserver. Une modification invalide les sessions de ce compte.</p>
         <div><button id="saveUser" type="submit" class="diag-button">Enregistrer</button> <button id="cancelUser" type="button" class="modal-button">Annuler</button></div>
       </form>
+      <div id="adminSecurityHost" hidden></div>
+      </div>
     </section>
     <div id="viewChannels" class="view active">
       <section class="telemetry">
@@ -512,7 +528,7 @@ let lastRefresh=0,currentFilter="all",currentSort="name",currentDirection="asc",
 let monitoringEnabled=false,sessionGeneration=0,requestController=new AbortController(),modalTrigger=null,adminRestartBusy=false;
 // Keep the original neutral values, not a copy of operational data or credentials.
 const neutralContent=[...document.querySelectorAll(".content [id]")]
-  .filter(element=>!element.querySelector("[id]")&&element.tagName!=="BUTTON")
+  .filter(element=>!element.querySelector("[id]")&&element.tagName!=="BUTTON"&&!["accountSecurityHost","adminSecurityHost"].includes(element.id))
   .map(element=>({element,html:element.innerHTML,className:element.className,style:element.getAttribute("style")}));
 
 function labelRows(containerId){
@@ -591,6 +607,8 @@ function renderDocker(docker){
 }
 
 function switchView(view){
+  if(securityBusy)return;
+  if(view!==currentView)clearSecuritySecrets();
   currentView=["channels","system","incidents","diagnostics","watchdog","users","account"].includes(view)&& (view!=="users"||session.role==="super-admin")?view:"channels";
   document.querySelectorAll(".nav-item[data-view]").forEach(item=>{
     const active=item.dataset.view===currentView;
@@ -619,8 +637,8 @@ function switchView(view){
   if(currentView==="incidents")fetchIncidents();
   if(currentView==="diagnostics")fetchDiagnostics();
   if(currentView==="watchdog")fetchWatchdog();
-  if(currentView==="users")fetchUsers();
-  if(currentView==="account")fetchSecurity();
+  if(currentView==="users"){ $("userForm").hidden=true;$("adminSecurityHost").hidden=true;fetchUsers(); }
+  if(currentView==="account")mountSecurity();
 }
 
 function renderIncidents(){
@@ -824,13 +842,33 @@ async function removeUser(user){
     const data=await response.json();
     if(generation!==sessionGeneration||!monitoringEnabled)return;
     if(!response.ok)throw new Error(data.code);
-    $("userForm").reset();$("userForm").hidden=true;$("userMessage").textContent="Compte supprimé.";
+    $("userForm").reset();$("userForm").hidden=true;$("adminSecurityHost").hidden=true;clearSecuritySecrets();$("userMessage").textContent="Compte supprimé.";
     await fetchUsers();
   }catch(error){if(monitoringEnabled)$("userMessage").textContent=userErrors[error.message]||"Suppression impossible.";}
   finally{userSaving=false;}
 }
+let securityTarget=null;
+function securityEndpoint(suffix){
+  return securityTarget?"/api/admin/users/"+suffix+"?username="+encodeURIComponent(securityTarget):"/api/account/"+suffix;
+}
+function mountSecurity(target){
+  clearSecuritySecrets();
+  $("securityMessage").textContent="";
+  securityTarget=target||null;
+  const admin=Boolean(target);
+  $(admin?"adminSecurityHost":"accountSecurityHost").append($("securityPanel"));
+  $("adminSecurityHost").hidden=!admin;
+  if(admin)$("securityPanel").querySelector("h3").textContent="2FA · "+target;
+  else $("securityPanel").querySelector("h3").textContent="Double authentification (2FA)";
+  $("securityPanel").hidden=true;
+  fetchSecurity();
+}
 function openUserForm(user){
+  if(securityBusy || userSaving)return;
   editingUser=Boolean(user);
+  $("adminSecurityHost").hidden=!user;
+  if(user)mountSecurity(user.username);
+  else clearSecuritySecrets();
   $("userForm").reset();
   $("userForm").hidden=false;
   $("userFormTitle").textContent=user?"Modifier l’utilisateur":"Nouvel utilisateur";
@@ -845,7 +883,7 @@ function openUserForm(user){
   (editingUser?$("userRole"):$("userName")).focus();
 }
 $("newUser").addEventListener("click",()=>openUserForm());
-$("cancelUser").addEventListener("click",()=>{$("userForm").reset();$("userForm").hidden=true;});
+$("cancelUser").addEventListener("click",()=>{$("userForm").reset();$("userForm").hidden=true;$("adminSecurityHost").hidden=true;clearSecuritySecrets();});
 $("usersList").addEventListener("click",event=>{const button=event.target.closest("[data-edit-user]");if(button)openUserForm(userAccounts[Number(button.dataset.editUser)]);const remove=event.target.closest("[data-delete-user]");if(remove)removeUser(userAccounts[Number(remove.dataset.deleteUser)]);});
 $("userForm").addEventListener("submit",async event=>{
   event.preventDefault();
@@ -861,7 +899,7 @@ $("userForm").addEventListener("submit",async event=>{
     const result=await response.json();
     if(userGeneration!==sessionGeneration||!monitoringEnabled)return;
     if(!response.ok)throw new Error(result.code);
-    $("userForm").reset();$("userForm").hidden=true;
+    $("userForm").reset();$("userForm").hidden=true;$("adminSecurityHost").hidden=true;clearSecuritySecrets();
     if(body.username===session.username){await handleUnauthorized("Compte modifié. Reconnectez-vous.");return;}
     $("userMessage").textContent="Utilisateur enregistré.";
     await fetchUsers();
@@ -869,7 +907,21 @@ $("userForm").addEventListener("submit",async event=>{
   finally{userSaving=false;$("saveUser").disabled=false;}
 });
 
+$("accountPasswordForm").addEventListener("submit",async event=>{
+  event.preventDefault();if(securityBusy)return;
+  const generation=sessionGeneration;securityBusy=true;
+  $("accountPasswordMessage").textContent="";
+  try{
+    const response=await apiFetch("/api/account/password",{method:"POST",headers:{"Content-Type":"application/json","X-Supervisor-Action":"1"},body:JSON.stringify({password:$("accountCurrentPassword").value,newPassword:$("accountNewPassword").value,confirmPassword:$("accountConfirmPassword").value,token:$("accountPasswordToken").value.trim()})});
+    const result=await response.json();
+    if(generation!==sessionGeneration||!monitoringEnabled)return;
+    if(!response.ok)throw new Error(result.code);
+    await handleUnauthorized("Mot de passe modifié. Reconnectez-vous.");
+  }catch(error){if(monitoringEnabled)$("accountPasswordMessage").textContent=userErrors[error.message]||({invalid_credentials:"Mot de passe actuel incorrect.",invalid_two_factor:"Code 2FA incorrect ou déjà utilisé."}[error.message])||"Modification impossible.";}
+  finally{securityBusy=false;}
+});
 function clearSecuritySecrets(){
+  $("accountPasswordForm").reset();
   $("securityForm").reset();
   $("twoFactorQr").removeAttribute("src");
   $("twoFactorSecret").textContent="";
@@ -884,36 +936,49 @@ function renderSecurity(state){
   $("disableTwoFactor").hidden=!state.twoFactorEnabled;
   $("renewRecovery").hidden=!state.twoFactorEnabled;
   $("securityTokenLabel").hidden=!state.twoFactorEnabled;
-  $("securityToken").required=state.twoFactorEnabled;
+  const delegated=securityTarget && securityTarget!==session.username;
+  $("securityTokenLabel").hidden=!state.twoFactorEnabled||delegated;
+  $("securityToken").required=state.twoFactorEnabled&&!delegated;
+  $("securityPasswordLabel").hidden=!state.twoFactorEnabled;
+  $("securityPassword").required=state.twoFactorEnabled;
+  $("accountPasswordTokenLabel").hidden=!state.twoFactorEnabled;
+  $("accountPasswordToken").required=state.twoFactorEnabled;
 }
 async function fetchSecurity(){
-  try{renderSecurity(await apiJson("/api/account/security"));}
-  catch{if(monitoringEnabled)$("securityMessage").textContent="Impossible de charger la sécurité du compte.";}
+  const target=securityTarget,generation=sessionGeneration;
+  try{
+    const state=await apiJson(securityEndpoint("security"));
+    if(target!==securityTarget||generation!==sessionGeneration||!monitoringEnabled)return;
+    renderSecurity(state);$("securityPanel").hidden=false;
+  }
+  catch{if(monitoringEnabled&&target===securityTarget){$("securityPanel").hidden=false;$("securityMessage").textContent="Impossible de charger la sécurité du compte.";$("securityForm").querySelectorAll("button").forEach(button=>button.disabled=true);}}
 }
 $("securityForm").addEventListener("submit",async event=>{
   event.preventDefault();if(securityBusy)return;
   const action=event.submitter?.value;if(!action)return;
   const generation=sessionGeneration;
   if(action==="disable"||action==="recovery"){
-    const confirmed=await showDialog({title:action==="disable"?"DÉSACTIVER LE 2FA":"RENOUVELER LES CODES",message:action==="disable"?"Retirer le second facteur de votre compte ?":"Remplacer tous vos codes de récupération ?",detail:action==="disable"?"Votre mot de passe et votre code seront vérifiés. Vous devrez vous reconnecter.":"Les anciens codes ne fonctionneront plus.",confirmLabel:"CONFIRMER",tone:"warning"});
+    const confirmed=await showDialog({title:action==="disable"?"DÉSACTIVER LE 2FA":"RENOUVELER LES CODES",message:action==="disable"?"Retirer le second facteur du compte "+(securityTarget||session.username)+" ?":"Remplacer tous vos codes de récupération ?",detail:action==="disable"?"Votre mot de passe sera vérifié. Les sessions du compte seront révoquées.":"Les anciens codes ne fonctionneront plus.",confirmLabel:"CONFIRMER",tone:"warning"});
     if(!confirmed||generation!==sessionGeneration||!monitoringEnabled)return;
   }
   securityBusy=true;$("securityMessage").textContent="";
   $("securityForm").querySelectorAll("button").forEach(button=>button.disabled=true);
   try{
-    const response=await apiFetch("/api/account/2fa/"+action,{method:"POST",headers:{"Content-Type":"application/json","X-Supervisor-Action":"1"},body:JSON.stringify({password:$("securityPassword").value,token:$("securityToken").value.trim()})});
+    const response=await apiFetch(securityEndpoint("2fa/"+action),{method:"POST",headers:{"Content-Type":"application/json","X-Supervisor-Action":"1"},body:JSON.stringify({password:$("securityPassword").value,token:$("securityToken").value.trim()})});
     const data=await response.json();
     if(generation!==sessionGeneration||!monitoringEnabled)return;
     if(!response.ok)throw new Error(data.code);
     if(action==="setup"){
+      $("securityPasswordLabel").hidden=true;$("securityPassword").required=false;
       $("twoFactorQr").src=data.qrDataUrl;$("twoFactorSecret").textContent=data.secret;$("twoFactorSetup").hidden=false;
       $("setupTwoFactor").hidden=true;$("confirmTwoFactor").hidden=false;
       $("securityTokenLabel").hidden=false;$("securityToken").required=true;$("securityToken").focus();return;
     }
     clearSecuritySecrets();
-    if(action==="disable"){await handleUnauthorized("2FA désactivé. Reconnectez-vous.");return;}
-    $("recoveryCodes").value=data.recoveryCodes.join("\n");$("twoFactorRecovery").hidden=false;
-    $("securityMessage").textContent="Codes à sauvegarder maintenant. Pour la prochaine connexion, utiliser un nouveau code TOTP ou un code de récupération.";
+    if(action==="disable" && (!securityTarget||securityTarget===session.username)){await handleUnauthorized("2FA désactivé. Reconnectez-vous.");return;}
+    if(data.recoveryCodes){$("recoveryCodes").value=data.recoveryCodes.join("\n");$("twoFactorRecovery").hidden=false;}
+    if(securityTarget)await fetchUsers();
+    $("securityMessage").textContent=action==="disable"?"2FA désactivé. Sessions du compte révoquées.":"Codes à sauvegarder maintenant. Pour la prochaine connexion, utiliser un nouveau code TOTP ou un code de récupération.";
     await fetchSecurity();
   }catch(error){
     const errors={invalid_credentials:"Mot de passe incorrect.",invalid_two_factor:"Code incorrect ou déjà utilisé. Attendre le prochain code, ou utiliser un code de récupération.",two_factor_setup_expired:"Configuration expirée. Recommencer l’activation.",two_factor_already_enabled:"Le 2FA est déjà actif.",too_many_login_attempts:"Trop de tentatives. Réessayer dans cinq minutes."};
@@ -937,13 +1002,13 @@ function updateSessionUi(){
   $("modeBadge").textContent=session.actionsEnabled?"OUTPUT CONTROL":"READ ONLY";
   $("modeBadge").className="badge "+(session.actionsEnabled?"secure":"readonly");
   $("logoutButton").hidden=!session.authenticated;
-  $("accountButton").hidden=!session.authenticated;
+  $("accountButton").hidden=!session.authenticated||session.role==="super-admin";
   const adminRestart=session.authenticated&&["super-admin","admin"].includes(session.role);
   $("adminRecovery").hidden=!adminRestart;
   $("restartRestreamerButton").disabled=!adminRestart||adminRestartBusy;
   $("restartRestreamerButton").textContent=adminRestartBusy?"RESTARTING…":"RESTART RESTREAMER";
-  $("accountNav").hidden=!session.authenticated;
-  $("accountOption").hidden=!session.authenticated;
+  $("accountNav").hidden=!session.authenticated||session.role==="super-admin";
+  $("accountOption").hidden=!session.authenticated||session.role==="super-admin";
   $("usersNav").hidden=session.role!=="super-admin";
   $("usersOption").hidden=session.role!=="super-admin";
   if(session.role!=="super-admin"&&currentView==="users")switchView("channels");
@@ -1384,7 +1449,7 @@ function applyStatus(x){
     $("outputErrors").textContent=s.outputErrors??0;
     $("outputErrors").style.color=(s.outputErrors??0)>0?"var(--red)":"var(--text)";
     $("supervisorVersion").textContent=x.supervisor?.version||"--";
-    $("sideVersion").textContent=x.supervisor?.version||"v0.2.0-alpha.6";
+    $("sideVersion").textContent=x.supervisor?.version||"v0.2.0-alpha.7";
     $("monitorTransport").textContent=(monitoring.transport||"poll").toUpperCase()+" · source "+(monitoring.sourcePollMs||"--")+" ms · core "+(monitoring.pollDurationMs??"--")+" ms";
     latestChannels=r.channels||[];
     latestIncidentState=x.incidents||{active:[],summary:{}};
