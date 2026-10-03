@@ -186,7 +186,7 @@
   .admin-recovery .danger-action{width:100%;white-space:normal}
 }
 
-[hidden]{display:none!important}.users-form{border:1px solid var(--line);background:var(--panel);padding:18px;max-width:700px}.users-form label{display:block;margin:12px 0}.users-form input,.users-form select{display:block;width:100%;padding:10px;margin-top:5px;background:var(--bg);color:var(--text);border:1px solid var(--line);font:inherit}.user-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;padding:14px;border-bottom:1px solid var(--line)}.user-row:last-child{border-bottom:0}.user-info{min-width:0;overflow-wrap:anywhere}.user-actions{display:grid;grid-template-columns:repeat(2,100px);align-items:center;gap:8px}.user-actions>button{width:100%;min-height:34px;margin:0;padding:8px 12px}.user-actions>button:disabled{opacity:.45;cursor:not-allowed}@media(max-width:600px){.user-row{grid-template-columns:minmax(0,1fr)}.user-actions{justify-content:end}.user-actions>button{min-height:44px}}#userMessage{padding:12px 0;white-space:pre-wrap}
+[hidden]{display:none!important}#userEditor:has(#userForm[hidden]){display:none}.users-form{border:1px solid var(--line);background:var(--panel);padding:18px;max-width:700px}.users-form label{display:block;margin:12px 0}.users-form input,.users-form select{display:block;width:100%;padding:10px;margin-top:5px;background:var(--bg);color:var(--text);border:1px solid var(--line);font:inherit}.user-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;padding:14px;border-bottom:1px solid var(--line)}.user-row:last-child{border-bottom:0}.user-info{min-width:0;overflow-wrap:anywhere}.user-actions{display:grid;grid-template-columns:repeat(2,100px);align-items:center;gap:8px}.user-actions>button{width:100%;min-height:34px;margin:0;padding:8px 12px}.user-actions>button:disabled{opacity:.45;cursor:not-allowed}@media(max-width:600px){.user-row{grid-template-columns:minmax(0,1fr)}.user-actions{justify-content:end}.user-actions>button{min-height:44px}}#userMessage{padding:12px 0;white-space:pre-wrap}
 </style>
 </head>
 
@@ -309,7 +309,8 @@
       <button id="newUser" type="button" class="diag-button">Créer un utilisateur</button>
       <div id="userMessage" role="status" aria-live="polite"></div>
       <div id="usersList" class="table" style="margin:16px 0"></div>
-      <form id="userForm" class="users-form" hidden>
+      <div id="userEditor" class="users-form">
+      <form id="userForm" hidden>
         <h2 id="userFormTitle">Nouvel utilisateur</h2>
         <label>Identifiant<input id="userName" required maxlength="80" pattern="[a-zA-Z0-9_.@\-]+" autocomplete="off"></label>
         <label>Rôle<select id="userRole"><option value="technician">Technicien</option><option value="viewer">Lecture seule</option><option value="admin">Admin</option><option value="super-admin">Super-admin</option></select></label>
@@ -320,6 +321,7 @@
         <div><button id="saveUser" type="submit" class="diag-button">Enregistrer</button> <button id="cancelUser" type="button" class="modal-button">Annuler</button></div>
       </form>
       <div id="adminSecurityHost" hidden></div>
+      </div>
     </section>
     <div id="viewChannels" class="view active">
       <section class="telemetry">
