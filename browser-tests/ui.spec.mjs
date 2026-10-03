@@ -309,7 +309,7 @@ test("mobile notice traps a single button and polling fallback stops on logout",
 });
 
 for (const width of [390,1600]) {
-  test(`user management lifecycle at ${width}px`, async ({page}) => {
+  test(`user management lifecycle at ${width}px`, async ({page},testInfo) => {
     await page.setViewportSize({width,height:900});
     await page.goto('/');
     await login(page);
@@ -328,7 +328,10 @@ for (const width of [390,1600]) {
     await page.locator('#saveUser').click();
     await expect(row).toContainText('Désactivé');
     expect(await page.evaluate(()=>document.documentElement.scrollWidth<=document.documentElement.clientWidth+1)).toBe(true);
+    await page.screenshot({path:testInfo.outputPath(`users-${width}.png`),fullPage:true});
     await page.locator('#logoutButton').click();
+    await page.locator('#modalConfirm').click();
+    await expect(page.locator('#loginGate')).toBeVisible();
     await expect(page.locator('#usersList')).toBeEmpty();
   });
 }
