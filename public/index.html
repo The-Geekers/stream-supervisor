@@ -186,7 +186,7 @@
   .admin-recovery .danger-action{width:100%;white-space:normal}
 }
 
-[hidden]{display:none!important}.users-form{border:1px solid var(--line);background:var(--panel);padding:18px;max-width:700px}.users-form label{display:block;margin:12px 0}.users-form input,.users-form select{display:block;width:100%;padding:10px;margin-top:5px;background:var(--bg);color:var(--text);border:1px solid var(--line);font:inherit}.user-row{display:flex;justify-content:space-between;gap:12px;padding:14px;border-bottom:1px solid var(--line);flex-wrap:wrap}#userMessage{padding:12px 0;white-space:pre-wrap}
+[hidden]{display:none!important}.users-form{border:1px solid var(--line);background:var(--panel);padding:18px;max-width:700px}.users-form label{display:block;margin:12px 0}.users-form input,.users-form select{display:block;width:100%;padding:10px;margin-top:5px;background:var(--bg);color:var(--text);border:1px solid var(--line);font:inherit}.user-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;padding:14px;border-bottom:1px solid var(--line)}.user-row:last-child{border-bottom:0}.user-info{min-width:0;overflow-wrap:anywhere}.user-actions{display:grid;grid-template-columns:repeat(2,100px);align-items:center;gap:8px}.user-actions>button{width:100%;min-height:34px;margin:0;padding:8px 12px}.user-actions>button:disabled{opacity:.45;cursor:not-allowed}@media(max-width:600px){.user-row{grid-template-columns:minmax(0,1fr)}.user-actions{justify-content:end}.user-actions>button{min-height:44px}}#userMessage{padding:12px 0;white-space:pre-wrap}
 </style>
 </head>
 
@@ -229,7 +229,7 @@
       <button type="button" class="nav-item" data-view="diagnostics" title="DIAGNOSTICS"><i class="nav-dot" aria-hidden="true"></i><span>DIAGNOSTICS</span></button>
       <button type="button" class="nav-item" data-view="watchdog" title="WATCHDOG"><i class="nav-dot" aria-hidden="true"></i><span>WATCHDOG</span></button>
     <button id="accountNav" type="button" class="nav-item" data-view="account" hidden><i class="nav-dot" aria-hidden="true"></i><span>MON COMPTE</span></button><button id="usersNav" type="button" class="nav-item" data-view="users" hidden><i class="nav-dot" aria-hidden="true"></i><span>UTILISATEURS</span></button></nav>
-    <div class="side-foot">RESTREAMER / READ ONLY<br><span id="sideVersion">v0.2.0-alpha.4</span><button id="desktopThemeToggle" class="theme-toggle" type="button" aria-label="Switch to light theme">LIGHT</button></div>
+    <div class="side-foot">RESTREAMER / READ ONLY<br><span id="sideVersion">v0.2.0-alpha.5</span><button id="desktopThemeToggle" class="theme-toggle" type="button" aria-label="Switch to light theme">LIGHT</button></div>
   </aside>
   <button id="backToTop" class="back-to-top" type="button" hidden aria-label="Back to top">↑ TOP</button>
 
@@ -810,7 +810,7 @@ async function fetchUsers(){
   try{
     const data=await apiJson("/api/admin/users");
     userAccounts=data.users;
-    $("usersList").innerHTML=userAccounts.map((u,i)=>'<div class="user-row"><div><strong>'+esc(u.username)+'</strong><br>'+esc(u.role)+' · '+(u.disabled?'Désactivé':'Actif')+' · 2FA '+(u.twoFactorEnabled?'actif':'inactif')+'</div><button type="button" class="diag-button" data-edit-user="'+i+'">Modifier</button><button type="button" class="modal-button danger" data-delete-user="'+i+'" '+(u.username===session.username?'disabled':'')+'>Supprimer</button></div>').join("");
+    $("usersList").innerHTML=userAccounts.map((u,i)=>'<div class="user-row"><div class="user-info"><strong>'+esc(u.username)+'</strong><br>'+esc(u.role)+' · '+(u.disabled?'Désactivé':'Actif')+' · 2FA '+(u.twoFactorEnabled?'actif':'inactif')+'</div><div class="user-actions"><button type="button" class="diag-button" data-edit-user="'+i+'">Modifier</button><button type="button" class="modal-button danger" data-delete-user="'+i+'" '+(u.username===session.username?'disabled':'')+'>Supprimer</button></div></div>').join("");
   }catch(error){if(monitoringEnabled)$("userMessage").textContent="Impossible de charger les utilisateurs.";}
 }
 async function removeUser(user){
@@ -1383,7 +1383,7 @@ function applyStatus(x){
     $("outputErrors").textContent=s.outputErrors??0;
     $("outputErrors").style.color=(s.outputErrors??0)>0?"var(--red)":"var(--text)";
     $("supervisorVersion").textContent=x.supervisor?.version||"--";
-    $("sideVersion").textContent=x.supervisor?.version||"v0.2.0-alpha.4";
+    $("sideVersion").textContent=x.supervisor?.version||"v0.2.0-alpha.5";
     $("monitorTransport").textContent=(monitoring.transport||"poll").toUpperCase()+" · source "+(monitoring.sourcePollMs||"--")+" ms · core "+(monitoring.pollDurationMs??"--")+" ms";
     latestChannels=r.channels||[];
     latestIncidentState=x.incidents||{active:[],summary:{}};

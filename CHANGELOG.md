@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.0-alpha.5 — Alignement des actions utilisateurs
+
+- Boutons Modifier/Supprimer regroupés à droite, colonnes fixes, même taille et alignement vertical indépendant du nom ou du rôle.
+- Sur mobile, informations sur une ligne dédiée et actions alignées à droite dessous ; bouton du propre compte clairement désactivé.
+- Aucun changement des comptes, permissions ou du 2FA.
+
+
 ## 0.2.0-alpha.4 — Suppression et double authentification
 
 - Suppression explicite depuis Utilisateurs, réservée au super-admin, confirmée et journalisée. Protection de son propre compte et du dernier super-admin ; révocation immédiate des sessions.
