@@ -228,8 +228,8 @@
       <button type="button" class="nav-item" data-view="incidents" title="INCIDENTS"><i class="nav-dot" aria-hidden="true"></i><span>INCIDENTS</span></button>
       <button type="button" class="nav-item" data-view="diagnostics" title="DIAGNOSTICS"><i class="nav-dot" aria-hidden="true"></i><span>DIAGNOSTICS</span></button>
       <button type="button" class="nav-item" data-view="watchdog" title="WATCHDOG"><i class="nav-dot" aria-hidden="true"></i><span>WATCHDOG</span></button>
-    <button id="accountNav" type="button" class="nav-item" data-view="account" hidden><i class="nav-dot" aria-hidden="true"></i><span>MON COMPTE</span></button><button id="usersNav" type="button" class="nav-item" data-view="users" hidden><i class="nav-dot" aria-hidden="true"></i><span>UTILISATEURS</span></button></nav>
-    <div class="side-foot">RESTREAMER / READ ONLY<br><span id="sideVersion">v0.2.0-alpha.5</span><button id="desktopThemeToggle" class="theme-toggle" type="button" aria-label="Switch to light theme">LIGHT</button></div>
+    <button id="accountNav" type="button" class="nav-item" data-view="account" hidden><i class="nav-dot" aria-hidden="true"></i><span>MON COMPTE / 2FA</span></button><button id="usersNav" type="button" class="nav-item" data-view="users" hidden><i class="nav-dot" aria-hidden="true"></i><span>UTILISATEURS</span></button></nav>
+    <div class="side-foot">RESTREAMER / READ ONLY<br><span id="sideVersion">v0.2.0-alpha.6</span><button id="desktopThemeToggle" class="theme-toggle" type="button" aria-label="Switch to light theme">LIGHT</button></div>
   </aside>
   <button id="backToTop" class="back-to-top" type="button" hidden aria-label="Back to top">↑ TOP</button>
 
@@ -239,12 +239,12 @@
       <select id="mobileView" aria-label="Navigation">
         <option value="channels">CHANNELS</option><option value="system">SYSTEM</option>
         <option value="incidents">INCIDENTS</option><option value="diagnostics">DIAGNOSTICS</option><option value="watchdog">WATCHDOG</option>
-      <option id="accountOption" value="account" hidden>MON COMPTE</option><option id="usersOption" value="users" hidden>UTILISATEURS</option></select>
+      <option id="accountOption" value="account" hidden>MON COMPTE / 2FA</option><option id="usersOption" value="users" hidden>UTILISATEURS</option></select>
       <button id="mobileThemeToggle" class="theme-toggle" type="button" aria-label="Switch to light theme">LIGHT</button>
     </div>
     <header class="topbar">
       <div class="title-wrap"><div id="pageTitle" class="title">CHANNEL MONITOR</div><div id="pageSubtitle" class="subtitle">LIVE OPERATIONS</div></div>
-      <div class="top-right"><div id="clock" class="clock">--:--:--</div><div id="modeBadge" class="badge readonly">READ ONLY</div><div id="authBadge" class="badge open">ACCESS OPEN</div><button id="logoutButton" class="session-action" type="button" hidden>LOG OUT</button></div>
+      <div class="top-right"><div id="clock" class="clock">--:--:--</div><div id="modeBadge" class="badge readonly">READ ONLY</div><div id="authBadge" class="badge open">ACCESS OPEN</div><button id="accountButton" class="session-action" type="button" hidden>MON COMPTE / 2FA</button><button id="logoutButton" class="session-action" type="button" hidden>LOG OUT</button></div>
     </header>
 
     <div class="content">
@@ -292,7 +292,7 @@
         </section>
       </section>
       <section id="viewUsers" class="view">
-      <p>Comptes Supervisor. Gestion réservée au super-admin.</p>
+      <p>Comptes Supervisor. Gestion réservée au super-admin. Chaque utilisateur configure son propre 2FA dans MON COMPTE / 2FA, en haut de la page.</p>
       <button id="newUser" type="button" class="diag-button">Créer un utilisateur</button>
       <div id="userMessage" role="status" aria-live="polite"></div>
       <div id="usersList" class="table" style="margin:16px 0"></div>
@@ -937,6 +937,7 @@ function updateSessionUi(){
   $("modeBadge").textContent=session.actionsEnabled?"OUTPUT CONTROL":"READ ONLY";
   $("modeBadge").className="badge "+(session.actionsEnabled?"secure":"readonly");
   $("logoutButton").hidden=!session.authenticated;
+  $("accountButton").hidden=!session.authenticated;
   const adminRestart=session.authenticated&&["super-admin","admin"].includes(session.role);
   $("adminRecovery").hidden=!adminRestart;
   $("restartRestreamerButton").disabled=!adminRestart||adminRestartBusy;
@@ -1383,7 +1384,7 @@ function applyStatus(x){
     $("outputErrors").textContent=s.outputErrors??0;
     $("outputErrors").style.color=(s.outputErrors??0)>0?"var(--red)":"var(--text)";
     $("supervisorVersion").textContent=x.supervisor?.version||"--";
-    $("sideVersion").textContent=x.supervisor?.version||"v0.2.0-alpha.5";
+    $("sideVersion").textContent=x.supervisor?.version||"v0.2.0-alpha.6";
     $("monitorTransport").textContent=(monitoring.transport||"poll").toUpperCase()+" · source "+(monitoring.sourcePollMs||"--")+" ms · core "+(monitoring.pollDurationMs??"--")+" ms";
     latestChannels=r.channels||[];
     latestIncidentState=x.incidents||{active:[],summary:{}};
@@ -1445,6 +1446,7 @@ document.querySelectorAll(".nav-item[data-view]").forEach(item=>item.addEventLis
 $("mobileView").addEventListener("change",event=>switchView(event.target.value));
 document.querySelectorAll(".theme-toggle").forEach(button=>button.addEventListener("click",toggleTheme));
 $("loginForm").addEventListener("submit",submitLogin);
+$("accountButton").addEventListener("click",()=>switchView("account"));
 $("logoutButton").addEventListener("click",logout);
 $("restartRestreamerButton").addEventListener("click",restartRestreamer);
 document.querySelectorAll(".range-button").forEach(button=>button.addEventListener("click",()=>{
